@@ -9,19 +9,21 @@
   justify-content: center;
   background: rgba(0,0,0,0.0); /* transparent so map is visible */
 }
+
 .region-preview-card {
   position: relative;
   width: 96vw;
   max-width: 420px;
   margin: 0 auto 18px auto;
-  background: #ededed;
+  background: #ffffff !important;
   border-radius: 28px 28px 32px 32px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important;
   padding: 28px 20px 80px 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   z-index: 10;
+  border: 3px solid #000 !important;
 }
 .region-preview-close {
   position: absolute;
@@ -35,45 +37,54 @@
   z-index: 11;
 }
 .region-preview-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #555;
-  margin-bottom: 6px;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: #000 !important;
+  margin-bottom: 8px !important;
 }
+
 .region-preview-desc {
-  color: #888;
-  font-size: 1.05rem;
-  margin-bottom: 18px;
+  color: #666 !important;
+  font-size: 1.1rem !important;
+  margin-bottom: 12px !important;
+  line-height: 1.4;
 }
+
 .region-preview-locked {
-  color: #888;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 32px;
+  color: #e74c3c !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 24px !important;
+  padding: 8px 16px !important;
+  background: rgba(231, 76, 60, 0.1) !important;
+  border-radius: 20px !important;
+  border: 2px solid #e74c3c !important;
 }
 .region-preview-get-btn {
-  width: 90%;
-  margin: 0 auto;
-  display: block;
-  background: #bdbdbd;
-  color: #fff;
-  font-size: 1.15rem;
-  font-weight: 700;
-  border: none;
-  border-radius: 12px;
-  padding: 18px 0 16px 0;
-  position: absolute;
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border-bottom: 3px solid #ff2d2d;
-  transition: background 0.2s, color 0.2s;
+  width: 90% !important;
+  margin: 0 auto !important;
+  display: block !important;
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  color: #fff !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 18px 0 16px 0 !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 24px !important;
+  transform: translateX(-50%) !important;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3) !important;
+  border: 3px solid #000 !important;
+  transition: all 0.2s !important;
+  cursor: pointer !important;
 }
+
 .region-preview-get-btn:hover {
-  background: #ff2d2d;
-  color: #fff;
-  border-bottom: 3px solid #ff2d2d;
+  background: linear-gradient(135deg, #c0392b, #a93226) !important;
+  transform: translateX(-50%) translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4) !important;
 }
 @media (max-width: 500px) {
   .region-preview-card {
