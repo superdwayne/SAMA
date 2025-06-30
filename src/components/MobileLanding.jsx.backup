@@ -1,0 +1,114 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { amsterdamRegions } from '../data/regions';
+import Map from './Map';
+import './MobileLanding.css';
+
+const MobileLanding = ({ unlockedRegions = [], setUnlockedRegions }) => {
+  const [currentView, setCurrentView] = useState('landing');
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  const navigate = useNavigate();
+
+  // Region data from your existing structure
+  const regions = amsterdamRegions.features.map(feature => ({
+    id: feature.properties.name,
+    title: `Amsterdam ${feature.properties.name}`,
+    description: feature.properties.description,
+    artworkCount: feature.properties.artworkCount,
+    unlocked: unlockedRegions.includes(feature.properties.name)
+  }));
+
+  const handleRegionClick = (region) => {
+    setSelectedRegion(region);
+    setCurrentView('preview');
+  };
+
+  const handleGetItNow = () => {
+    if (selectedRegion?.unlocked) {
+      // Navigate to desktop map with this region highlighted
+      navigate(`/?region=${selectedRegion.id}`);
+    } else {
+      // Navigate to payment page
+      navigate(`/payment/${selectedRegion.id}`);
+    }
+  };
+
+  const handleBackToLanding = () => {
+    setCurrentView('landing');
+    setSelectedRegion(null);
+  };
+
+  const handleLogoClick = () => {
+    if (currentView === 'preview') {
+      handleBackToLanding();
+    } else {
+      // Navigate to main map
+      navigate('/');
+    }
+  };
+
+  return (
+    <div className="mobile-web-app">
+      {/* Landing Page */}
+      {currentView === 'landing' && (
+        <div className="landing-container">
+          {/* Header with Logo */}
+          <div className="header">
+            <div className="logo">Street.</div>
+          </div>
+          
+          <div className="content">
+            <div className="screen-title">Amsterdam Street Art</div>
+            <div className="screen-subtitle">Discover hidden masterpieces across the city</div>
+            
+            {regions.map((region) => (
+              <div key={region.id}
+                className={`map-card ${!region.unlocked ? 'locked' : ''}`}
+                onClick={() => handleRegionClick(region)}
+              >
+                <div className="map-title">{region.title}</div>
+                <div className="map-description">{region.description}</div>
+                <div className="artwork-count">{region.artworkCount} artworks</div>
+                <button className="get-button">
+                  {region.unlocked ? 'Explore now' : 'Get it now'}
+                </button>
+                {!region.unlocked && <div className="lock-indicator">🔒</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Map Preview with Overlay */}
+      {currentView === 'preview' && selectedRegion && (
+        <div className="map-preview-container">
+          <div className="map-wrapper">
+            <Map 
+              unlockedRegions={unlockedRegions} 
+              setUnlockedRegions={setUnlockedRegions}
+            />
+          </div>
+          
+          <div className="map-overlay-info">
+            <button className="close-btn" onClick={handleBackToLanding}>×</button>
+            <div className="overlay-content">
+              <div className="map-title">{selectedRegion.title}</div>
+              <div className="map-description">{selectedRegion.description}</div>
+              {!selectedRegion.unlocked && (
+                <div className="locked-text">Locked</div>
+              )}
+              <button 
+                className={`get-button ${selectedRegion.unlocked ? 'unlocked' : 'active'}`}
+                onClick={handleGetItNow}
+              >
+                {selectedRegion.unlocked ? 'Start exploring' : 'Get it now'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MobileLanding;

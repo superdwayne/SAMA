@@ -1,0 +1,1 @@
+rm /Users/dwaynepaisley-marshall/Desktop/amsterdam-street-art-map/api/vercel.json

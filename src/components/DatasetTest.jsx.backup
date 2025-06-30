@@ -1,0 +1,410 @@
+// Dataset Testing Component
+// Save as: /src/components/DatasetTest.jsx
+
+import React, { useState, useEffect } from 'react';
+
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+const DATASET_ID = 'cmc35wyju1dgt1ms3u19ozf6e';
+
+const DatasetTest = () => {
+  const [status, setStatus] = useState('idle');
+  const [locations, setLocations] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [newLocation, setNewLocation] = useState({
+    title: '',
+    artist: '',
+    description: '',
+    type: 'artwork',
+    district: 'Centre',
+    latitude: '',
+    longitude: '',
+    address: ''
+  });
+
+  // Test dataset connection
+  const testConnection = async () => {
+    setStatus('testing');
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/datasets/v1/${DATASET_ID}?access_token=${MAPBOX_TOKEN}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const dataset = await response.json();
+      setStatus('connected');
+      console.log('✅ Dataset info:', dataset);
+      return dataset;
+    } catch (error) {
+      setStatus('error');
+      console.error('❌ Connection failed:', error);
+      alert(`Connection failed: ${error.message}`);
+    }
+  };
+
+  // Fetch all locations
+  const fetchLocations = async () => {
+    setStatus('fetching');
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/datasets/v1/${DATASET_ID}/features?access_token=${MAPBOX_TOKEN}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Convert to app format
+      const convertedLocations = data.features.map((feature, index) => {
+        const coords = feature.geometry.coordinates;
+        const props = feature.properties;
+        
+        return {
+          id: feature.id || `feature-${index}`,
+          title: props.title || 'Untitled',
+          artist: props.artist || 'Unknown',
+          description: props.description || '',
+          type: props.type || 'artwork',
+          district: props.district || 'Centre',
+          latitude: coords[1],
+          longitude: coords[0],
+          address: props.address || '',
+          year: props.year || '',
+          mapboxId: feature.id
+        };
+      });
+      
+      setLocations(convertedLocations);
+      setStatus('loaded');
+      
+      // Calculate stats
+      const locationStats = {
+        total: convertedLocations.length,
+        byType: {},
+        byDistrict: {}
+      };
+      
+      convertedLocations.forEach(loc => {
+        locationStats.byType[loc.type] = (locationStats.byType[loc.type] || 0) + 1;
+        locationStats.byDistrict[loc.district] = (locationStats.byDistrict[loc.district] || 0) + 1;
+      });
+      
+      setStats(locationStats);
+      
+    } catch (error) {
+      setStatus('error');
+      console.error('❌ Fetch failed:', error);
+      alert(`Fetch failed: ${error.message}`);
+    }
+  };
+
+  // Add new location
+  const addLocation = async () => {
+    if (!newLocation.title || !newLocation.latitude || !newLocation.longitude) {
+      alert('Please fill in title, latitude, and longitude');
+      return;
+    }
+
+    setStatus('adding');
+    try {
+      const feature = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [parseFloat(newLocation.longitude), parseFloat(newLocation.latitude)]
+        },
+        properties: {
+          title: newLocation.title,
+          artist: newLocation.artist,
+          description: newLocation.description,
+          type: newLocation.type,
+          district: newLocation.district,
+          address: newLocation.address,
+          dateAdded: new Date().toISOString()
+        }
+      };
+
+      const response = await fetch(
+        `https://api.mapbox.com/datasets/v1/${DATASET_ID}/features?access_token=${MAPBOX_TOKEN}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(feature)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Location added:', result);
+      
+      // Reset form and refresh locations
+      setNewLocation({
+        title: '',
+        artist: '',
+        description: '',
+        type: 'artwork',
+        district: 'Centre',
+        latitude: '',
+        longitude: '',
+        address: ''
+      });
+      
+      fetchLocations(); // Refresh the list
+      
+    } catch (error) {
+      setStatus('error');
+      console.error('❌ Add failed:', error);
+      alert(`Add failed: ${error.message}`);
+    }
+  };
+
+  // Delete location
+  const deleteLocation = async (mapboxId, title) => {
+    if (!confirm(`Delete "${title}"?`)) return;
+
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/datasets/v1/${DATASET_ID}/features/${mapboxId}?access_token=${MAPBOX_TOKEN}`,
+        { method: 'DELETE' }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      console.log('✅ Location deleted');
+      fetchLocations(); // Refresh the list
+      
+    } catch (error) {
+      console.error('❌ Delete failed:', error);
+      alert(`Delete failed: ${error.message}`);
+    }
+  };
+
+  useEffect(() => {
+    testConnection();
+  }, []);
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <h1>🗺️ Mapbox Dataset Manager</h1>
+      <p><strong>Dataset ID:</strong> {DATASET_ID}</p>
+      
+      {/* Status */}
+      <div style={{ 
+        padding: '10px', 
+        borderRadius: '5px', 
+        backgroundColor: status === 'connected' || status === 'loaded' ? '#d4edda' : 
+                        status === 'error' ? '#f8d7da' : '#fff3cd',
+        border: '1px solid ' + (status === 'connected' || status === 'loaded' ? '#c3e6cb' : 
+                               status === 'error' ? '#f5c6cb' : '#ffeaa7'),
+        marginBottom: '20px'
+      }}>
+        <strong>Status:</strong> {status}
+      </div>
+
+      {/* Controls */}
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={testConnection} style={{ marginRight: '10px' }}>
+          🔗 Test Connection
+        </button>
+        <button onClick={fetchLocations} style={{ marginRight: '10px' }}>
+          📍 Fetch Locations
+        </button>
+      </div>
+
+      {/* Stats */}
+      {stats && (
+        <div style={{ 
+          backgroundColor: '#f8f9fa', 
+          padding: '15px', 
+          borderRadius: '5px', 
+          marginBottom: '20px' 
+        }}>
+          <h3>📊 Dataset Statistics</h3>
+          <p><strong>Total Locations:</strong> {stats.total}</p>
+          
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <div>
+              <strong>By Type:</strong>
+              <ul>
+                {Object.entries(stats.byType).map(([type, count]) => (
+                  <li key={type}>{type}: {count}</li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <strong>By District:</strong>
+              <ul>
+                {Object.entries(stats.byDistrict).map(([district, count]) => (
+                  <li key={district}>{district}: {count}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add New Location Form */}
+      <div style={{ 
+        backgroundColor: '#f8f9fa', 
+        padding: '20px', 
+        borderRadius: '5px', 
+        marginBottom: '20px' 
+      }}>
+        <h3>➕ Add New Location</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          <input
+            placeholder="Title *"
+            value={newLocation.title}
+            onChange={(e) => setNewLocation({...newLocation, title: e.target.value})}
+          />
+          <input
+            placeholder="Artist"
+            value={newLocation.artist}
+            onChange={(e) => setNewLocation({...newLocation, artist: e.target.value})}
+          />
+          <input
+            placeholder="Latitude * (e.g., 52.3745)"
+            value={newLocation.latitude}
+            onChange={(e) => setNewLocation({...newLocation, latitude: e.target.value})}
+          />
+          <input
+            placeholder="Longitude * (e.g., 4.8925)"
+            value={newLocation.longitude}
+            onChange={(e) => setNewLocation({...newLocation, longitude: e.target.value})}
+          />
+          <select
+            value={newLocation.type}
+            onChange={(e) => setNewLocation({...newLocation, type: e.target.value})}
+          >
+            <option value="artwork">Artwork</option>
+            <option value="gallery">Gallery</option>
+            <option value="museum">Museum</option>
+            <option value="legal-wall">Legal Wall</option>
+          </select>
+          <select
+            value={newLocation.district}
+            onChange={(e) => setNewLocation({...newLocation, district: e.target.value})}
+          >
+            <option value="Centre">Centre</option>
+            <option value="North">North</option>
+            <option value="South">South</option>
+            <option value="East">East</option>
+            <option value="West">West</option>
+            <option value="Nieuw-West">Nieuw-West</option>
+            <option value="Southeast">Southeast</option>
+          </select>
+          <input
+            placeholder="Address"
+            value={newLocation.address}
+            onChange={(e) => setNewLocation({...newLocation, address: e.target.value})}
+            style={{ gridColumn: '1 / -1' }}
+          />
+          <textarea
+            placeholder="Description"
+            value={newLocation.description}
+            onChange={(e) => setNewLocation({...newLocation, description: e.target.value})}
+            style={{ gridColumn: '1 / -1', minHeight: '60px' }}
+          />
+        </div>
+        <button 
+          onClick={addLocation} 
+          style={{ 
+            marginTop: '10px', 
+            backgroundColor: '#28a745', 
+            color: 'white', 
+            border: 'none', 
+            padding: '10px 20px', 
+            borderRadius: '5px' 
+          }}
+        >
+          ➕ Add Location
+        </button>
+      </div>
+
+      {/* Locations List */}
+      {locations.length > 0 && (
+        <div>
+          <h3>📍 Current Locations ({locations.length})</h3>
+          <div style={{ maxHeight: '400px', overflowY: 'auto', border: '1px solid #ddd' }}>
+            {locations.map((location) => (
+              <div key={location.id} style={{ 
+                padding: '10px', 
+                borderBottom: '1px solid #eee',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <strong>{location.title}</strong> by {location.artist}
+                  <br />
+                  <small>
+                    {location.type} • {location.district} • 
+                    {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+                  </small>
+                  {location.description && (
+                    <>
+                      <br />
+                      <small style={{ color: '#666' }}>{location.description}</small>
+                    </>
+                  )}
+                </div>
+                <button 
+                  onClick={() => deleteLocation(location.mapboxId, location.title)}
+                  style={{ 
+                    backgroundColor: '#dc3545', 
+                    color: 'white', 
+                    border: 'none', 
+                    padding: '5px 10px', 
+                    borderRadius: '3px',
+                    fontSize: '12px'
+                  }}
+                >
+                  🗑️ Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Quick Start Guide */}
+      <div style={{ 
+        backgroundColor: '#e3f2fd', 
+        padding: '20px', 
+        borderRadius: '5px', 
+        marginTop: '20px' 
+      }}>
+        <h3>🚀 Quick Start Guide</h3>
+        <ol>
+          <li><strong>Test Connection:</strong> Click "Test Connection" to verify dataset access</li>
+          <li><strong>Fetch Data:</strong> Click "Fetch Locations" to see current data</li>
+          <li><strong>Add Locations:</strong> Use the form above to add new street art locations</li>
+          <li><strong>Coordinates:</strong> Use Google Maps to get latitude/longitude coordinates</li>
+          <li><strong>Integration:</strong> Your map will automatically load this data!</li>
+        </ol>
+        
+        <h4>💡 Tips:</h4>
+        <ul>
+          <li>Right-click on Google Maps and select "What's here?" to get coordinates</li>
+          <li>Ensure coordinates are in decimal format (52.3745, not degrees/minutes)</li>
+          <li>Use descriptive titles and select the correct district</li>
+          <li>The map will refresh automatically when you add new locations</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default DatasetTest;

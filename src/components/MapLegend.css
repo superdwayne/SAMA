@@ -1,0 +1,180 @@
+.street-art-legend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.legend-header {
+  position: absolute;
+  top: 120px;
+  right: 80px;
+  background: #FFFF00;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: rotate(2deg);
+  pointer-events: auto;
+  max-width: 200px;
+  z-index: 80;
+}
+
+.legend-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  color: #000;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.legend-header .legend-description {
+  font-size: 10px;
+  line-height: 1.2;
+  margin: 0;
+  color: #000;
+  font-weight: 500;
+}
+
+.legend-qr-section {
+  position: absolute;
+  bottom: 160px;
+  left: 20px;
+  background: #FFFF00;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  text-align: center;
+  max-width: 120px;
+  transform: rotate(-2deg);
+  pointer-events: auto;
+  z-index: 80;
+}
+
+.legend-subtitle {
+  font-size: 10px;
+  line-height: 1.2;
+  margin: 8px 0 0 0;
+  color: #000;
+  font-weight: 500;
+}
+
+.legend-main-title {
+  position: absolute;
+  bottom: 160px;
+  left: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 80;
+}
+
+.routes-title {
+  font-size: 48px;
+  font-weight: 900;
+  color: #0066FF;
+  text-shadow: 2px 2px 0px #FFFF00;
+  margin: 0;
+  line-height: 0.9;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+
+
+
+.sama-logo {
+  position: absolute;
+  top: 20px;
+  right: 240px;
+  transform: rotate(1deg);
+  pointer-events: auto;
+}
+
+.sama-logo img {
+  height: 60px;
+  width: auto;
+  filter: brightness(0);
+}
+
+.legend-icons {
+  position: absolute;
+  top: 160px;
+  right: 20px;
+  background: #FFFF00;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: rotate(2deg);
+  pointer-events: auto;
+  z-index: 80;
+}
+
+.icon-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.icon-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #000;
+  font-weight: 600;
+}
+
+.icon {
+  font-size: 14px;
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-label {
+  line-height: 1.2;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .legend-header {
+    display: none;
+  }
+
+  .legend-qr-section {
+    display: none; /* Hide QR completely on mobile */
+  }
+
+  .legend-main-title {
+    display: none; /* Hide main title on mobile */
+  }
+
+  .legend-icons {
+    bottom: 20px;
+    right: 10px;
+    padding: 6px;
+    max-width: 120px;
+  }
+
+  .icon-item {
+    font-size: 7px;
+    gap: 4px;
+  }
+
+  .icon {
+    font-size: 10px;
+    width: 12px;
+  }
+
+  .sama-logo {
+    display: none;
+  }
+}

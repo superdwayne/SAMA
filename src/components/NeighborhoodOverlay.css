@@ -1,0 +1,102 @@
+.neighborhood-overlay {
+  background: #FFFF00;
+  padding: 8px 10px;
+  border-radius: 6px;
+  max-width: 120px;
+  min-width: 100px;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  border: 2px solid #000;
+  position: relative;
+  transform: rotate(-2deg);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.neighborhood-overlay:hover {
+  transform: rotate(0deg) scale(1.05);
+  z-index: 1000;
+}
+
+.neighborhood-overlay.locked {
+  opacity: 0.8;
+  filter: grayscale(20%);
+}
+
+.overlay-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.category-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.neighborhood-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+  color: #000;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  transform: rotate(-1deg);
+  flex: 1;
+  line-height: 1.1;
+}
+
+.neighborhood-description {
+  font-size: 9px;
+  line-height: 1.2;
+  margin: 0 0 6px 0;
+  color: #333;
+  font-weight: 500;
+}
+
+.qr-code-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 2px;
+  background: #FFFF00;
+  border-radius: 3px;
+  border: none;
+}
+
+.unlock-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #FF4444;
+  color: white;
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Different rotation angles for variety */
+.neighborhood-overlay:nth-child(2n) {
+  transform: rotate(2deg);
+}
+
+.neighborhood-overlay:nth-child(3n) {
+  transform: rotate(-1deg);
+}
+
+.neighborhood-overlay:nth-child(4n) {
+  transform: rotate(3deg);
+}
+
+.neighborhood-overlay:nth-child(5n) {
+  transform: rotate(-3deg);
+}

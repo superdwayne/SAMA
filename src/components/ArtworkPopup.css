@@ -1,0 +1,83 @@
+.artwork-popup {
+  min-width: 280px;
+  max-width: 350px;
+}
+
+.artwork-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.artwork-content {
+  padding: 5px 0;
+}
+
+.artwork-type {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.artwork-type.gallery {
+  background: #e1f5fe;
+  color: #0277bd;
+}
+
+.artwork-type.legal-wall {
+  background: #f3e5f5;
+  color: #6a1b9a;
+}
+
+.artwork-type.artwork {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.artwork-type.museum {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.artwork-popup h3 {
+  margin: 10px 0;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.artwork-artist {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.artwork-description {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.artwork-year,
+.artwork-address,
+.artwork-hours {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.artwork-address {
+  color: #1976d2;
+}
+
+.artwork-hours {
+  color: #388e3c;
+}

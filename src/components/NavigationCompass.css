@@ -1,0 +1,224 @@
+/* Navigation Compass Styles */
+.navigation-compass {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  width: 100px;
+  height: 100px;
+  z-index: 1600;
+  pointer-events: none;
+}
+
+.compass-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+  border: 3px solid #000;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.north-indicator {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 900;
+  font-size: 12px;
+  color: #dc3545;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.compass-marks {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.compass-mark {
+  position: absolute;
+  background: #666;
+  transform-origin: 50px 50px;
+}
+
+.compass-mark.major {
+  width: 2px;
+  height: 15px;
+  top: 0;
+  left: 49px;
+  background: #333;
+}
+
+.compass-mark.minor {
+  width: 1px;
+  height: 8px;
+  top: 0;
+  left: 49.5px;
+  background: #999;
+}
+
+.direction-arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.arrow-head {
+  font-size: 24px;
+  color: #667eea;
+  text-shadow: 
+    2px 2px 0px #000,
+    -2px -2px 0px #000,
+    2px -2px 0px #000,
+    -2px 2px 0px #000;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.next-turn-indicator {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.5s ease;
+  z-index: 5;
+}
+
+.turn-arrow {
+  font-size: 18px;
+  color: #FFFF00;
+  text-shadow: 
+    1px 1px 0px #000,
+    -1px -1px 0px #000,
+    1px -1px 0px #000,
+    -1px 1px 0px #000;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+.bearing-display {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bearing-value {
+  display: block;
+  min-width: 35px;
+  text-align: center;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .navigation-compass {
+    top: 70px;
+    right: 15px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .compass-mark.major {
+    height: 12px;
+    transform-origin: 40px 40px;
+    left: 39px;
+  }
+
+  .compass-mark.minor {
+    height: 6px;
+    transform-origin: 40px 40px;
+    left: 39.5px;
+  }
+
+  .north-indicator {
+    font-size: 10px;
+    top: 3px;
+  }
+
+  .arrow-head {
+    font-size: 20px;
+  }
+
+  .turn-arrow {
+    font-size: 16px;
+  }
+
+  .next-turn-indicator {
+    top: 12px;
+  }
+
+  .bearing-display {
+    bottom: -20px;
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navigation-compass {
+    width: 70px;
+    height: 70px;
+    top: 60px;
+    right: 10px;
+  }
+
+  .compass-mark.major {
+    height: 10px;
+    transform-origin: 35px 35px;
+    left: 34px;
+  }
+
+  .compass-mark.minor {
+    height: 5px;
+    transform-origin: 35px 35px;
+    left: 34.5px;
+  }
+
+  .arrow-head {
+    font-size: 18px;
+  }
+
+  .turn-arrow {
+    font-size: 14px;
+  }
+
+  .bearing-display {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+}
+
+/* Hide compass when not navigating */
+.navigation-compass.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Show only during navigation */
+.navigation-compass.visible {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}

@@ -1,0 +1,383 @@
+/* Enhanced Navigation Styles */
+.enhanced-navigation {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 1500;
+  pointer-events: none;
+}
+
+.nav-panel {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 3px solid #000;
+  overflow: hidden;
+  pointer-events: all;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Status Banners */
+.nav-status {
+  position: relative;
+}
+
+.recalculating-banner,
+.off-route-banner {
+  background: #ff9800;
+  color: white;
+  padding: 12px 20px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  animation: slideDown 0.3s ease;
+}
+
+.off-route-banner {
+  background: #f44336;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Current Instruction */
+.current-instruction {
+  display: flex;
+  align-items: center;
+  padding: 25px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  gap: 20px;
+}
+
+.instruction-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  border: 2px solid white;
+  flex-shrink: 0;
+}
+
+.instruction-details {
+  flex: 1;
+}
+
+.instruction-text {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.instruction-distance {
+  font-size: 32px;
+  font-weight: 900;
+  color: #FFFF00;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Street Name */
+.street-name {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 16px;
+  color: #495057;
+  text-align: center;
+}
+
+.street-name strong {
+  color: #333;
+}
+
+/* Progress Bar */
+.progress-container {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #dee2e6;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.progress-text {
+  text-align: center;
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+/* Route Summary */
+.route-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 20px;
+  background: white;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.summary-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.summary-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Next Steps */
+.next-steps-preview {
+  background: white;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.toggle-steps {
+  width: 100%;
+  padding: 15px 20px;
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: #667eea;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-size: 14px;
+}
+
+.toggle-steps:hover {
+  background: #f8f9fa;
+}
+
+.steps-list {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+}
+
+.step-icon {
+  width: 35px;
+  height: 35px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border: 2px solid #dee2e6;
+  flex-shrink: 0;
+}
+
+.step-text {
+  flex: 1;
+}
+
+.step-instruction {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.step-distance {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Controls */
+.nav-controls {
+  display: flex;
+  gap: 0;
+  background: white;
+}
+
+.nav-button {
+  flex: 1;
+  padding: 18px 20px;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-top: 2px solid #f0f0f0;
+}
+
+.nav-button.secondary {
+  background: #f8f9fa;
+  color: #495057;
+  border-right: 1px solid #dee2e6;
+}
+
+.nav-button.secondary:hover {
+  background: #e9ecef;
+}
+
+.nav-button.primary {
+  background: #dc3545;
+  color: white;
+}
+
+.nav-button.primary:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .enhanced-navigation {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .nav-panel {
+    border-radius: 15px;
+  }
+
+  .current-instruction {
+    padding: 20px 15px;
+    gap: 15px;
+  }
+
+  .instruction-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
+  .instruction-text {
+    font-size: 18px;
+  }
+
+  .instruction-distance {
+    font-size: 28px;
+  }
+
+  .route-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .summary-icon {
+    font-size: 20px;
+  }
+
+  .summary-text {
+    font-size: 12px;
+  }
+
+  .nav-button {
+    padding: 16px 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .current-instruction {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 15px;
+  }
+
+  .instruction-details {
+    width: 100%;
+  }
+
+  .route-summary {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .summary-item {
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .nav-controls {
+    flex-direction: column;
+  }
+
+  .nav-button.secondary {
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+  }
+}
+
+/* Animation for when navigation starts */
+.nav-panel {
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Pulse animation for distance when very close */
+.instruction-distance {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}

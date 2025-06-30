@@ -1,0 +1,214 @@
+.unlock-prompt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.unlock-prompt {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.unlock-icon {
+  font-size: 60px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.unlock-prompt h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.unlock-description {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.district-highlights {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+
+.district-highlights h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.highlights-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.highlights-list li {
+  padding: 10px 0;
+  color: #555;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.featured-info {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.featured-info h4 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.featured-info p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.unlock-single-option {
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(to bottom, #f8f9ff, #fff);
+  border-radius: 15px;
+  border: 2px solid #667eea;
+}
+
+.price-display {
+  margin-bottom: 25px;
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #667eea;
+  display: block;
+}
+
+.price-label {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.unlock-button {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 18px 35px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.unlock-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.unlock-note {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.continue-free {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.text-button:hover {
+  color: #5a67d8;
+}
+
+@media (max-width: 768px) {
+  .unlock-prompt {
+    padding: 30px 20px;
+  }
+  
+  .unlock-prompt h2 {
+    font-size: 1.6rem;
+  }
+  
+  .price {
+    font-size: 2.5rem;
+  }
+  
+  .district-highlights {
+    padding: 20px;
+  }
+}

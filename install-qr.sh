@@ -1,0 +1,1 @@
+cd /Users/dwaynepaisley-marshall/Desktop/amsterdam-street-art-map && npm install qrcode.react

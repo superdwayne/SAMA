@@ -1,0 +1,26 @@
+/* CSS Diagnostic Styles - Add to MapView.css temporarily to test */
+
+/* Force visibility test */
+.map-container {
+  background: red !important;
+  border: 5px solid blue !important;
+}
+
+/* Test if Mapbox CSS is loading */
+.mapboxgl-map {
+  border: 3px solid green !important;
+}
+
+/* Test marker visibility */
+.marker {
+  background: yellow !important;
+  border: 2px solid purple !important;
+}
+
+/* Test header visibility */
+.map-header {
+  background: orange !important;
+  border: 2px solid black !important;
+}
+
+/* Add these styles temporarily to see what's loading */

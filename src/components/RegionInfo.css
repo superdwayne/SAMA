@@ -1,0 +1,186 @@
+.region-info-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.region-info-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 3px solid #000;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 2500;
+  animation: slideInModal 0.3s ease-out;
+}
+
+@keyframes slideInModal {
+  from {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.region-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.region-close-button:hover {
+  color: #333;
+}
+
+.region-info-panel h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.region-status {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.region-status.unlocked {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.region-status.locked {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.region-details {
+  color: #666;
+}
+
+.region-details p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.region-stats {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.region-stats h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.region-stats ul {
+  list-style: none;
+  padding: 0;
+}
+
+.region-stats li {
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.region-featured {
+  background: #e3f2fd;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.region-featured h3 {
+  color: #1976d2;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.region-featured p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.locked-message {
+  background: #ffebee;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.locked-message p {
+  color: #c62828;
+  margin-bottom: 15px;
+}
+
+.unlock-button {
+  background: #ff5252;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.unlock-button:hover {
+  background: #ff1744;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
+}
+
+@media (max-width: 768px) {
+  .region-info-panel {
+    width: 95%;
+    max-width: none;
+    padding: 25px;
+    max-height: 90vh;
+  }
+
+  .region-close-button {
+    top: 12px;
+    right: 12px;
+    font-size: 22px;
+  }
+}
