@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import RegionPreview from './RegionPreview';
 import { amsterdamRegions } from '../data/regions';
-import './Landing.css';
+import './Landing.css'; 
 
 // Example region data (replace with real data as needed)
 const regions = [
