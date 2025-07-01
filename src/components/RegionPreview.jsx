@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import Map, { Source, Layer, Popup, Marker } from 'react-map-gl';
 import { useNavigate } from 'react-router-dom';
 import EmailMagicLink from './EmailMagicLink';
@@ -75,6 +75,7 @@ const regionCenters = {
 
 const RegionPreview = ({ region, onClose }) => {
   const navigate = useNavigate();
+  const mapRef = useRef();
   const [popup, setPopup] = useState(null);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -92,7 +93,7 @@ const RegionPreview = ({ region, onClose }) => {
   const handleGetItNow = async () => {
     // If region is free, go to map with region parameter
     if (isUnlocked) {
-      navigate(`/map?region=${region.id}`);
+      // Disabled: navigate(`/map?region=${region.id}`);
       return;
     }
     
@@ -192,6 +193,7 @@ const RegionPreview = ({ region, onClose }) => {
         <EmailMagicLink onClose={() => setShowMagicLinkModal(false)} />
       )}
       <Map
+        ref={mapRef}
         mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={{
           latitude: center.latitude,
@@ -303,10 +305,15 @@ const RegionPreview = ({ region, onClose }) => {
                         const userLat = pos.coords.latitude;
                         const userLng = pos.coords.longitude;
                         const origin = [userLng, userLat];
-                        // Gather all pins in the region (in order)
-                        const regionPins = streetArtLocations
-                          .filter(a => a.district === regionName)
-                          .map(a => [a.longitude, a.latitude]);
+                        // Query Mapbox vector tile pins for the region
+                        const map = mapRef.current && mapRef.current.getMap();
+                        let regionPins = [];
+                        if (map) {
+                          const features = map.querySourceFeatures('nw-pins', { sourceLayer: 'NW-Pins' });
+                          regionPins = features
+                            .filter(f => (f.properties.Region || '').toLowerCase() === regionName.toLowerCase())
+                            .map(f => f.geometry.coordinates);
+                        }
                         if (regionPins.length === 0) {
                           alert('No pins found for this region.');
                           setIsFetchingRoute(false);
