@@ -82,9 +82,12 @@ const RegionPreview = ({ region, onClose }) => {
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
   const [routeGeoJson, setRouteGeoJson] = useState(null);
   const [routeSteps, setRouteSteps] = useState(null);
+  const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const [userLocation, setUserLocation] = useState(null);
+  const [watchId, setWatchId] = useState(null);
   const [isFetchingRoute, setIsFetchingRoute] = useState(false);
   const [showLocationPrompt, setShowLocationPrompt] = useState(false);
-  const [tourStartMode, setTourStartMode] = useState(null); // 'user' or 'pin'
+  const [tourStartMode, setTourStartMode] = useState(null); // 'user', 'pin', or 'single'
   
   if (!region) return null;
   
@@ -184,7 +187,7 @@ const RegionPreview = ({ region, onClose }) => {
     'arrive': '🏁',
     'roundabout': '🌀',
     'merge': '🔀',
-    'fork': '🔀',
+    'fork': '��',
     'end of road': '⛔',
     'continue': '⬆️'
   };
@@ -203,6 +206,74 @@ const RegionPreview = ({ region, onClose }) => {
     }
     return chunks;
   }
+
+  // Helper: distance between two [lng, lat] points in meters
+  function getDistance(a, b) {
+    const toRad = x => x * Math.PI / 180;
+    const R = 6371000;
+    const dLat = toRad(b[1] - a[1]);
+    const dLng = toRad(b[0] - a[0]);
+    const lat1 = toRad(a[1]);
+    const lat2 = toRad(b[1]);
+    const aVal = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLng/2) * Math.sin(dLng/2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(aVal), Math.sqrt(1-aVal));
+    return R * c;
+  }
+
+  // Start/stop geolocation watch always (not just when route is active)
+  React.useEffect(() => {
+    const id = navigator.geolocation.watchPosition(
+      pos => {
+        setUserLocation({
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude
+        });
+      },
+      err => {
+        console.error('Live geolocation error:', err);
+      },
+      { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+    );
+    setWatchId(id);
+    return () => {
+      navigator.geolocation.clearWatch(id);
+      setWatchId(null);
+      setUserLocation(null);
+      setCurrentStepIdx(0);
+    };
+  }, []);
+
+  // 3D building layer
+  const buildingLayer = {
+    id: '3d-buildings',
+    source: 'composite',
+    'source-layer': 'building',
+    filter: ['==', 'extrude', 'true'],
+    type: 'fill-extrusion',
+    minzoom: 15,
+    paint: {
+      'fill-extrusion-color': '#aaa',
+      'fill-extrusion-height': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        15,
+        0,
+        15.05,
+        ['get', 'height']
+      ],
+      'fill-extrusion-base': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        15,
+        0,
+        15.05,
+        ['get', 'min_height']
+      ],
+      'fill-extrusion-opacity': 0.6
+    }
+  };
 
   return (
     <div className="region-preview-overlay">
@@ -258,6 +329,8 @@ const RegionPreview = ({ region, onClose }) => {
         >
           <Layer {...pinsLayer} />
         </Source>
+        {/* 3D buildings layer */}
+        <Layer {...buildingLayer} />
         {routeGeoJson && (
           <Source id="route" type="geojson" data={routeGeoJson}>
             <Layer
@@ -269,6 +342,11 @@ const RegionPreview = ({ region, onClose }) => {
               }}
             />
           </Source>
+        )}
+        {userLocation && (
+          <Marker longitude={userLocation.longitude} latitude={userLocation.latitude} anchor="center">
+            <div style={{width: 22, height: 22, background: '#1976d2', borderRadius: '50%', border: '3px solid #fff', boxShadow: '0 2px 8px rgba(25,118,210,0.18)'}}></div>
+          </Marker>
         )}
       </Map>
       <div className="region-preview-card">
@@ -290,26 +368,26 @@ const RegionPreview = ({ region, onClose }) => {
             })()}
             {/* Button group for actions */}
             <div className="region-preview-btn-group">
-              {selectedArtwork.latitude && selectedArtwork.longitude && (
-                <div className="region-preview-btn-group">
-                  <button
-                    className="region-preview-get-btn direction-btn"
-                    disabled={isFetchingRoute}
-                    onClick={() => { setTourStartMode('user'); setShowLocationPrompt(true); }}
-                  >
-                    {isFetchingRoute ? 'Loading...' : 'Start tour from my location'}
-                  </button>
-                  <button
-                    className="region-preview-get-btn direction-btn"
-                    disabled={isFetchingRoute}
-                    onClick={() => { setTourStartMode('pin'); setShowLocationPrompt(true); }}
-                  >
-                    {isFetchingRoute ? 'Loading...' : 'Start tour from this artwork'}
-                  </button>
-                </div>
-              )}
-              <button className="region-preview-get-btn back-btn" onClick={() => setSelectedArtwork(null)}>
-                Back to region
+              <button
+                className="region-preview-get-btn direction-btn"
+                disabled={isFetchingRoute}
+                onClick={() => { setTourStartMode('user'); setShowLocationPrompt(true); }}
+              >
+                {isFetchingRoute ? 'Loading...' : 'Start tour from my location'}
+              </button>
+              <button
+                className="region-preview-get-btn direction-btn"
+                disabled={isFetchingRoute}
+                onClick={() => { setTourStartMode('pin'); setShowLocationPrompt(true); }}
+              >
+                {isFetchingRoute ? 'Loading...' : 'Start tour from this artwork'}
+              </button>
+              <button
+                className="region-preview-get-btn direction-btn"
+                disabled={isFetchingRoute}
+                onClick={() => { setTourStartMode('single'); setShowLocationPrompt(true); }}
+              >
+                {isFetchingRoute ? 'Loading...' : 'Route to this artwork'}
               </button>
             </div>
           </>
@@ -401,12 +479,13 @@ const RegionPreview = ({ region, onClose }) => {
       )}
       {routeSteps && (
         <div className="directions-steps">
+          {console.log('routeSteps:', routeSteps)}
           <h4 style={{margin: '18px 0 10px 0', fontWeight: 700}}>Directions</h4>
           <ol style={{paddingLeft: 24, fontSize: '1.05rem'}}>
             {routeSteps.map((step, idx) => (
-              <li key={idx} style={{marginBottom: 8, display: 'flex', alignItems: 'center'}}>
+              <li key={idx} style={{marginBottom: 8, display: 'flex', alignItems: 'center', background: idx === currentStepIdx ? '#e3f2fd' : 'transparent', borderRadius: 6, padding: idx === currentStepIdx ? '4px 8px' : 0}}>
                 <span style={{marginRight: 10, fontSize: '1.2em'}}>{getManeuverIcon(step)}</span>
-                <span>{step.maneuver.instruction}</span>
+                <span style={{fontWeight: idx === currentStepIdx ? 700 : 400}}>{step.maneuver.instruction}</span>
               </li>
             ))}
           </ol>
