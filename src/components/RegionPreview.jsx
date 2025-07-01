@@ -81,8 +81,10 @@ const RegionPreview = ({ region, onClose }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
   const [routeGeoJson, setRouteGeoJson] = useState(null);
+  const [routeSteps, setRouteSteps] = useState(null);
   const [isFetchingRoute, setIsFetchingRoute] = useState(false);
   const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+  const [tourStartMode, setTourStartMode] = useState(null); // 'user' or 'pin'
   
   if (!region) return null;
   
@@ -169,6 +171,38 @@ const RegionPreview = ({ region, onClose }) => {
     setMenuOpen(false);
     setShowMagicLinkModal(true);
   };
+
+  // Maneuver icon mapping
+  const maneuverIcons = {
+    'turn': {
+      left: '⬅️',
+      right: '➡️',
+      straight: '⬆️',
+      uturn: '↩️'
+    },
+    'depart': '🚶',
+    'arrive': '🏁',
+    'roundabout': '🌀',
+    'merge': '🔀',
+    'fork': '🔀',
+    'end of road': '⛔',
+    'continue': '⬆️'
+  };
+  function getManeuverIcon(step) {
+    if (step.maneuver.type === 'turn') {
+      return maneuverIcons.turn[step.maneuver.modifier] || '➡️';
+    }
+    return maneuverIcons[step.maneuver.type] || '➡️';
+  }
+
+  // Helper to chunk pins for Directions API
+  function chunkPins(pins, chunkSize) {
+    const chunks = [];
+    for (let i = 0; i < pins.length; i += chunkSize) {
+      chunks.push(pins.slice(i, i + chunkSize));
+    }
+    return chunks;
+  }
 
   return (
     <div className="region-preview-overlay">
@@ -257,13 +291,22 @@ const RegionPreview = ({ region, onClose }) => {
             {/* Button group for actions */}
             <div className="region-preview-btn-group">
               {selectedArtwork.latitude && selectedArtwork.longitude && (
-                <button
-                  className="region-preview-get-btn direction-btn"
-                  disabled={isFetchingRoute}
-                  onClick={() => setShowLocationPrompt(true)}
-                >
-                  {isFetchingRoute ? 'Loading...' : 'Get Directions'}
-                </button>
+                <div className="region-preview-btn-group">
+                  <button
+                    className="region-preview-get-btn direction-btn"
+                    disabled={isFetchingRoute}
+                    onClick={() => { setTourStartMode('user'); setShowLocationPrompt(true); }}
+                  >
+                    {isFetchingRoute ? 'Loading...' : 'Start tour from my location'}
+                  </button>
+                  <button
+                    className="region-preview-get-btn direction-btn"
+                    disabled={isFetchingRoute}
+                    onClick={() => { setTourStartMode('pin'); setShowLocationPrompt(true); }}
+                  >
+                    {isFetchingRoute ? 'Loading...' : 'Start tour from this artwork'}
+                  </button>
+                </div>
               )}
               <button className="region-preview-get-btn back-btn" onClick={() => setSelectedArtwork(null)}>
                 Back to region
@@ -294,61 +337,54 @@ const RegionPreview = ({ region, onClose }) => {
                   setShowLocationPrompt(false);
                   setIsFetchingRoute(true);
                   setRouteGeoJson(null);
-                  if (!navigator.geolocation) {
-                    alert('Geolocation is not supported by your browser');
-                    setIsFetchingRoute(false);
-                    return;
+                  setRouteSteps(null);
+                  const map = mapRef.current && mapRef.current.getMap();
+                  let regionPins = [];
+                  if (map) {
+                    const features = map.querySourceFeatures('nw-pins', { sourceLayer: 'NW-Pins' });
+                    regionPins = features
+                      .filter(f => (f.properties.Region || '').toLowerCase() === regionName.toLowerCase())
+                      .map(f => f.geometry.coordinates);
                   }
-                  navigator.geolocation.getCurrentPosition(
-                    async (pos) => {
-                      try {
-                        const userLat = pos.coords.latitude;
-                        const userLng = pos.coords.longitude;
-                        const origin = [userLng, userLat];
-                        // Query Mapbox vector tile pins for the region
-                        const map = mapRef.current && mapRef.current.getMap();
-                        let regionPins = [];
-                        if (map) {
-                          const features = map.querySourceFeatures('nw-pins', { sourceLayer: 'NW-Pins' });
-                          regionPins = features
-                            .filter(f => (f.properties.Region || '').toLowerCase() === regionName.toLowerCase())
-                            .map(f => f.geometry.coordinates);
-                        }
-                        if (regionPins.length === 0) {
-                          alert('No pins found for this region.');
-                          setIsFetchingRoute(false);
-                          return;
-                        }
-                        // Build coordinates string: origin;pin1;pin2;...;lastPin
-                        const allCoords = [origin, ...regionPins];
-                        const coordsStr = allCoords.map(c => c.join(",")).join(";");
-                        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coordsStr}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
-                        const response = await fetch(url);
-                        const data = await response.json();
-                        if (data.routes && data.routes[0]) {
-                          setRouteGeoJson({
-                            type: 'Feature',
-                            geometry: data.routes[0].geometry,
-                            properties: {}
-                          });
-                        } else {
-                          alert('No route found.');
-                        }
-                      } catch (err) {
-                        alert('Could not fetch directions.');
+                  // Split pins into chunks of 24
+                  const MAX_WAYPOINTS = 24;
+                  const pinChunks = chunkPins(regionPins, MAX_WAYPOINTS);
+                  let allCoords = [];
+                  let currentOrigin = [selectedArtwork.longitude, selectedArtwork.latitude];
+                  let fullRouteCoords = [];
+                  let allSteps = [];
+                  for (let i = 0; i < pinChunks.length; i++) {
+                    const chunk = pinChunks[i];
+                    const coords = [currentOrigin, ...chunk];
+                    const coordsStr = coords.map(c => c.join(",")).join(";");
+                    const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coordsStr}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+                    console.log(`Routing segment ${i+1} with ${chunk.length} pins`);
+                    console.log('Directions API URL:', url);
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    if (data.routes && data.routes[0]) {
+                      // Append coordinates (skip first if not first segment to avoid duplicate)
+                      const segCoords = data.routes[0].geometry.coordinates;
+                      if (i > 0) segCoords.shift();
+                      fullRouteCoords = fullRouteCoords.concat(segCoords);
+                      // Append steps
+                      if (data.routes[0].legs && data.routes[0].legs[0] && data.routes[0].legs[0].steps) {
+                        allSteps = allSteps.concat(data.routes[0].legs[0].steps);
                       }
+                      // Set next origin as last pin in this chunk
+                      currentOrigin = chunk[chunk.length - 1];
+                    } else {
+                      alert('No route found for segment ' + (i+1));
                       setIsFetchingRoute(false);
-                    },
-                    (err) => {
-                      console.error('Geolocation error:', err);
-                      let message = 'Could not get your location.';
-                      if (err.code === 1) message = 'Location permission denied. Please allow location access in your browser.';
-                      else if (err.code === 2) message = 'Location unavailable. Try moving to an area with better signal or check your device settings.';
-                      else if (err.code === 3) message = 'Location request timed out. Try again.';
-                      alert(message);
-                      setIsFetchingRoute(false);
+                      return;
                     }
-                  );
+                  }
+                  setRouteGeoJson({
+                    type: 'Feature',
+                    geometry: { type: 'LineString', coordinates: fullRouteCoords },
+                    properties: {}
+                  });
+                  setRouteSteps(allSteps);
                 }}
               >
                 Allow
@@ -361,6 +397,19 @@ const RegionPreview = ({ region, onClose }) => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {routeSteps && (
+        <div className="directions-steps">
+          <h4 style={{margin: '18px 0 10px 0', fontWeight: 700}}>Directions</h4>
+          <ol style={{paddingLeft: 24, fontSize: '1.05rem'}}>
+            {routeSteps.map((step, idx) => (
+              <li key={idx} style={{marginBottom: 8, display: 'flex', alignItems: 'center'}}>
+                <span style={{marginRight: 10, fontSize: '1.2em'}}>{getManeuverIcon(step)}</span>
+                <span>{step.maneuver.instruction}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       )}
     </div>
