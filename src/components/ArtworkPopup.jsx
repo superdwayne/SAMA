@@ -1,7 +1,7 @@
 import React from 'react';
 import './ArtworkPopup.css';
 
-const ArtworkPopup = ({ artwork }) => {
+const ArtworkPopup = ({ artwork, onClose, onNavigate }) => {
   const getTypeLabel = (type) => {
     switch(type) {
       case 'gallery': return 'Gallery';
@@ -14,38 +14,70 @@ const ArtworkPopup = ({ artwork }) => {
 
   return (
     <div className="artwork-popup">
-      {artwork.image && (
-        <img 
-          src={artwork.image} 
-          alt={artwork.title}
-          className="artwork-image"
-        />
-      )}
+      <div className="artwork-popup-header">
+        {artwork.image ? (
+          <img 
+            src={artwork.image} 
+            alt={artwork.title}
+            className="artwork-image"
+          />
+        ) : (
+          <div className="artwork-image-placeholder">
+            🎨
+          </div>
+        )}
+        
+        {onClose && (
+          <button className="popup-close-btn" onClick={onClose}>
+            ×
+          </button>
+        )}
+      </div>
       
       <div className="artwork-content">
-        <span className={`artwork-type ${artwork.type}`}>
+        <span className="artwork-type">
           {getTypeLabel(artwork.type)}
         </span>
         
-        <h3>{artwork.title}</h3>
+        <h1 className="artwork-title">{artwork.title}</h1>
         
         {artwork.artist && (
-          <p className="artwork-artist">by {artwork.artist}</p>
+          <p className="artwork-subtitle">by {artwork.artist}</p>
         )}
         
-        <p className="artwork-description">{artwork.description}</p>
-        
-        {artwork.year && (
-          <p className="artwork-year">Created: {artwork.year}</p>
+        {artwork.description && (
+          <p className="artwork-description">{artwork.description}</p>
         )}
         
-        {artwork.address && (
-          <p className="artwork-address">📍 {artwork.address}</p>
+        {(artwork.year || artwork.address || artwork.openingHours) && (
+          <div className="artwork-meta">
+            {artwork.year && (
+              <p className="artwork-year">Created: {artwork.year}</p>
+            )}
+            
+            {artwork.address && (
+              <p className="artwork-address">📍 {artwork.address}</p>
+            )}
+            
+            {artwork.openingHours && (
+              <p className="artwork-hours">🕐 {artwork.openingHours}</p>
+            )}
+          </div>
         )}
         
-        {artwork.openingHours && (
-          <p className="artwork-hours">🕐 {artwork.openingHours}</p>
-        )}
+        <div className="popup-buttons">
+          <button 
+            className="navigate-button primary" 
+            onClick={onNavigate}
+            disabled={!onNavigate}
+          >
+            🗺️ Get Directions
+          </button>
+          
+          <button className="navigate-button secondary" onClick={onClose}>
+            ← Back to region
+          </button>
+        </div>
       </div>
     </div>
   );

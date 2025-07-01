@@ -20,37 +20,51 @@
   justify-content: center !important;
   background: rgba(0,0,0,0.0) !important; /* transparent so map is visible */
   font-family: 'Inter', Arial, sans-serif !important;
+  overflow-y: auto !important;
 }
 
 .region-preview-card {
   position: relative !important;
   width: 96vw !important;
-  max-width: 420px !important;
-  margin: 0 auto 18px auto !important;
+  max-width: 380px !important;
+  margin: 0 auto 24px auto !important;
   background: #ffffff !important;
-  border-radius: 28px 28px 32px 32px !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important;
-  padding: 28px 20px 80px 20px !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+  padding: 32px 24px 24px 24px !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
   z-index: 10 !important;
-  border: 3px solid #000 !important;
+  border: none !important;
   box-sizing: border-box !important;
+  pointer-events: auto !important;
+  max-height: 80vh !important;
+  height: fit-content !important;
+  overflow-y: auto !important;
 }
 .region-preview-close {
   position: absolute !important;
-  top: 22px !important;
-  right: 24px !important;
+  top: 20px !important;
+  right: 20px !important;
   background: none !important;
   border: none !important;
-  font-size: 2.1rem !important;
-  color: #666 !important;
+  font-size: 24px !important;
+  color: #999 !important;
   cursor: pointer !important;
   z-index: 11 !important;
   line-height: 1 !important;
-  padding: 0 !important;
+  padding: 8px !important;
   margin: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.region-preview-close:hover {
+  color: #666 !important;
 }
 .region-preview-title {
   font-size: 1.8rem !important;
@@ -66,19 +80,29 @@
   line-height: 1.4;
 }
 
-.region-preview-locked {
-  color: #e74c3c !important;
+.region-preview-status {
   font-size: 1.1rem !important;
   font-weight: 600 !important;
   margin-bottom: 24px !important;
   padding: 8px 16px !important;
-  background: rgba(231, 76, 60, 0.1) !important;
   border-radius: 20px !important;
-  border: 2px solid #e74c3c !important;
+  border: 2px solid !important;
+}
+
+.region-preview-status.locked {
+  color: #e74c3c !important;
+  background: rgba(231, 76, 60, 0.1) !important;
+  border-color: #e74c3c !important;
+}
+
+.region-preview-status.unlocked {
+  color: #4CAF50 !important;
+  background: rgba(76, 175, 80, 0.1) !important;
+  border-color: #4CAF50 !important;
 }
 .region-preview-get-btn {
   width: 90% !important;
-  margin: 0 auto !important;
+  margin: 24px auto 0 auto !important;
   display: block !important;
   background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
   color: #fff !important;
@@ -87,20 +111,27 @@
   border: none !important;
   border-radius: 12px !important;
   padding: 18px 0 16px 0 !important;
-  position: absolute !important;
-  left: 50% !important;
-  bottom: 24px !important;
-  transform: translateX(-50%) !important;
+  position: relative !important;
   box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3) !important;
   border: 3px solid #000 !important;
   transition: all 0.2s !important;
   cursor: pointer !important;
 }
 
+.region-preview-status.unlocked + .region-preview-get-btn {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32) !important;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
+}
+
 .region-preview-get-btn:hover {
   background: linear-gradient(135deg, #c0392b, #a93226) !important;
-  transform: translateX(-50%) translateY(-2px) !important;
+  transform: translateY(-2px) !important;
   box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4) !important;
+}
+
+.region-preview-status.unlocked + .region-preview-get-btn:hover {
+  background: linear-gradient(135deg, #2E7D32, #1B5E20) !important;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4) !important;
 }
 @media (max-width: 500px) {
   .region-preview-card {
@@ -112,30 +143,56 @@
     padding: 16px 0 14px 0;
   }
 }
-.region-preview-menu-btn {
+.region-preview-back-btn {
   position: absolute;
-  top: 22px;
-  right: 22px;
-  z-index: 1001;
+  top: 18px;
+  left: 18px;
+  background: rgba(255,255,255,0.95);
+  border: none;
+  border-radius: 50%;
   width: 38px;
   height: 38px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s;
+  z-index: 1100;
+  pointer-events: auto !important;
+}
+
+.region-preview-back-btn:hover {
+  background: #f3e6fa;
+}
+
+.region-preview-menu-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: rgba(255,255,255,0.92);
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   cursor: pointer;
+  z-index: 1100;
+  pointer-events: auto !important;
 }
+
 .menu-bar {
-  width: 24px;
+  width: 22px;
   height: 3px;
-  background: #444;
-  margin: 3px 0;
+  background: #8e44ad;
+  margin: 2px 0;
   border-radius: 2px;
-  transition: all 0.2s;
 }
+
 .region-preview-menu-dropdown {
   position: absolute;
   top: 64px;
@@ -149,6 +206,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  pointer-events: auto !important;
 }
 .region-preview-menu-item {
   background: none;
@@ -162,4 +220,133 @@
 }
 .region-preview-menu-item:hover {
   background: #f5f5f5;
+}
+
+/* Artwork marker styles for free regions */
+.artwork-marker {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  pointer-events: auto;
+  z-index: 100;
+  position: relative;
+}
+
+.artwork-marker:hover {
+  transform: scale(1.1);
+}
+
+.artwork-marker .marker-content {
+  background: #4CAF50;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Hide Mapbox pins for free regions */
+.region-preview-overlay .artwork-popup-container .mapboxgl-popup-content {
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+  background: transparent !important;
+}
+
+.region-preview-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 18px;
+  padding-top: 18px;
+}
+
+.region-preview-btn-group .region-preview-get-btn {
+  width: 90% !important;
+  min-width: 0;
+  flex: none;
+  margin: 0 !important;
+  padding: 18px 0 16px 0 !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.13) !important;
+  border: 3px solid #000 !important;
+  transition: all 0.2s !important;
+  display: block !important;
+  text-align: center !important;
+  letter-spacing: 0.01em;
+  margin: 0px auto !important;
+}
+
+.region-preview-btn-group .region-preview-get-btn.direction-btn {
+  background: linear-gradient(135deg, #1976d2, #2196f3) !important;
+  color: #fff !important;
+  border: 3px solid #000 !important;
+ 
+}
+
+.region-preview-btn-group .region-preview-get-btn.back-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  color: #fff !important;
+  border: 3px solid #000 !important;
+}
+
+.location-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.32);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-modal {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 36px 28px 28px 28px;
+  max-width: 95vw;
+  width: 350px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.location-modal h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  color: #1976d2;
+}
+
+.location-modal p {
+  color: #444;
+  font-size: 1.08rem;
+  margin-bottom: 0;
+}
+
+.location-modal .region-preview-get-btn {
+  font-size: 1.1rem !important;
+  padding: 14px 0 12px 0 !important;
+  border-radius: 10px !important;
+  min-width: 120px;
+  margin: 0 !important;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10) !important;
+}
+
+.location-modal .back-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  color: #fff !important;
+  border: 3px solid #000 !important;
 } 

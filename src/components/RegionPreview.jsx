@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import Map, { Source, Layer, Popup } from 'react-map-gl';
+import Map, { Source, Layer, Popup, Marker } from 'react-map-gl';
 import { useNavigate } from 'react-router-dom';
 import EmailMagicLink from './EmailMagicLink';
+import ArtworkPopup from './ArtworkPopup';
+import { streetArtLocations } from '../data/locations';
 import './RegionPreview.css';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -74,13 +76,26 @@ const regionCenters = {
 const RegionPreview = ({ region, onClose }) => {
   const navigate = useNavigate();
   const [popup, setPopup] = useState(null);
+  const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
+  const [routeGeoJson, setRouteGeoJson] = useState(null);
+  const [isFetchingRoute, setIsFetchingRoute] = useState(false);
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+  
   if (!region) return null;
+  
   const regionName = region.title === 'South-East' ? 'South-East' : region.title === 'Nieuw-West' ? 'Nieuw-West' : region.title.charAt(0).toUpperCase() + region.title.slice(1);
   const center = regionCenters[regionName] || { latitude: 52.37, longitude: 4.89 };
-
+  const isUnlocked = region.isFree || false; // Check if region is free
+  
   const handleGetItNow = async () => {
+    // If region is free, go to map with region parameter
+    if (isUnlocked) {
+      navigate(`/map?region=${region.id}`);
+      return;
+    }
+    
     // Go directly to Stripe, bypassing the payment page
     
     // Use hardcoded Stripe payment link for Centre region
@@ -116,19 +131,28 @@ const RegionPreview = ({ region, onClose }) => {
   };
 
   const handleMapClick = (event) => {
+    console.log('Map clicked', { isUnlocked, event });
     const features = event.features || [];
-    console.log('Clicked features:', features);
-    // Find the first feature from the pins layer
     const pinFeature = features.find(f => f.layer && f.layer.id === 'nw-pins-layer');
     if (pinFeature) {
-      setPopup({
-        longitude: pinFeature.geometry.coordinates[0],
-        latitude: pinFeature.geometry.coordinates[1],
-        properties: pinFeature.properties,
+      const longitude = pinFeature.geometry.coordinates[0];
+      const latitude = pinFeature.geometry.coordinates[1];
+      setSelectedArtwork({
+        ...pinFeature.properties,
+        longitude,
+        latitude,
+        isPin: true
       });
-    } else {
       setPopup(null);
+      return;
     }
+    setPopup(null);
+    setSelectedArtwork(null);
+  };
+
+  const handleArtworkClick = (artwork) => {
+    setSelectedArtwork(artwork);
+    setPopup(null);
   };
 
   // Log all pin features and their properties when the map loads the pins source
@@ -147,7 +171,11 @@ const RegionPreview = ({ region, onClose }) => {
 
   return (
     <div className="region-preview-overlay">
-      {/* Hamburger menu */}
+      {/* Back arrow at top left */}
+      <button className="region-preview-back-btn" onClick={onClose} aria-label="Back">
+        ←
+      </button>
+      {/* Hamburger menu at top right */}
       <div className="region-preview-menu-btn" onClick={() => setMenuOpen(m => !m)}>
         <span className="menu-bar" />
         <span className="menu-bar" />
@@ -194,40 +222,140 @@ const RegionPreview = ({ region, onClose }) => {
         >
           <Layer {...pinsLayer} />
         </Source>
-        {popup && (
-          <Popup
-            longitude={popup.longitude}
-            latitude={popup.latitude}
-            closeButton={true}
-            closeOnClick={true}
-            onClose={() => setPopup(null)}
-            anchor="bottom"
-            maxWidth="260px"
-          >
-            <div>
-              {/* Always show Artist field if present (case-insensitive) */}
-              {(() => {
-                const artist = popup.properties.artist || popup.properties.Artist;
-                if (artist) {
-                  return <div><strong>Artist:</strong> {artist}</div>;
-                }
-                return null;
-              })()}
-              {/* Show all properties */}
-              {Object.entries(popup.properties).map(([key, value]) => (
-                <div key={key}><strong>{key}:</strong> {String(value)}</div>
-              ))}
-            </div>
-          </Popup>
+        {routeGeoJson && (
+          <Source id="route" type="geojson" data={routeGeoJson}>
+            <Layer
+              id="route-line"
+              type="line"
+              paint={{
+                'line-color': '#1976d2',
+                'line-width': 5
+              }}
+            />
+          </Source>
         )}
       </Map>
       <div className="region-preview-card">
-        <button className="region-preview-close" onClick={onClose}>×</button>
-        <div className="region-preview-title">{region.title}</div>
-        <div className="region-preview-desc">{region.description}</div>
-        <div className="region-preview-locked">Locked</div>
-        <button className="region-preview-get-btn" onClick={handleGetItNow}>Get it now</button>
+        {console.log('selectedArtwork:', selectedArtwork)}
+        <button className="region-preview-close" onClick={() => setSelectedArtwork(null) || onClose}>×</button>
+        {selectedArtwork ? (
+          <>
+            <div className="region-preview-title">Artwork</div>
+            {(() => {
+              const artistKey = Object.keys(selectedArtwork || {}).find(
+                k => k.trim().toLowerCase() === 'artist'
+              );
+              const artistValue = artistKey ? selectedArtwork[artistKey] : null;
+              console.log('selectedArtwork keys:', Object.keys(selectedArtwork));
+              console.log('artistValue:', artistValue);
+              return artistValue ? (
+                <div className="region-preview-desc"><strong>Artist:</strong> {artistValue}</div>
+              ) : null;
+            })()}
+            {/* Button group for actions */}
+            <div className="region-preview-btn-group">
+              {selectedArtwork.latitude && selectedArtwork.longitude && (
+                <button
+                  className="region-preview-get-btn direction-btn"
+                  disabled={isFetchingRoute}
+                  onClick={() => setShowLocationPrompt(true)}
+                >
+                  {isFetchingRoute ? 'Loading...' : 'Get Directions'}
+                </button>
+              )}
+              <button className="region-preview-get-btn back-btn" onClick={() => setSelectedArtwork(null)}>
+                Back to region
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="region-preview-title">{region.title}</div>
+            <div className="region-preview-desc">{region.description}</div>
+            <div className={`region-preview-status ${isUnlocked ? 'unlocked' : 'locked'}`}>{isUnlocked ? 'Free Access' : 'Locked'}</div>
+            <button className="region-preview-get-btn" onClick={handleGetItNow}>
+              {isUnlocked ? 'Explore now' : 'Get it now'}
+            </button>
+          </>
+        )}
       </div>
+      {/* Location permission modal */}
+      {showLocationPrompt && (
+        <div className="location-modal-overlay">
+          <div className="location-modal">
+            <h3>Allow Location Access</h3>
+            <p>To start your art tour, we need your location to create a route from your current position.</p>
+            <div style={{ display: 'flex', gap: '16px', marginTop: '18px', justifyContent: 'center' }}>
+              <button
+                className="region-preview-get-btn direction-btn"
+                onClick={async () => {
+                  setShowLocationPrompt(false);
+                  setIsFetchingRoute(true);
+                  setRouteGeoJson(null);
+                  if (!navigator.geolocation) {
+                    alert('Geolocation is not supported by your browser');
+                    setIsFetchingRoute(false);
+                    return;
+                  }
+                  navigator.geolocation.getCurrentPosition(
+                    async (pos) => {
+                      try {
+                        const userLat = pos.coords.latitude;
+                        const userLng = pos.coords.longitude;
+                        const origin = [userLng, userLat];
+                        // Gather all pins in the region (in order)
+                        const regionPins = streetArtLocations
+                          .filter(a => a.district === regionName)
+                          .map(a => [a.longitude, a.latitude]);
+                        if (regionPins.length === 0) {
+                          alert('No pins found for this region.');
+                          setIsFetchingRoute(false);
+                          return;
+                        }
+                        // Build coordinates string: origin;pin1;pin2;...;lastPin
+                        const allCoords = [origin, ...regionPins];
+                        const coordsStr = allCoords.map(c => c.join(",")).join(";");
+                        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coordsStr}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        if (data.routes && data.routes[0]) {
+                          setRouteGeoJson({
+                            type: 'Feature',
+                            geometry: data.routes[0].geometry,
+                            properties: {}
+                          });
+                        } else {
+                          alert('No route found.');
+                        }
+                      } catch (err) {
+                        alert('Could not fetch directions.');
+                      }
+                      setIsFetchingRoute(false);
+                    },
+                    (err) => {
+                      console.error('Geolocation error:', err);
+                      let message = 'Could not get your location.';
+                      if (err.code === 1) message = 'Location permission denied. Please allow location access in your browser.';
+                      else if (err.code === 2) message = 'Location unavailable. Try moving to an area with better signal or check your device settings.';
+                      else if (err.code === 3) message = 'Location request timed out. Try again.';
+                      alert(message);
+                      setIsFetchingRoute(false);
+                    }
+                  );
+                }}
+              >
+                Allow
+              </button>
+              <button
+                className="region-preview-get-btn back-btn"
+                onClick={() => setShowLocationPrompt(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

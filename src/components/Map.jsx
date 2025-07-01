@@ -303,8 +303,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     const isUnlocked = unlockedRegions.includes(location.district) || location.district === 'Nieuw-West';
     if (isUnlocked) {
       setSelectedArtwork(location);
-      setNavigationTarget(location);
-      setShowNavigationPopup(true);
+      // Don't immediately show navigation popup, let user explore the artwork first
     } else {
       const region = amsterdamRegions.features.find(
         f => f.properties.name === location.district
@@ -313,6 +312,14 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         setRegionToUnlock(region.properties);
         setShowUnlockPrompt(true);
       }
+    }
+  };
+
+  const handleNavigateFromPopup = () => {
+    if (selectedArtwork) {
+      setNavigationTarget(selectedArtwork);
+      setShowNavigationPopup(true);
+      setSelectedArtwork(null);
     }
   };
 
@@ -814,6 +821,28 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             </Marker>
           );
         })}
+
+        {/* Artwork Popup */}
+        {selectedArtwork && (
+          <Popup
+            longitude={selectedArtwork.longitude}
+            latitude={selectedArtwork.latitude}
+            closeButton={false}
+            closeOnClick={false}
+            anchor="bottom"
+            maxWidth="none"
+            className="artwork-popup-container"
+          >
+            <ArtworkPopup 
+              artwork={selectedArtwork} 
+              onClose={() => setSelectedArtwork(null)}
+              onNavigate={() => {
+                console.log('ArtworkPopup onNavigate called - should use Mapbox');
+                handleInAppNavigate(selectedArtwork);
+              }}
+            />
+          </Popup>
+        )}
 
         {/* User location marker */}
         {userLocation && (
