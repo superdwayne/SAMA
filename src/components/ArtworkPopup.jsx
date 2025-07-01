@@ -2,84 +2,50 @@ import React from 'react';
 import './ArtworkPopup.css';
 
 const ArtworkPopup = ({ artwork, onClose, onNavigate }) => {
-  const getTypeLabel = (type) => {
-    switch(type) {
-      case 'gallery': return 'Gallery';
-      case 'legal-wall': return 'Legal Wall';
-      case 'artwork': return 'Street Art';
-      case 'museum': return 'Museum';
-      default: return 'Point of Interest';
-    }
-  };
-
   return (
-    <div className="artwork-popup">
-      <div className="artwork-popup-header">
-        {artwork.image ? (
-          <img 
-            src={artwork.image} 
-            alt={artwork.title}
-            className="artwork-image"
-          />
-        ) : (
-          <div className="artwork-image-placeholder">
-            🎨
-          </div>
-        )}
-        
-        {onClose && (
-          <button className="popup-close-btn" onClick={onClose}>
-            ×
-          </button>
-        )}
+    <>
+      <div className="popup-back-btn-container">
+        <button className="popup-back-btn" onClick={onClose} aria-label="Back">
+          <span className="back-arrow">←</span>
+        </button>
       </div>
-      
-      <div className="artwork-content">
-        <span className="artwork-type">
-          {getTypeLabel(artwork.type)}
-        </span>
-        
-        <h1 className="artwork-title">{artwork.title}</h1>
-        
-        {artwork.artist && (
-          <p className="artwork-subtitle">by {artwork.artist}</p>
-        )}
-        
-        {artwork.description && (
-          <p className="artwork-description">{artwork.description}</p>
-        )}
-        
-        {(artwork.year || artwork.address || artwork.openingHours) && (
-          <div className="artwork-meta">
+      <div className="artwork-popup-bottom-sheet">
+        <div className="artwork-image-placeholder">
+          <img 
+            src="/images/street-art-placeholder.jpg" 
+            alt="Street Art"
+            className="placeholder-image"
+          />
+        </div>
+        <div className="popup-content-section">
+          <div className="artist-label">{artwork.artist || 'Artist name'}</div>
+          <h1 className="artwork-title">{artwork.title || 'WORK TITLE'}</h1>
+          <p className="artwork-description">
+            {artwork.description || 'This is a short text with information about this location.'}
+          </p>
+          <button className="navigate-btn" onClick={() => onNavigate(artwork)}>
+            Navigate Here
+          </button>
+          <div className="artwork-details">
             {artwork.year && (
-              <p className="artwork-year">Created: {artwork.year}</p>
+              <div className="detail-item">
+                <span className="detail-label">Year:</span> {artwork.year}
+              </div>
             )}
-            
             {artwork.address && (
-              <p className="artwork-address">📍 {artwork.address}</p>
+              <div className="detail-item">
+                <span className="detail-label">Location:</span> {artwork.address}
+              </div>
             )}
-            
             {artwork.openingHours && (
-              <p className="artwork-hours">🕐 {artwork.openingHours}</p>
+              <div className="detail-item">
+                <span className="detail-label">Hours:</span> {artwork.openingHours}
+              </div>
             )}
           </div>
-        )}
-        
-        <div className="popup-buttons">
-          <button 
-            className="navigate-button primary" 
-            onClick={onNavigate}
-            disabled={!onNavigate}
-          >
-            🗺️ Get Directions
-          </button>
-          
-          <button className="navigate-button secondary" onClick={onClose}>
-            ← Back to region
-          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

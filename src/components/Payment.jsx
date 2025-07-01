@@ -10,131 +10,90 @@ const Payment = ({ setUnlockedRegions }) => {
   
   // Get region info
   const regionInfo = {
-    'Centre': { artworks: 25, galleries: 3, walls: 2, artists: 15 },
-    'North': { artworks: 40, galleries: 5, walls: 4, artists: 25 },
-    'South': { artworks: 20, galleries: 2, walls: 1, artists: 12 },
-    'East': { artworks: 30, galleries: 2, walls: 3, artists: 18 },
-    'West': { artworks: 22, galleries: 3, walls: 2, artists: 14 },
-    'South-East': { artworks: 18, galleries: 1, walls: 2, artists: 10 },
-    'Nieuw-West': { artworks: 15, galleries: 1, walls: 3, artists: 8 }
+    'center': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
+    'Centre': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
+    'North': { artworks: 40, galleries: 5, walls: 4, artists: 25, description: 'From shipyards to street art.\nNorth is culture unleashed' },
+    'East': { artworks: 30, galleries: 2, walls: 3, artists: 18, description: 'East is hip, hungry and\ncovered in color' }
   };
   
-  const info = regionInfo[region] || { artworks: 0, galleries: 0, walls: 0, artists: 0 };
+  const info = regionInfo[region] || regionInfo['center'];
+  const displayRegion = region === 'center' || region === 'Centre' ? 'CENTER' : region.toUpperCase();
 
   const handlePayment = async () => {
     setProcessing(true);
     setError(null);
 
-    // Use hardcoded Stripe payment link for Centre region
-    if (region === 'Centre') {
-      window.location.href = 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01';
-      return;
-    }
-    
-    // Fall back to API for other regions
-    try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ region }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create checkout session');
-      }
-
-      const { url } = await response.json();
-      
-      // Redirect to Stripe Checkout
-      window.location.href = url;
-
-    } catch (error) {
-      console.error('Payment error:', error);
-      setError('Payment failed. Please try again.');
-      setProcessing(false);
-    }
+    // Use hardcoded Stripe payment link for all regions
+    window.location.href = 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01';
   };
 
   return (
-    <div className="payment-container">
-      <div className="payment-wrapper">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/')}
-        >
-          ← Back to Map
-        </button>
-
-        <div className="payment-content">
-          <h1>Unlock {region === 'Centre' ? 'Centrum' : region} District</h1>
+    <div className="payment-container-new">
+      {/* Main Content */}
+      <div className="payment-content-new">
+        {/* Header */}
+        <h1 className="unlock-title">UNLOCK<br/>{displayRegion} DISTRICT</h1>
+        
+        {/* Featured Highlight Section */}
+        <div className="featured-highlight">
+          <h2 className="highlight-title">Featured Highlight</h2>
+          <p className="highlight-description">{info.description}</p>
+        </div>
+        
+        {/* What is included Section */}
+        <div className="included-section">
+          <h3 className="included-title">What is included:</h3>
           
-          <div className="purchase-summary">
-            <h2>What's Included</h2>
-            
-            <div className="district-stats">
-              <div className="stat-item">
-                <span className="stat-icon">📍</span>
-                <span className="stat-number">{info.artworks}</span>
-                <span className="stat-label">Artworks</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-icon">🏛️</span>
-                <span className="stat-number">{info.galleries}</span>
-                <span className="stat-label">Galleries</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-icon">🎨</span>
-                <span className="stat-number">{info.walls}</span>
-                <span className="stat-label">Legal Walls</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-icon">👥</span>
-                <span className="stat-number">{info.artists}</span>
-                <span className="stat-label">Artists</span>
-              </div>
+          <div className="stats-list-new">
+            <div className="stat-item-new">
+              <span className="stat-icon-new">📍</span>
+              <span className="stat-text-new">{info.artworks} Artworks</span>
             </div>
-            
-            <ul className="features-list">
-              <li>✓ Full access to {region === 'Centre' ? 'Centrum' : region} district</li>
-              <li>✓ Detailed location information</li>
-              <li>✓ Navigation to all artworks</li>
-              <li>✓ Artist background & stories</li>
-              <li>✓ Opening hours for galleries</li>
-              <li>✓ You'll receive a unique access token via email after payment</li>
-            </ul>
-            
-            <div className="price-box">
-              <span className="price">€4.99</span>
-              <span className="price-note">One-time payment</span>
+            <div className="stat-item-new">
+              <span className="stat-icon-new">🏛️</span>
+              <span className="stat-text-new">{info.galleries} Galleries</span>
             </div>
-          </div>
-
-          {error && (
-            <div className="error-message">
-              {error}
+            <div className="stat-item-new">
+              <span className="stat-icon-new">🎨</span>
+              <span className="stat-text-new">{info.walls} Legal Walls</span>
             </div>
-          )}
-
-          <button
-            onClick={handlePayment}
-            disabled={processing}
-            className="pay-button"
-          >
-            {processing ? 'Redirecting...' : (region === 'Centre' ? '🔓 Unlock Centrum District' : 'Pay €4.99 with Stripe')}
-          </button>
-
-          <p className="payment-info">
-            🔒 Secure payment powered by Stripe
-          </p>
-
-          <div className="payment-footer">
-            <p>By purchasing, you agree to our terms of service</p>
-            <p>Questions? Contact: info@streetartmuseumamsterdam.com</p>
+            <div className="stat-item-new">
+              <span className="stat-icon-new">👥</span>
+              <span className="stat-text-new">{info.artists} Featured Artists</span>
+            </div>
           </div>
         </div>
+        
+        {/* Price Section */}
+        <div className="price-section">
+          <div className="lock-icon">🔒</div>
+          <div className="price-large">€4,99</div>
+          <div className="price-subtitle">One-time payment</div>
+          <div className="price-description">
+            Lifetime access to all<br/>
+            content in this district
+          </div>
+        </div>
+        
+        {/* Error Message */}
+        {error && (
+          <div className="error-message-new">
+            {error}
+          </div>
+        )}
+        
+        {/* Unlock Button */}
+        <button
+          onClick={handlePayment}
+          disabled={processing}
+          className="unlock-button"
+        >
+          {processing ? 'Redirecting...' : `Unlock ${displayRegion} District`}
+        </button>
       </div>
+      
+      {/* Bottom indicator */}
+      <div className="bottom-indicator"></div>
     </div>
   );
 };

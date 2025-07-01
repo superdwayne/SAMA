@@ -1,0 +1,217 @@
+.info-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.info-modal-content {
+  background: #F8C8D4; /* Light pink background */
+  border-radius: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 24px;
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.info-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.modal-logo {
+  width: 60px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.modal-subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.close-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #4338CA;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.close-icon {
+  color: white;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.modal-main-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #0066FF;
+  line-height: 0.9;
+  margin: 0 0 32px 0;
+  letter-spacing: -1px;
+}
+
+.modal-body {
+  color: #333;
+}
+
+.intro-text {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+  font-weight: 400;
+}
+
+.description-text {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+  font-weight: 400;
+}
+
+.closing-text {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 32px 0;
+  font-weight: 600;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(51, 51, 51, 0.2);
+  margin: 32px 0;
+}
+
+.contact-section {
+  margin: 24px 0;
+}
+
+.contact-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0066FF;
+  margin: 0 0 8px 0;
+}
+
+.contact-email {
+  color: #0066FF;
+  text-decoration: underline;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.contact-email:hover {
+  text-decoration: none;
+}
+
+.footer-logos {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.footer-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.af-logo {
+  max-width: 80px;
+}
+
+.eu-logo {
+  max-width: 120px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 430px) {
+  .info-modal-content {
+    padding: 20px;
+  }
+  
+  .modal-main-title {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+  
+  .intro-text,
+  .description-text,
+  .closing-text {
+    font-size: 15px;
+  }
+  
+  .contact-title {
+    font-size: 16px;
+  }
+  
+  .contact-email {
+    font-size: 13px;
+  }
+  
+  .footer-logos {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .footer-logo {
+    height: 32px;
+  }
+}
+
+/* Scrollbar styling for webkit browsers */
+.info-modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.info-modal-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.info-modal-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.info-modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}

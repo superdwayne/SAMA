@@ -11,7 +11,7 @@ const MapLegend = ({ baseUrl = 'https://amsterdamstreetart.vercel.app' }) => {
         
 
         <div className="sama-logo">
-          <img src="/sama-logo-black.svg" alt="SAMA Logo" />
+          <img src="images/sama-logo.png" alt="SAMA Logo" />
         </div>
 
         <div className="legend-main-title">

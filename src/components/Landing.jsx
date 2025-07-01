@@ -1,29 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import RegionPreview from './RegionPreview';
+import InfoModal from './InfoModal';
 import { amsterdamRegions } from '../data/regions';
 import './Landing.css'; 
 
-// Example region data (replace with real data as needed)
+// Updated region data to match your design
 const regions = [
-  { id: 'centre', title: 'Centre', description: 'Historic heart of Amsterdam', latitude: 52.3728, longitude: 4.8936, isFree: false },
-  { id: 'north', title: 'North', description: 'Street art capital with massive murals', latitude: 52.4000, longitude: 4.9000, isFree: false },
-  { id: 'south', title: 'South', description: 'Upscale street art and museums', latitude: 52.3500, longitude: 4.8800, isFree: false },
-  { id: 'east', title: 'East', description: 'Multicultural district with diverse art', latitude: 52.3600, longitude: 4.9400, isFree: true },
-  { id: 'west', title: 'West', description: 'Industrial heritage and urban art', latitude: 52.3800, longitude: 4.8500, isFree: false },
-  { id: 'south-east', title: 'South-East', description: 'Vibrant murals and culture', latitude: 52.3200, longitude: 4.9700, isFree: false },
-  { id: 'nieuw-west', title: 'Nieuw-West', description: 'Emerging street art destination', latitude: 52.3700, longitude: 4.8100, isFree: true },
+  { 
+    id: 'center', 
+    title: 'Center', 
+    description: 'Tourists, tags & tension. The city\'s loudest gallery', 
+    latitude: 52.3728, 
+    longitude: 4.8936, 
+    isFree: false,
+    image: '/images/center.png' // You'll need to add this image
+  },
+  { 
+    id: 'north', 
+    title: 'North', 
+    description: 'From shipyards to street art. North is culture unleashed', 
+    latitude: 52.4000, 
+    longitude: 4.9000, 
+    isFree: false,
+    image: '/images/center.png' // You'll need to add this image
+  },
+  { 
+    id: 'east', 
+    title: 'East', 
+    description: 'East is hip, hungry and covered in color', 
+    latitude: 52.3600, 
+    longitude: 4.9400, 
+    isFree: true,
+    image: '/east-region.jpg' // You'll need to add this image
+  },
+  { 
+    id: 'nieuw-west', 
+    title: 'Nieuw-West', 
+    description: 'Emerging street art destination with fresh perspectives', 
+    latitude: 52.3700, 
+    longitude: 4.8100, 
+    isFree: true,
+    image: '/nieuw-west-region.jpg' // You'll need to add this image
+  },
 ];
 
 function getRegionFeature(region) {
   // Map region id/title to amsterdamRegions feature
   const nameMap = {
-    'centre': 'Centre',
-    'north': 'North',
-    'south': 'South',
+    'center': 'Centre',
+    'north': 'North', 
     'east': 'East',
-    'west': 'West',
-    'south-east': 'South-East',
     'nieuw-west': 'Nieuw-West',
   };
   const regionName = nameMap[region.id];
@@ -32,9 +59,31 @@ function getRegionFeature(region) {
 
 const Landing = () => {
   const [previewRegion, setPreviewRegion] = useState(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [regionFeature, setRegionFeature] = useState(null);
+  
+  // Check for payment success parameter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const paymentSuccess = urlParams.get('payment_success');
+    const activated = urlParams.get('activated');
+    
+    if (paymentSuccess === 'true') {
+      setShowPaymentSuccess(true);
+      // Clean up URL after showing success message
+      window.history.replaceState({}, document.title, '/');
+    }
+    
+    if (activated === 'true') {
+      // User just activated via magic link, show a brief success message
+      setTimeout(() => {
+        navigate('/map');
+      }, 1000);
+    }
+  }, [location.search, navigate]);
 
   // Fix scrolling constraints on mount
   useEffect(() => {
@@ -76,9 +125,15 @@ const Landing = () => {
   }, []);
 
   const handleGetItNow = (region) => {
-    setPreviewRegion(region);
-    setRegionFeature(getRegionFeature(region));
-    navigate(`/region/${region.id}`);
+    if (region.isFree || region.id === 'east' || region.id === 'nieuw-west') {
+      // For free regions, go to the region-specific map
+      navigate(`/map?region=${region.title}`);
+    } else {
+      // For paid regions, show the preview/payment flow
+      setPreviewRegion(region);
+      setRegionFeature(getRegionFeature(region));
+      navigate(`/region/${region.id}`);
+    }
   };
 
   const handleClosePreview = () => {
@@ -103,40 +158,129 @@ const Landing = () => {
   }, [location.pathname]);
 
   return (
-    <div className="landing-mobile-container">
-      <header className="landing-mobile-header">
-        <img src="/sama-logo-black.svg" alt="SAMA Logo" className="landing-mobile-logo" />
-      </header>
-      <div className="landing-mobile-card-list">
-        {regions.map(region => (
-          <div className={`landing-mobile-card ${region.isFree ? 'free-region' : ''}`} key={region.id}>
-            <div className="landing-mobile-card-image">
-              {/* Placeholder image with X */}
-              <svg width="100%" height="100%" viewBox="0 0 300 120">
-                <rect width="300" height="120" fill="#ccc" />
-                <line x1="0" y1="0" x2="300" y2="120" stroke="#aaa" strokeWidth="2" />
-                <line x1="300" y1="0" x2="0" y2="120" stroke="#aaa" strokeWidth="2" />
-              </svg>
-              {region.isFree && (
-                <div className="free-badge">FREE</div>
-              )}
+    <div className="landing-new-container">
+      {/* Payment Success Modal */}
+      {showPaymentSuccess && (
+        <div className="payment-success-overlay">
+          <div className="payment-success-modal">
+            <div className="success-icon">🎉</div>
+            <h2 className="success-title">Payment Successful!</h2>
+            <div className="success-message">
+              <p><strong>Thank you for your purchase!</strong></p>
+              <p>We've sent a magic link to your email address.</p>
+              <p><strong>Check your inbox and click the link to unlock your map access.</strong></p>
             </div>
-            <div className="landing-mobile-card-content">
-              <div className="landing-mobile-card-title">{region.title}</div>
-              <div className="landing-mobile-card-subtitle">{region.description}</div>
+            <div className="success-steps">
+              <div className="step">
+                <span className="step-number">1</span>
+                <span className="step-text">Check your email</span>
+              </div>
+              <div className="step">
+                <span className="step-number">2</span>
+                <span className="step-text">Click the magic link</span>
+              </div>
+              <div className="step">
+                <span className="step-number">3</span>
+                <span className="step-text">Explore street art!</span>
+              </div>
             </div>
             <button 
-              className={`landing-mobile-get-btn ${region.isFree ? 'free-btn' : ''}`} 
-              onClick={() => handleGetItNow(region)}
+              className="close-success-btn"
+              onClick={() => setShowPaymentSuccess(false)}
             >
-              {region.isFree ? 'Explore now' : 'Get it now'}
+              Got it!
             </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Header with logo and title */}
+      <header className="landing-new-header">
+        <div className="header-content">
+          <img src="images/sama-logo.png" alt="SAMA Logo" className="sama-logo" />
+          <div className="header-text">
+            <span className="sama-subtitle">Street Art</span>
+            <span className="sama-subtitle">Museum</span>
+            <span className="sama-subtitle">Amsterdam</span>
+          </div>
+          <button className="info-button" onClick={() => setShowInfoModal(true)}>
+            <span className="info-icon">i</span>
+          </button>
+        </div>
+        
+        <h1 className="main-title">
+          <span className="title-line">STREET</span>
+          <span className="title-line">ART MAP</span>
+          <span className="title-line">AMSTERDAM</span>
+        </h1>
+      </header>
+
+      {/* Region cards */}
+      <div className="region-cards-container">
+        {regions.map(region => (
+          <div className="region-card-new" key={region.id}>
+            <div className="region-card-row">
+              <div className="region-card-text">
+                <h2 className="region-title-new">{region.title}</h2>
+                <p className="region-description-new">{region.description}</p>
+              </div>
+              <div className="region-card-image-action">
+                <div className="region-image-container">
+                  {region.image ? (
+                    <>
+                      <img
+                        src={region.image}
+                        alt={region.title}
+                        className="region-image"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                      />
+                      {region.id === 'center' && (
+                        <img
+                          src="/images/Spray.png"
+                          alt="Yellow spray overlay"
+                          className="yellow-overlay"
+                        />
+                      )}
+                      <button
+                        className={`region-action-btn region-action-btn-overlay ${region.isFree ? 'free-region' : 'paid-region'}`}
+                        onClick={() => handleGetItNow(region)}
+                      >
+                        {region.isFree ? 'Open map' : 'Get it now'}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="image-placeholder">
+                        <span className="placeholder-text">Image Coming Soon</span>
+                      </div>
+                      <button
+                        className={`region-action-btn region-action-btn-overlay ${region.isFree ? 'free-region' : 'paid-region'}`}
+                        onClick={() => handleGetItNow(region)}
+                      >
+                        {region.isFree ? 'Open map' : 'Get it now'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         ))}
       </div>
+
       {previewRegion && regionFeature && (
-        <RegionPreview region={previewRegion} regionFeature={regionFeature} onClose={handleClosePreview} />
+        <RegionPreview 
+          region={previewRegion} 
+          regionFeature={regionFeature} 
+          onClose={handleClosePreview} 
+        />
       )}
+      
+      <InfoModal 
+        isOpen={showInfoModal}
+        onClose={() => setShowInfoModal(false)}
+      />
     </div>
   );
 };

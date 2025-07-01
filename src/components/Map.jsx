@@ -42,8 +42,8 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     latitude: 52.3676,
     longitude: 4.9041,
     zoom: 12,
-    pitch: 45,
-    bearing: -17.6
+    pitch: 0,
+    bearing: 0
   });
   
   const [selectedArtwork, setSelectedArtwork] = useState(null);
@@ -303,7 +303,36 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     const isUnlocked = unlockedRegions.includes(location.district) || location.district === 'Nieuw-West';
     if (isUnlocked) {
       setSelectedArtwork(location);
-      // Don't immediately show navigation popup, let user explore the artwork first
+      
+      // Center map on the selected artwork for better viewing in popup
+      const map = mapRef.current?.getMap?.();
+      const mapContainer = document.querySelector('.map-container');
+      const popupHeightPx = mapContainer ? mapContainer.offsetHeight / 2 : 340; // Use half the map height
+      if (map) {
+        const point = map.project([location.longitude, location.latitude]);
+        const offsetPoint = {
+          x: point.x,
+          y: point.y - popupHeightPx / 2
+        };
+        const newCenter = map.unproject([offsetPoint.x, offsetPoint.y]);
+        setViewport(prev => ({
+          ...prev,
+          latitude: newCenter.lat,
+          longitude: newCenter.lng,
+          zoom: 18,
+          pitch: 0,
+          bearing: 0
+        }));
+      } else {
+        setViewport(prev => ({
+          ...prev,
+          latitude: location.latitude + 0.003,
+          longitude: location.longitude,
+          zoom: 18,
+          pitch: 0,
+          bearing: 0
+        }));
+      }
     } else {
       const region = amsterdamRegions.features.find(
         f => f.properties.name === location.district
@@ -346,7 +375,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
       latitude: userLocation.latitude,
       longitude: userLocation.longitude,
       zoom: 18,
-      pitch: 60,
+      pitch: 0,
       bearing: 0
     }));
     
@@ -361,7 +390,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             latitude: userLocation.latitude,
             longitude: userLocation.longitude,
             zoom: 18,
-            pitch: 60
+            pitch: 0
           }));
         }, 3000);
       },
@@ -382,8 +411,8 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     setViewport(prev => ({
       ...prev,
       zoom: 12,
-      pitch: 45,
-      bearing: -17.6
+      pitch: 0,
+      bearing: 0
     }));
   };
 
@@ -410,8 +439,8 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     setViewport(prev => ({
       ...prev,
       zoom: 12,
-      pitch: 45,
-      bearing: -17.6
+      pitch: 0,
+      bearing: 0
     }));
   };
 
@@ -442,7 +471,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     
     // If we have a pending navigation target, start navigating now
     if (navigationTarget && !isNavigating) {
-      handleInAppNavigate(navigationTarget);
+      handleNavigateToArtwork(navigationTarget);
     }
   };
 
@@ -522,6 +551,28 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
   useEffect(() => {
     if (requestedRegion) {
+      // Find the region in amsterdamRegions to get its coordinates
+      const regionFeature = amsterdamRegions.features.find(
+        f => f.properties.name === requestedRegion
+      );
+      
+      if (regionFeature) {
+        // Calculate center of the region polygon
+        const coordinates = regionFeature.geometry.coordinates[0];
+        const latSum = coordinates.reduce((sum, coord) => sum + coord[1], 0);
+        const lngSum = coordinates.reduce((sum, coord) => sum + coord[0], 0);
+        const centerLat = latSum / coordinates.length;
+        const centerLng = lngSum / coordinates.length;
+        
+        // Center map on the requested region
+        setViewport(prev => ({
+          ...prev,
+          latitude: centerLat,
+          longitude: centerLng,
+          zoom: 14 // Closer zoom for region focus
+        }));
+      }
+      
       // Unlock the region if not already unlocked
       if (setUnlockedRegions && unlockedRegions && !unlockedRegions.includes(requestedRegion)) {
         setUnlockedRegions(prev => {
@@ -531,6 +582,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           return prev;
         });
       }
+      
       // If Nieuw-West, show the Emerging Artists Trail route
       if (requestedRegion === 'Nieuw-West') {
         const emergingRoute = artRoutes.find(r => r.id === 'emerging-artists');
@@ -551,20 +603,74 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     // eslint-disable-next-line
   }, [requestedRegion, allLocations]);
 
+  // Simple navigation handler
+  const handleNavigateToArtwork = async (artwork) => {
+    setSelectedArtwork(null); // Close the popup immediately
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
+      });
+      const coords = position.coords;
+      setUserLocation({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        accuracy: coords.accuracy,
+        timestamp: position.timestamp
+      });
+      // Fetch route from user location to artwork
+      const currentToken = mapboxToken || MAPBOX_TOKEN;
+      const response = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/walking/${coords.longitude},${coords.latitude};${artwork.longitude},${artwork.latitude}?geometries=geojson&steps=true&access_token=${currentToken}`
+      );
+      const data = await response.json();
+      if (data.routes && data.routes.length > 0) {
+        const route = data.routes[0];
+        setNavigationRoute({
+          type: 'Feature',
+          properties: {
+            distance: route.distance,
+            duration: route.duration
+          },
+          geometry: route.geometry
+        });
+        setViewport(prev => ({
+          ...prev,
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          zoom: 18,
+          pitch: 60,
+          bearing: 180,
+          transitionDuration: 1500,
+          transitionInterpolator: typeof window !== 'undefined' && window['mapboxgl'] ? new window.mapboxgl.FlyToInterpolator() : undefined
+        }));
+      }
+    } catch (error) {
+      alert('Location access is required for navigation.');
+    }
+  };
+
   return (
-    <div className={`map-container ${isNavigating ? 'navigating' : ''}`}>
+    <div className={`map-container ${isNavigating ? 'navigating' : ''} ${requestedRegion ? 'region-view' : ''}`}>
+      {/* Custom Mobile Header (only on mobile) */}
+      {requestedRegion && !selectedArtwork && (
+        <div className="custom-mobile-header">
+          <div className="header-left">
+            <img 
+              src="/images/sama-logo.png" 
+              alt="SAMA Logo" 
+              className="sama-logo"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate('/')} 
+            />
+            <div className="sama-header-stack">
+              <span className="region-title">{requestedRegion}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Header */}
-      <MobileHeader 
-        userAccess={userAccess}
-        unlockedRegions={unlockedRegions}
-        onShowMagicLink={() => setShowMagicLinkModal(true)}
-        onShowMapboxSettings={() => setShowMapboxSettings(true)}
-        onLogout={handleLogout}
-        onShowRouteNavigator={() => setShowRouteNavigator(true)}
-        isNavigating={isNavigating}
-        navigationTarget={navigationTarget}
-        onStopNavigation={handleStopNavigation}
-      />
+      {/* Removed <MobileHeader ... /> */}
 
       {/* Magic Link Status Overlay */}
       {magicLinkStatus === 'verifying' && (
@@ -617,9 +723,10 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         />
       )}
 
-      {showWelcome && (
+      {/* Welcome Tooltip */}
+      {/* {showWelcome && (
         <WelcomeTooltip onClose={() => setShowWelcome(false)} />
-      )}
+      )} */}
       
       {showUnlockPrompt && regionToUnlock && (
         <UnlockPrompt 
@@ -645,59 +752,15 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
       )}
 
       {/* Route Navigator */}
-      {showRouteNavigator && (
+      {/* {showRouteNavigator && (
         <RouteNavigator
           unlockedRegions={unlockedRegions}
           onSelectRoute={handleSelectRoute}
           onClose={() => setShowRouteNavigator(false)}
           currentLocation={userLocation}
         />
-      )}
+      )} */}
 
-      {/* Map header with title */}
-      <div className="map-header">
-        <h1 className="map-title">Amsterdam Street Art Map</h1>
-        
-        <div className="header-controls">
-          <button 
-            className="mapbox-settings-button"
-            onClick={() => setShowMapboxSettings(true)}
-            title="Mapbox Token Settings"
-            style={{
-              padding: '8px 12px',
-              marginRight: '12px',
-              backgroundColor: '#f8f9fa',
-              border: '1px solid #dee2e6',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '0.875rem'
-            }}
-          >
-            🗺️ Map Settings
-          </button>
-          
-          {userAccess ? (
-            <div className="user-status">
-              <span className="user-email">{userAccess.email}</span>
-              <span className="access-info">
-                {userAccess.hasPurchased ? 'Premium Access' : 'Free Access'} • 
-                {magicLink.getRemainingDays()} days left
-              </span>
-              <button onClick={handleLogout} className="logout-button">
-                Logout
-              </button>
-            </div>
-          ) : (
-            <button 
-              onClick={() => setShowMagicLinkModal(true)}
-              className="magic-link-button"
-            >
-              📧 Email Me My Magic Link
-            </button>
-          )}
-        </div>
-      </div>
-      
       {/* Navigation controls */}
       {isNavigating && navigationTarget && (
         <div className="navigation-bar">
@@ -758,6 +821,8 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           showUserHeading
         />
         
+        {/* Remove purple overlays (region highlights/fills) */}
+        {/*
         <Source id="regions-unlocked" type="geojson" data={{
           type: 'FeatureCollection',
           features: amsterdamRegions.features.filter(f => 
@@ -765,7 +830,6 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           )
         }}>
         </Source>
-        
         <Source id="regions-locked" type="geojson" data={{
           type: 'FeatureCollection',
           features: amsterdamRegions.features.filter(f => 
@@ -773,22 +837,47 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           )
         }}>
         </Source>
-
-        {/* Enhanced Route Layer */}
-        {navigationRoute && (
-          <EnhancedRouteLayer
-            route={navigationRoute}
-            currentStep={currentNavigationStep}
-            userLocation={userLocation}
-            isNavigating={isNavigating}
-          />
+        {requestedRegion && (
+          <Source id="requested-region" type="geojson" data={{
+            type: 'FeatureCollection',
+            features: amsterdamRegions.features.filter(f => 
+              f.properties.name === requestedRegion
+            )
+          }}>
+            <Layer
+              id="requested-region-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#8e44ad',
+                'fill-opacity': 0.3
+              }}
+            />
+            <Layer
+              id="requested-region-outline"
+              type="line"
+              paint={{
+                'line-color': '#8e44ad',
+                'line-width': 3
+              }}
+            />
+          </Source>
         )}
+        */}
 
         {/* 3D buildings layer */}
         <Layer {...buildingLayer} />
 
-        {/* Show all locations from both local data and Mapbox dataset */}
-        {allLocations.map(location => {
+        {/* Show only Mapbox dataset locations, filtered by region if requested */}
+        {mapboxLocations
+          .filter(location => {
+            // If a specific region is requested, only show pins from that region
+            if (requestedRegion) {
+              return location.district === requestedRegion;
+            }
+            // Otherwise show all pins
+            return true;
+          })
+          .map(location => {
           const isUnlocked = unlockedRegions.includes(location.district);
           const isDestination = navigationTarget?.id === location.id;
           const isRouteStop = activeRoute && routeStops.some(stop => stop.id === location.id);
@@ -804,44 +893,29 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 handleArtworkClick(location);
               }}
             >
-              <div className={`marker ${!isUnlocked ? 'locked' : ''} ${isDestination ? 'destination' : ''} ${isRouteStop ? 'route-stop' : ''}`}>
-                <div className="marker-content">
-                  {isRouteStop ? (
-                    <div className="route-marker" style={{ backgroundColor: activeRoute.color }}>
-                      {routeStopIndex + 1}
-                    </div>
-                  ) : (
-                    location.type === 'gallery' ? '🏛️' : 
-                    location.type === 'legal-wall' ? '🎨' : 
-                    location.type === 'artwork' ? '🖼️' : 
-                    location.type === 'museum' ? '🏛️' : '📍'
-                  )}
-                </div>
+              <div className={`street-art-marker ${!isUnlocked ? 'locked' : ''} ${isDestination ? 'destination' : ''} ${isRouteStop ? 'route-stop' : ''}`}>
+                {isRouteStop ? (
+                  <div className="route-marker" style={{ backgroundColor: activeRoute.color }}>
+                    {routeStopIndex + 1}
+                  </div>
+                ) : (
+                  <div className="marker-dot"></div>
+                )}
               </div>
             </Marker>
           );
         })}
 
-        {/* Artwork Popup */}
+        {/* Artwork Popup - Clean Full Screen Overlay with real Mapbox map */}
         {selectedArtwork && (
-          <Popup
-            longitude={selectedArtwork.longitude}
-            latitude={selectedArtwork.latitude}
-            closeButton={false}
-            closeOnClick={false}
-            anchor="bottom"
-            maxWidth="none"
-            className="artwork-popup-container"
-          >
-            <ArtworkPopup 
-              artwork={selectedArtwork} 
-              onClose={() => setSelectedArtwork(null)}
-              onNavigate={() => {
-                console.log('ArtworkPopup onNavigate called - should use Mapbox');
-                handleInAppNavigate(selectedArtwork);
-              }}
-            />
-          </Popup>
+          <ArtworkPopup 
+            artwork={selectedArtwork} 
+            onClose={() => {
+              setSelectedArtwork(null);
+              setNavigationRoute(null); // Clear route when closing popup
+            }}
+            onNavigate={handleNavigateToArtwork}
+          />
         )}
 
         {/* User location marker */}
@@ -857,49 +931,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           </Marker>
         )}
 
-        <Source
-          id="sama-map-regions"
-          type="vector"
-          url="mapbox://sama-map.3bcb314w"
-        >
-          <Layer
-            id="sama-map-regions-fill"
-            type="fill"
-            source="sama-map-regions"
-            source-layer="tilebox_grenzen-8u5o1t"
-            paint={{
-              'fill-color': '#8e44ad',
-              'fill-opacity': 0.3
-            }}
-          />
-          <Layer
-            id="sama-map-regions-outline"
-            type="line"
-            source="sama-map-regions"
-            source-layer="tilebox_grenzen-8u5o1t"
-            paint={{
-              'line-color': '#8e44ad',
-              'line-width': 2
-            }}
-          />
-          <Layer
-            id="sama-map-regions-labels"
-            type="symbol"
-            source="sama-map-regions"
-            source-layer="tilebox_grenzen-8u5o1t"
-            layout={{
-              'text-field': ['get', 'name'],
-              'text-size': 14,
-              'text-offset': [0, 1.2],
-              'text-anchor': 'top'
-            }}
-            paint={{
-              'text-color': '#8e44ad',
-              'text-halo-color': '#fff',
-              'text-halo-width': 1.5
-            }}
-          />
-        </Source>
+      
 
         <Source
           id="nw-pins"
@@ -919,10 +951,25 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             }}
           />
         </Source>
+
+        {/* Simple route overlay */}
+        {navigationRoute && (
+          <Source id="simple-route" type="geojson" data={navigationRoute}>
+            <Layer
+              id="simple-route-line"
+              type="line"
+              paint={{
+                'line-color': '#1976D2',
+                'line-width': 6,
+                'line-opacity': 0.85
+              }}
+            />
+          </Source>
+        )}
       </Map>
 
       {/* Active Route Panel */}
-      {activeRoute && (
+      {/* {activeRoute && (
         <ActiveRoute
           route={activeRoute}
           userLocation={userLocation}
@@ -930,17 +977,10 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           onEndRoute={handleEndRoute}
           onNextStop={handleNextRouteStop}
         />
-      )}
+      )} */}
 
       {/* Region info panel */}
-      {selectedRegion && !showUnlockPrompt && (
-        <RegionInfo 
-          region={selectedRegion} 
-          onClose={() => setSelectedRegion(null)}
-          isUnlocked={unlockedRegions.includes(selectedRegion.name || selectedRegion.Naam || selectedRegion.name_en)}
-          onUnlock={() => handleUnlockRegion(selectedRegion)}
-        />
-      )}
+      {/* Removed RegionInfo popup for region selection */}
 
       {/* Enhanced Navigation */}
       {enhancedNavigation && (
