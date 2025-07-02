@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     } else {
       console.log('✅ Purchase found, sending magic link');
       // Create a simple magic token with email and timestamp embedded
-      const magicToken = createMagicToken(normalizedEmail, purchaseData.hasPurchased);
+      const magicToken = createMagicToken(normalizedEmail, purchaseData);
       // Create magic link URL
       const magicLinkUrl = `${req.headers.origin || 'https://amsterdamstreetart-byu4ocgn-dpms-projects-8cd1083b.vercel.app'}?magic=${magicToken}`;
       // Send email
@@ -71,7 +71,7 @@ function checkPurchaseHistory(email) {
   const purchasedEmails = {
     'superdwayne@gmail.com': { 
       hasPurchased: true, 
-      regions: ['East', 'West', 'North', 'South', 'Centre'] 
+      regions: ['East', 'West', 'North', 'South', 'Center', 'Nieuw-West']  // Added all regions including Center
     }
     // NO OTHER EMAILS HAVE PURCHASES FOR TESTING
   };
@@ -98,10 +98,11 @@ function checkPurchaseHistory(email) {
 }
 
 // Create magic token with embedded data (no storage needed)
-function createMagicToken(email, hasPurchased) {
+function createMagicToken(email, purchaseData) {
   const data = {
     email,
-    hasPurchased,
+    hasPurchased: purchaseData.hasPurchased,
+    regions: purchaseData.regions || ['East'],
     timestamp: Date.now()
   };
   

@@ -62,6 +62,7 @@ function verifyMagicToken(token) {
     return {
       email: data.email,
       hasPurchased: data.hasPurchased,
+      regions: data.regions || ['East'],
       timestamp: data.timestamp
     };
   } catch (error) {

@@ -59,6 +59,7 @@ export class SimpleMagicLink {
     };
     
     localStorage.setItem(this.accessKey, JSON.stringify(accessData));
+    console.log('✅ Saved access data:', accessData);
   }
 
   // Get current access

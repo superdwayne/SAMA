@@ -196,8 +196,20 @@ const Landing = () => {
     console.log('✅ Added Center access for debugging');
   };
   
+  // Debug function to check current state
+  const debugState = () => {
+    console.log('=== DEBUG STATE ===');
+    console.log('unlockedRegions:', unlockedRegions);
+    console.log('localStorage streetArtAccess:', localStorage.getItem('streetArtAccess'));
+    console.log('localStorage amsterdam_map_access:', localStorage.getItem('amsterdam_map_access'));
+    console.log('magicLink.getCurrentAccess():', magicLink.getCurrentAccess());
+    console.log('magicLink.getUnlockedRegions():', magicLink.getUnlockedRegions());
+    console.log('==================');
+  };
+  
   // Expose for debugging
   window.addCenterAccess = addCenterAccess;
+  window.debugState = debugState;
 
   // Fix scrolling constraints on mount
   useEffect(() => {
@@ -239,11 +251,17 @@ const Landing = () => {
   }, []);
 
   const handleGetItNow = (region) => {
+    console.log('💆 handleGetItNow called for region:', region);
+    console.log('🔓 isRegionUnlocked(region.title):', isRegionUnlocked(region.title));
+    console.log('🎆 unlockedRegions:', unlockedRegions);
+    
     if (region.isFree || region.id === 'east' || region.id === 'nieuw-west' || isRegionUnlocked(region.title)) {
       // For free regions or unlocked regions, go to the region-specific map
+      console.log('✅ Going to map for region:', region.title);
       navigate(`/map?region=${region.title}`);
     } else {
       // For paid regions that aren't unlocked, show the preview/payment flow
+      console.log('💳 Going to payment for region:', region.id);
       setPreviewRegion(region);
       setRegionFeature(getRegionFeature(region));
       navigate(`/region/${region.id}`);
@@ -258,14 +276,27 @@ const Landing = () => {
 
   React.useEffect(() => {
     // Open modal if URL is /region/:id
+    console.log('📏 Checking URL pathname:', location.pathname);
     const match = location.pathname.match(/^\/region\/([\w-]+)/);
+    console.log('🎯 URL match result:', match);
+    
     if (match) {
-      const region = regions.find(r => r.id === match[1]);
+      const regionId = match[1];
+      console.log('🔍 Looking for region with id:', regionId);
+      const region = regions.find(r => r.id === regionId);
+      console.log('🎆 Found region:', region);
+      
       if (region) {
+        console.log('✅ Setting preview region:', region.title);
         setPreviewRegion(region);
-        setRegionFeature(getRegionFeature(region));
+        const feature = getRegionFeature(region);
+        console.log('🗺 Region feature:', feature);
+        setRegionFeature(feature);
+      } else {
+        console.log('❌ No region found for id:', regionId);
       }
     } else {
+      console.log('🏠 Not a region URL, clearing preview');
       setPreviewRegion(null);
       setRegionFeature(null);
     }
