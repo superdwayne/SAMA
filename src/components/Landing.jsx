@@ -16,7 +16,7 @@ const regions = [
     latitude: 52.3728, 
     longitude: 4.8936, 
     isFree: false,
-    image: '/images/center.png' // You'll need to add this image
+    image: '/images/center.png'
   },
   { 
     id: 'north', 
@@ -25,7 +25,7 @@ const regions = [
     latitude: 52.4000, 
     longitude: 4.9000, 
     isFree: false,
-    image: '/images/center.png' // You'll need to add this image
+    image: '/images/center.png'
   },
   { 
     id: 'east', 
@@ -50,7 +50,7 @@ const regions = [
 function getRegionFeature(region) {
   // Map region id/title to amsterdamRegions feature
   const nameMap = {
-    'center': 'Centre',
+    'center': 'Center',   // Updated to use Center
     'north': 'North', 
     'east': 'East',
     'nieuw-west': 'Nieuw-West',
@@ -102,7 +102,7 @@ const Landing = () => {
           if (Date.now() <= data.expiresAt) {
             // Map the region name to our regions array
             const regionMap = {
-              'Centre': 'Center',
+              'Centre': 'Center',  // Map Stripe "Centre" to "Center"
               'Center': 'Center', 
               'North': 'North',
               'East': 'East',
@@ -182,6 +182,22 @@ const Landing = () => {
   const isRegionUnlocked = (regionTitle) => {
     return unlockedRegions.includes(regionTitle);
   };
+  
+  // Debug function to manually add Center access (temporary)
+  const addCenterAccess = () => {
+    const accessData = {
+      email: 'superdwayne@gmail.com',
+      region: 'Center',
+      accessToken: 'CEN-DEBUG-' + Date.now(),
+      expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000)
+    };
+    localStorage.setItem('streetArtAccess', JSON.stringify(accessData));
+    setUnlockedRegions(prev => [...new Set([...prev, 'Center'])]);
+    console.log('✅ Added Center access for debugging');
+  };
+  
+  // Expose for debugging
+  window.addCenterAccess = addCenterAccess;
 
   // Fix scrolling constraints on mount
   useEffect(() => {

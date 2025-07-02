@@ -159,7 +159,7 @@ module.exports = async (req, res) => {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const customerEmail = session.customer_details?.email;
-    const region = session.metadata?.region || 'Centre';
+    const region = session.metadata?.region || 'Center';
     
     console.log('📧 Email:', customerEmail);
     console.log('🗺️ Region:', region);

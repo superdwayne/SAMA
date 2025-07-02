@@ -11,13 +11,13 @@ const Payment = ({ setUnlockedRegions }) => {
   // Get region info
   const regionInfo = {
     'center': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
-    'Centre': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
+    'Center': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
     'North': { artworks: 40, galleries: 5, walls: 4, artists: 25, description: 'From shipyards to street art.\nNorth is culture unleashed' },
     'East': { artworks: 30, galleries: 2, walls: 3, artists: 18, description: 'East is hip, hungry and\ncovered in color' }
   };
   
   const info = regionInfo[region] || regionInfo['center'];
-  const displayRegion = region === 'center' || region === 'Centre' ? 'CENTER' : region.toUpperCase();
+  const displayRegion = region === 'center' || region === 'Center' ? 'CENTER' : region.toUpperCase();
 
   const handlePayment = async () => {
     setProcessing(true);
