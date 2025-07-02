@@ -22,7 +22,7 @@ import { artRoutes, getRouteLocations } from '../data/routes';
 import { getTokenData, getRemainingDays } from '../utils/auth';
 import { mapboxTokenManager } from '../utils/mapboxAuth';
 import MapboxTokenSettings from './MapboxTokenSettings';
-import { magicLink } from '../utils/magicLinkUtils';
+import { magicLink } from '../utils/magic-links';
 import EmailMagicLink from './EmailMagicLink';
 import NeighborhoodOverlay from './NeighborhoodOverlay';
 import { navigationService } from '../utils/navigation';
