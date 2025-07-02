@@ -53,9 +53,9 @@ function verifyMagicToken(token) {
     const payload = Buffer.from(token, 'base64').toString('utf8');
     const data = JSON.parse(payload);
     
-    // Check if token is expired (10 minutes)
-    const tenMinutes = 10 * 60 * 1000;
-    if (Date.now() - data.timestamp > tenMinutes) {
+    // Check if token is expired (30 minutes instead of 10)
+    const thirtyMinutes = 30 * 60 * 1000;
+    if (Date.now() - data.timestamp > thirtyMinutes) {
       return null; // Expired
     }
     

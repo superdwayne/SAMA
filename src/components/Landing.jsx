@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import RegionPreview from './RegionPreview';
 import InfoModal from './InfoModal';
+import EmailMagicLink from './EmailMagicLink';
 import { amsterdamRegions } from '../data/regions';
+import { magicLink } from '../utils/magic-links';
 import './Landing.css'; 
 
 // Updated region data to match your design
@@ -61,15 +63,17 @@ const Landing = () => {
   const [previewRegion, setPreviewRegion] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [regionFeature, setRegionFeature] = useState(null);
   
-  // Check for payment success parameter
+  // Check for payment success parameter and magic links
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const paymentSuccess = urlParams.get('payment_success');
     const activated = urlParams.get('activated');
+    const magicToken = urlParams.get('magic');
     
     if (paymentSuccess === 'true') {
       setShowPaymentSuccess(true);
@@ -83,7 +87,40 @@ const Landing = () => {
         navigate('/map');
       }, 1000);
     }
+    
+    // Handle magic links from emails
+    if (magicToken) {
+      console.log('🔗 Magic link detected, verifying...');
+      handleMagicLink(magicToken);
+    }
   }, [location.search, navigate]);
+  
+  // Handle magic link verification
+  const handleMagicLink = async (token) => {
+    try {
+      const result = await magicLink.verifyMagicToken(token);
+      
+      if (result.success) {
+        console.log('✅ Magic link verified successfully');
+        // Clean URL and redirect to map
+        const url = new URL(window.location);
+        url.searchParams.delete('magic');
+        window.history.replaceState({}, document.title, url.toString());
+        
+        // Show success message and redirect
+        setTimeout(() => {
+          navigate('/map?activated=true');
+        }, 1000);
+      } else {
+        console.error('❌ Magic link verification failed:', result.error);
+        // Could show an error modal here
+        alert('Magic link verification failed: ' + result.error);
+      }
+    } catch (error) {
+      console.error('❌ Error verifying magic link:', error);
+      alert('Error verifying magic link. Please try again.');
+    }
+  };
 
   // Fix scrolling constraints on mount
   useEffect(() => {
@@ -205,9 +242,18 @@ const Landing = () => {
               <span className="sama-subtitle">Amsterdam</span>
             </div>
           </div>
-          <button className="info-button" onClick={() => setShowInfoModal(true)}>
-            <span className="info-icon">i</span>
-          </button>
+          <div className="header-right">
+            <button 
+              className="magic-link-button"
+              onClick={() => setShowMagicLinkModal(true)}
+              title="Already a customer? Get instant access"
+            >
+              🔗 Magic Link
+            </button>
+            <button className="info-button" onClick={() => setShowInfoModal(true)}>
+              <span className="info-icon">i</span>
+            </button>
+          </div>
         </div>
         
         <h1 className="main-title">
@@ -291,6 +337,16 @@ const Landing = () => {
         isOpen={showInfoModal}
         onClose={() => setShowInfoModal(false)}
       />
+      
+      {showMagicLinkModal && (
+        <EmailMagicLink 
+          onSuccess={() => {
+            setShowMagicLinkModal(false);
+            // Could show a success message here
+          }}
+          onClose={() => setShowMagicLinkModal(false)}
+        />
+      )}
     </div>
   );
 };

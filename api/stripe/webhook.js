@@ -41,7 +41,7 @@ async function sendMagicLinkEmail(email, accessToken, region, baseUrl) {
     to: email,
     from: process.env.SENDER_EMAIL || 'admin@creativetechnologists.nl',
     subject: `🎨 Activate Your Amsterdam Street Art Map Access - ${region} District`,
-    text: `Thank you for your purchase!\n\nClick the link below to activate your access to the ${region} district:\n${magicLink}\n\nThis link is valid for 10 minutes and can only be used once.\n\nBest regards,\nAmsterdam Street Art Map Team`,
+    text: `Thank you for your purchase!\n\nClick the link below to activate your access to the ${region} district:\n${magicLink}\n\nThis link is valid for 30 minutes and can only be used once.\n\nBest regards,\nAmsterdam Street Art Map Team`,
     html: `<!DOCTYPE html><html><head><style>
       body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; }
       .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -69,7 +69,7 @@ async function sendMagicLinkEmail(email, accessToken, region, baseUrl) {
           <div class="security-note">
             <p><strong>🔒 Security Notice:</strong></p>
             <ul>
-              <li>This link expires in <strong>10 minutes</strong></li>
+              <li>This link expires in <strong>30 minutes</strong></li>
               <li>Can only be used <strong>once</strong></li>
               <li>Only works with your email address</li>
               <li>Your access will be valid for <strong>30 days</strong> after activation</li>
