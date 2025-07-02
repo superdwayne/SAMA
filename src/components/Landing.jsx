@@ -64,11 +64,62 @@ const Landing = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
+  const [unlockedRegions, setUnlockedRegions] = useState(['East', 'Nieuw-West']); // Default free regions
   const navigate = useNavigate();
   const location = useLocation();
   const [regionFeature, setRegionFeature] = useState(null);
   
-  // Check for payment success parameter and magic links
+  // Check for existing access on component load
+  useEffect(() => {
+    const checkExistingAccess = () => {
+      // Check magic link access
+      const magicAccess = magicLink.getCurrentAccess();
+      if (magicAccess) {
+        const regions = magicLink.getUnlockedRegions();
+        setUnlockedRegions(regions);
+        return;
+      }
+      
+      // Check token-based access
+      const tokenData = localStorage.getItem('streetArtMapTokenData');
+      if (tokenData) {
+        try {
+          const data = JSON.parse(tokenData);
+          if (Date.now() <= data.expiresAt) {
+            setUnlockedRegions(data.regions || ['East', 'Nieuw-West']);
+            return;
+          }
+        } catch (e) {
+          console.error('Error reading token data:', e);
+        }
+      }
+      
+      // Check street art access
+      const streetArtAccess = localStorage.getItem('streetArtAccess');
+      if (streetArtAccess) {
+        try {
+          const data = JSON.parse(streetArtAccess);
+          if (Date.now() <= data.expiresAt) {
+            // Map the region name to our regions array
+            const regionMap = {
+              'Centre': 'Center',
+              'Center': 'Center', 
+              'North': 'North',
+              'East': 'East',
+              'Nieuw-West': 'Nieuw-West'
+            };
+            const mappedRegion = regionMap[data.region] || data.region;
+            setUnlockedRegions(prev => [...new Set([...prev, mappedRegion])]);
+            return;
+          }
+        } catch (e) {
+          console.error('Error reading street art access:', e);
+        }
+      }
+    };
+    
+    checkExistingAccess();
+  }, []);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const paymentSuccess = urlParams.get('payment_success');
@@ -102,6 +153,11 @@ const Landing = () => {
       
       if (result.success) {
         console.log('✅ Magic link verified successfully');
+        
+        // Update unlocked regions based on magic link result
+        const newRegions = magicLink.getUnlockedRegions();
+        setUnlockedRegions(newRegions);
+        
         // Clean URL and redirect to map
         const url = new URL(window.location);
         url.searchParams.delete('magic');
@@ -120,6 +176,11 @@ const Landing = () => {
       console.error('❌ Error verifying magic link:', error);
       alert('Error verifying magic link. Please try again.');
     }
+  };
+  
+  // Helper function to check if a region is unlocked
+  const isRegionUnlocked = (regionTitle) => {
+    return unlockedRegions.includes(regionTitle);
   };
 
   // Fix scrolling constraints on mount
@@ -162,11 +223,11 @@ const Landing = () => {
   }, []);
 
   const handleGetItNow = (region) => {
-    if (region.isFree || region.id === 'east' || region.id === 'nieuw-west') {
-      // For free regions, go to the region-specific map
+    if (region.isFree || region.id === 'east' || region.id === 'nieuw-west' || isRegionUnlocked(region.title)) {
+      // For free regions or unlocked regions, go to the region-specific map
       navigate(`/map?region=${region.title}`);
     } else {
-      // For paid regions, show the preview/payment flow
+      // For paid regions that aren't unlocked, show the preview/payment flow
       setPreviewRegion(region);
       setRegionFeature(getRegionFeature(region));
       navigate(`/region/${region.id}`);
@@ -291,10 +352,10 @@ const Landing = () => {
                         />
                       )}
                       <button
-                        className={`region-action-btn region-action-btn-overlay${region.isFree ? ' open-map-btn free-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
-                        {region.isFree ? 'Open map' : 'Get it now'}
+                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
                       </button>
                     </>
                   ) : (
@@ -303,10 +364,10 @@ const Landing = () => {
                         <span className="placeholder-text">Image Coming Soon</span>
                       </div>
                       <button
-                        className={`region-action-btn region-action-btn-overlay${region.isFree ? ' open-map-btn free-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
-                        {region.isFree ? 'Open map' : 'Get it now'}
+                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
                       </button>
                     </>
                   )}
@@ -314,10 +375,10 @@ const Landing = () => {
               </div>
             </div>
             {/* Lock/Unlock icon at bottom left */}
-            <div className={`region-lock-badge${region.id === 'nieuw-west' ? ' unlocked' : ''}`}>
+            <div className={`region-lock-badge${isRegionUnlocked(region.title) ? ' unlocked' : ''}`}>
               <img
-                src={region.id === 'nieuw-west' ? '/images/unlocked.png' : '/images/locked.png'}
-                alt={region.id === 'nieuw-west' ? 'Unlocked' : 'Locked'}
+                src={isRegionUnlocked(region.title) ? '/images/unlocked.png' : '/images/locked.png'}
+                alt={isRegionUnlocked(region.title) ? 'Unlocked' : 'Locked'}
                 className="region-lock-icon"
               />
             </div>
