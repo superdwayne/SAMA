@@ -8,5 +8,13 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/webhook.js": {
+      "memory": 128,
+      "maxDuration": 10,
+      "runtime": "nodejs18.x",
+      "bodyParser": false
+    }
+  }
 }
