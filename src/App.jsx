@@ -16,7 +16,7 @@ import './App.css';
 import './components/RegionPreview.css'; // Force load RegionPreview styles
 
 function App() {
-  const [unlockedRegions, setUnlockedRegions] = useState(['East']); // East is always free
+  const [unlockedRegions, setUnlockedRegions] = useState([]); // Start with no regions unlocked
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

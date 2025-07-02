@@ -25,7 +25,8 @@ export default async function handler(req, res) {
     // Determine regions based on purchase history
     let regions = [];
     if (tokenData.hasPurchased) {
-      regions = ['North', 'South', 'West', 'Nieuw-West'];
+      // Only unlock the specific regions purchased, not all regions
+      regions = tokenData.regions || [];
     }
 
     res.status(200).json({
@@ -53,9 +54,9 @@ function verifyMagicToken(token) {
     const payload = Buffer.from(token, 'base64').toString('utf8');
     const data = JSON.parse(payload);
     
-    // Check if token is expired (30 minutes instead of 10)
-    const thirtyMinutes = 30 * 60 * 1000;
-    if (Date.now() - data.timestamp > thirtyMinutes) {
+    // Check if token is expired (10 minutes to match email)
+    const tenMinutes = 10 * 60 * 1000;
+    if (Date.now() - data.timestamp > tenMinutes) {
       return null; // Expired
     }
     

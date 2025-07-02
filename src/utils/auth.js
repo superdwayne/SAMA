@@ -82,7 +82,7 @@ export const validateAccessToken = async (token) => {
         data: {
           token,
           expiresAt: Date.now() + (365 * 24 * 60 * 60 * 1000), // 1 year
-          regions: ['East', 'South', 'North', 'East', 'West', 'Nieuw-West'], // Full access for demo
+          regions: [], // No access for demo tokens - must use magic links
         }
       };
     }
@@ -131,12 +131,12 @@ export const getUserEmail = () => {
 export const getUnlockedRegions = () => {
   const regions = localStorage.getItem('unlockedRegions');
   if (!regions) {
-    return ['East']; // East is always free
+    return []; // No regions unlocked by default
   }
   try {
     return JSON.parse(regions);
   } catch {
-    return ['East'];
+    return [];
   }
 };
 

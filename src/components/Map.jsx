@@ -77,6 +77,11 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   const mapRef = useRef();
   const remainingDays = getRemainingDays();
 
+  // Debug: Log current unlocked regions
+  useEffect(() => {
+    console.log('🔓 Current unlocked regions:', unlockedRegions);
+  }, [unlockedRegions]);
+
   // Initialize custom token if available on mount
   useEffect(() => {
     const customToken = mapboxTokenManager.getCustomToken();
@@ -99,8 +104,14 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           
           if (result.success) {
             setMagicLinkStatus('success');
-            setUserAccess(magicLink.getCurrentAccess());
-            setUnlockedRegions(magicLink.getUnlockedRegions());
+            const newAccess = magicLink.getCurrentAccess();
+            const newUnlockedRegions = magicLink.getUnlockedRegions();
+            console.log('🎉 Magic link success!', { 
+              access: newAccess, 
+              unlockedRegions: newUnlockedRegions 
+            });
+            setUserAccess(newAccess);
+            setUnlockedRegions(newUnlockedRegions);
             
             // Show success message briefly
             setTimeout(() => {
@@ -149,17 +160,17 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     loadMapboxData();
   }, []);
 
-  // Always unlock Nieuw-West on mount
-  useEffect(() => {
-    if (setUnlockedRegions && unlockedRegions && !unlockedRegions.includes('Nieuw-West')) {
-      setUnlockedRegions(prev => {
-        if (!prev.includes('Nieuw-West')) {
-          return [...prev, 'Nieuw-West'];
-        }
-        return prev;
-      });
-    }
-  }, []);
+  // Remove auto-unlock - only unlock purchased regions
+  // useEffect(() => {
+  //   if (setUnlockedRegions && unlockedRegions && !unlockedRegions.includes('Nieuw-West')) {
+  //     setUnlockedRegions(prev => {
+  //       if (!prev.includes('Nieuw-West')) {
+  //         return [...prev, 'Nieuw-West'];
+  //       }
+  //       return prev;
+  //     });
+  //   }
+  // }, []);
 
   // Enhanced location permission handling - only initialize, don't request permission
   useEffect(() => {
@@ -229,8 +240,14 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   // Handle magic link success
   const handleMagicLinkSuccess = () => {
     const access = magicLink.getCurrentAccess();
+    const newUnlockedRegions = magicLink.getUnlockedRegions();
+    console.log('🔓 Magic link success - updating regions:', { 
+      access, 
+      newUnlockedRegions,
+      currentUnlocked: unlockedRegions 
+    });
     setUserAccess(access);
-    setUnlockedRegions(magicLink.getUnlockedRegions());
+    setUnlockedRegions(newUnlockedRegions);
     setShowMagicLinkModal(false);
   };
 
@@ -238,7 +255,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   const handleLogout = () => {
     magicLink.clearAccess();
     setUserAccess(null);
-    setUnlockedRegions(['East']); // Reset to free region only
+    setUnlockedRegions([]); // Reset to no regions - everything locked
   };
 
   // Fetch route from Mapbox Directions API
@@ -327,14 +344,15 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
       }));
     }
 
-    if (location.district === 'Nieuw-West' && setUnlockedRegions && !unlockedRegions.includes('Nieuw-West')) {
-      setUnlockedRegions(prev => {
-        if (!prev.includes('Nieuw-West')) {
-          return [...prev, 'Nieuw-West'];
-        }
-        return prev;
-      });
-    }
+    // Remove auto-unlock - only show purchased regions
+    // if (location.district === 'Nieuw-West' && setUnlockedRegions && !unlockedRegions.includes('Nieuw-West')) {
+    //   setUnlockedRegions(prev => {
+    //     if (!prev.includes('Nieuw-West')) {
+    //       return [...prev, 'Nieuw-West'];
+    //     }
+    //     return prev;
+    //   });
+    // }
   };
 
   const handleNavigateFromPopup = () => {
@@ -893,15 +911,25 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           {/* 3D buildings layer */}
           <Layer {...buildingLayer} />
 
-          {/* Show only Mapbox dataset locations, filtered by region if requested */}
+          {/* Show only Mapbox dataset locations, filtered by unlocked regions */}
           {mapboxLocations
             .filter(location => {
               // If a specific region is requested, only show pins from that region
               if (requestedRegion) {
                 return location.district === requestedRegion;
               }
-              // Otherwise show all pins
-              return true;
+              // Otherwise, only show pins from unlocked regions
+              const isUnlocked = unlockedRegions.some(unlockedRegion => {
+                // Case-insensitive matching for region names
+                const normalizedUnlocked = unlockedRegion.toLowerCase().replace(/[^a-z]/g, '');
+                const normalizedDistrict = location.district.toLowerCase().replace(/[^a-z]/g, '');
+                return normalizedUnlocked === normalizedDistrict || 
+                       // Also try American vs British spelling
+                       (normalizedUnlocked === 'center' && normalizedDistrict === 'centre') ||
+                       (normalizedUnlocked === 'centre' && normalizedDistrict === 'center');
+              });
+              console.log(`📍 Pin "${location.title}" in district "${location.district}": ${isUnlocked ? 'SHOW' : 'HIDE'} (unlocked: ${unlockedRegions.join(', ')})`);
+              return isUnlocked;
             })
             .map(location => {
             const isUnlocked = unlockedRegions.includes(location.district);

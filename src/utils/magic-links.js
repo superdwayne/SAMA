@@ -86,15 +86,10 @@ export class SimpleMagicLink {
   // Get unlocked regions
   getUnlockedRegions() {
     const access = this.getCurrentAccess();
-    if (!access) return ['East']; // East is always free
+    if (!access) return []; // No free regions - everything locked by default
     
-    // If user has purchased, give them all regions
-    if (access.hasPurchased) {
-      return ['East', 'North', 'South', 'West', 'Nieuw-West'];
-    }
-    
-    // Otherwise, just East + any specific regions they have
-    return ['East', ...access.regions];
+    // Return only the specific regions they have access to
+    return access.regions || [];
   }
 
   // Get user email
@@ -117,6 +112,10 @@ export class SimpleMagicLink {
   // Clear access
   clearAccess() {
     localStorage.removeItem(this.accessKey);
+    // Also clear old auth system data
+    localStorage.removeItem('streetArtMapTokenData');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('unlockedRegions');
   }
 
   // Check if user has access

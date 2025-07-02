@@ -7,7 +7,7 @@ import { amsterdamRegions } from '../data/regions';
 import { magicLink } from '../utils/magic-links';
 import './Landing.css'; 
 
-// Updated region data to match your design
+// Updated region data - all regions now require purchase
 const regions = [
   { 
     id: 'center', 
@@ -33,7 +33,7 @@ const regions = [
     description: 'East is hip, hungry and covered in color', 
     latitude: 52.3600, 
     longitude: 4.9400, 
-    isFree: true,
+    isFree: false,  // No longer free
     image: '/images/center.png' 
   },
   { 
@@ -42,7 +42,7 @@ const regions = [
     description: 'Emerging street art destination with fresh perspectives', 
     latitude: 52.3700, 
     longitude: 4.8100, 
-    isFree: true,
+    isFree: false,  // No longer free
     image: '/images/center.png' 
   },
 ];
@@ -72,7 +72,7 @@ const Landing = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
-  const [unlockedRegions, setUnlockedRegions] = useState(['East', 'Nieuw-West']); // Default free regions
+  const [unlockedRegions, setUnlockedRegions] = useState([]); // Start with all regions locked
   const navigate = useNavigate();
   const location = useLocation();
   const [regionFeature, setRegionFeature] = useState(null);
@@ -99,7 +99,7 @@ const Landing = () => {
           const data = JSON.parse(tokenData);
           if (Date.now() <= data.expiresAt) {
             console.log('✅ Found token-based access:', data);
-            const regions = data.regions || ['East', 'Nieuw-West'];
+            const regions = data.regions || [];  // No default regions
             console.log('🎆 Token unlocked regions:', regions);
             setUnlockedRegions(regions);
             return;
@@ -142,7 +142,7 @@ const Landing = () => {
         }
       }
       
-      console.log('🎆 No access found, using default regions: ["East", "Nieuw-West"]');
+      console.log('🎆 No access found, all regions locked');
     };
     
     checkExistingAccess();
@@ -289,12 +289,12 @@ const Landing = () => {
     console.log('🔓 isRegionUnlocked(region.title):', isRegionUnlocked(region.title));
     console.log('🎆 unlockedRegions:', unlockedRegions);
     
-    if (region.isFree || region.id === 'east' || region.id === 'nieuw-west' || isRegionUnlocked(region.title)) {
-      // For free regions or unlocked regions, go to the region-specific map
+    if (isRegionUnlocked(region.title)) {
+      // For unlocked regions, go to the region-specific map
       console.log('✅ Going to map for region:', region.title);
       navigate(`/map?region=${region.title}`);
     } else {
-      // For paid regions that aren't unlocked, show the preview/payment flow
+      // For locked regions, show the preview/payment flow
       console.log('💳 Going to payment for region:', region.id);
       setPreviewRegion(region);
       setRegionFeature(getRegionFeature(region));
@@ -433,10 +433,10 @@ const Landing = () => {
                         />
                       )}
                       <button
-                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${isRegionUnlocked(region.title) ? ' open-map-btn unlocked-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
-                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
+                        {isRegionUnlocked(region.title) ? 'Open map' : 'Get it now'}
                       </button>
                     </>
                   ) : (
@@ -445,10 +445,10 @@ const Landing = () => {
                         <span className="placeholder-text">Image Coming Soon</span>
                       </div>
                       <button
-                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${isRegionUnlocked(region.title) ? ' open-map-btn unlocked-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
-                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
+                        {isRegionUnlocked(region.title) ? 'Open map' : 'Get it now'}
                       </button>
                     </>
                   )}

@@ -71,7 +71,7 @@ function checkPurchaseHistory(email) {
   const purchasedEmails = {
     'superdwayne@gmail.com': { 
       hasPurchased: true, 
-      regions: ['East', 'West', 'North', 'South', 'Center', 'Nieuw-West']  // Added all regions including Center
+      regions: ['Center']  // Only Center purchased for testing
     }
     // NO OTHER EMAILS HAVE PURCHASES FOR TESTING
   };
