@@ -27,6 +27,34 @@
   pointer-events: none; /* Allow map interaction */
 }
 
+/* Image loading styles */
+.image-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border-radius: 12px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e3e3e3;
+  border-top: 3px solid #5B2EFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .popup-back-btn-container {
   position: fixed;
   top: 18px;
@@ -177,32 +205,32 @@
 }
 
 .artist-label {
-  color: #4285F4; /* Blue color exactly like your design */
-  font-size: 14px;
-  font-weight: 400;
+  color: #3416D8;
+  font-size: 18px;
+  font-weight: 900;
   margin: 0;
   text-transform: none;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'PPNeueMachina-PlainUltrabold', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
 .artwork-title {
-  color: #000000; /* Black color exactly like your design */
-  font-size: 24px;
-  font-weight: 900; /* Extra bold like your design */
+  color: #3416D8;
+  font-size: 36px;
+  font-weight: 900;
   margin: 0 0 8px 0;
   line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'PPNeueMachina-PlainUltrabold', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
 .artwork-description {
-  color: #000000; /* Black text like your design */
-  font-size: 14px;
+  color: #000000;
+  font-size: 18px;
   font-weight: 400;
   margin: 0 0 16px 0;
   line-height: 1.4;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'PPNeueMachina-InktrapRegular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
 /* Additional artwork details */
@@ -246,9 +274,7 @@
     min-height: 220px; /* Slightly taller for additional details */
   }
   
-  .artwork-title {
-    font-size: 22px;
-  }
+
   
   .artwork-description {
     font-size: 14px;
@@ -329,4 +355,18 @@
 
 .artwork-popup-bottom-sheet .artwork-image-placeholder {
   position: relative;
+}
+
+@font-face {
+  font-family: 'PPNeueMachina-PlainUltrabold';
+  src: url('/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PPNeueMachina-InktrapRegular';
+  src: url('/fonts/PPNeueMachina-InktrapRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
 }

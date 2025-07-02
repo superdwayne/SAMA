@@ -21,11 +21,19 @@ export const fetchMapboxDataset = async () => {
     const locations = data.features.map((feature, index) => {
       const coords = feature.geometry.coordinates;
       const props = feature.properties;
+      
+      // Debug: log the first few features to see available properties
+      if (index < 3) {
+        console.log(`🔍 Feature ${index} properties:`, props);
+      }
+      
       return {
         id: feature.id || `mapbox-${index}`,
-        title: props.title || props.name || 'Untitled Location',
+        title: props.title || props.Title || 'Untitled Location',
         artist: props.artist || props.Artist || 'Unknown Artist',
-        description: props.description || '',
+        description: props.description || props.des || '',
+        des: props.des || props.description || '',
+        image_url: props.image_url || '',
         type: props.type || 'artwork',
         district: props.district || props.Region || 'Centre',
         latitude: coords[1],

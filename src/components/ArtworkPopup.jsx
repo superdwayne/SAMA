@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ArtworkPopup.css';
 
 const ArtworkPopup = ({ artwork, onClose, onNavigate }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
+  // Use image_url from Mapbox dataset, fallback to placeholder
+  const imageSource = artwork.image_url && !imageError 
+    ? artwork.image_url 
+    : '/images/street-art-placeholder.jpg';
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoading(false);
+  };
+
   return (
     <>
       <div className="popup-back-btn-container">
@@ -11,17 +28,25 @@ const ArtworkPopup = ({ artwork, onClose, onNavigate }) => {
       </div>
       <div className="artwork-popup-bottom-sheet">
         <div className="artwork-image-placeholder">
+          {imageLoading && artwork.image_url && (
+            <div className="image-loading">
+              <div className="loading-spinner"></div>
+            </div>
+          )}
           <img 
-            src="/images/street-art-placeholder.jpg" 
-            alt="Street Art"
+            src={imageSource}
+            alt={artwork.title || 'Street Art'}
             className="placeholder-image"
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            style={{ display: imageLoading ? 'none' : 'block' }}
           />
         </div>
         <div className="popup-content-section">
-          <div className="artist-label">{artwork.artist || 'Artist name'}</div>
-          <h1 className="artwork-title">{artwork.title || 'WORK TITLE'}</h1>
+          <div className="artist-label">{artwork.artist || artwork.Artist || 'Artist name'}</div>
+          <h1 className="artwork-title">{artwork.title || artwork.Title || 'WORK TITLE'}</h1>
           <p className="artwork-description">
-            {artwork.description || 'This is a short text with information about this location.'}
+            {artwork.des || artwork.description || 'This is a short text with information about this location.'}
           </p>
           <button className="navigate-btn" onClick={() => onNavigate(artwork)}>
             Navigate Here

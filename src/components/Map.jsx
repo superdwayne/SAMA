@@ -291,38 +291,31 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   };
 
   const handleArtworkClick = (location) => {
+    // Prevent re-panning if the same pin is already selected
+    if (selectedArtwork && selectedArtwork.id === location.id) {
+      setSelectedArtwork(location); // Still open the popup if needed
+      return;
+    }
     setSelectedArtwork(location);
     console.log('[Map] Artwork popup opened', { location });
 
-    // Get the map instance
     const map = mapRef.current?.getMap?.();
     if (map) {
-      // Project the pin's coordinates to screen space
       const point = map.project([location.longitude, location.latitude]);
-      // Offset upward by 200px (adjust for your popup height)
       const offsetPoint = {
-        x: point.x,
-        y: point.y 
+        x: point.x  - -8,
+        y: point.y - -15 // Move up by 10px (user's custom value)
       };
-      // Unproject back to map coordinates
       const newCenter = map.unproject([offsetPoint.x, offsetPoint.y]);
-      setViewport(prev => ({
-        ...prev,
-        latitude: newCenter.lat,
-        longitude: newCenter.lng,
+      map.easeTo({
+        center: [newCenter.lng, newCenter.lat],
         zoom: 17,
-        pitch: 0,
-        bearing: 0,
-        transitionDuration: 800,
-        transitionInterpolator: typeof window !== 'undefined' && window['mapboxgl']
-          ? new window.mapboxgl.FlyToInterpolator()
-          : undefined
-      }));
+        duration: 800
+      });
     } else {
-      // Fallback to a small offset if map instance is not available
       setViewport(prev => ({
         ...prev,
-        latitude: location.latitude + 0.003,
+        latitude: location.latitude + 0.002,
         longitude: location.longitude,
         zoom: 17,
         pitch: 0,
@@ -966,8 +959,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             </Marker>
           )}
 
-        
-
+      
           <Source
             id="nw-pins"
             type="vector"
