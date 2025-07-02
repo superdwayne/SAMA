@@ -14,7 +14,7 @@
 
 .mapboxgl-ctrl-top-right {
     position: absolute;
-    top: 650px !important;
+    top: 150px !important;
 }
 
 .mapboxgl-ctrl-icon {
@@ -295,10 +295,7 @@
     box-sizing: border-box;
   }
   
-  /* When navigating, add extra padding for navigation bar */
-  .map-container.navigating {
-    padding-top: 108px; /* 60px header + 48px navigation bar */
-  }
+ 
 }
 
 /* Desktop header - always visible */
@@ -780,6 +777,6 @@
   bottom: 0;
   z-index: 1;
   height: 50px;
-
+width: 80%;
 
 }

@@ -292,6 +292,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
   const handleArtworkClick = (location) => {
     setSelectedArtwork(location);
+    console.log('[Map] Artwork popup opened', { location });
 
     // Get the map instance
     const map = mapRef.current?.getMap?.();
@@ -352,6 +353,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   };
 
   const handleInAppNavigate = (artwork) => {
+    console.log('[Map] handleInAppNavigate called', { artwork });
     // Only request location when user actually wants to navigate
     if (locationPermissionStatus !== 'granted') {
       setShowLocationPermission(true);
@@ -367,6 +369,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     }
 
     setIsNavigating(true);
+    console.log('[Map] Navigation started', { artwork });
     setNavigationTarget(artwork);
     
     setViewport(prev => ({
@@ -406,6 +409,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     setEnhancedNavigation(null);
     setCurrentNavigationStep(null);
     locationService.stopWatching();
+    console.log('[Map] Navigation stopped');
     
     setViewport(prev => ({
       ...prev,
@@ -604,7 +608,9 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
   // Simple navigation handler
   const handleNavigateToArtwork = async (artwork) => {
-    setSelectedArtwork(null); // Close the popup immediately
+    setIsNavigating(true);
+    console.log('[Map] handleNavigateToArtwork called', { artwork });
+    setSelectedArtwork(null);
     try {
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
@@ -648,7 +654,13 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     }
   };
 
-
+  useEffect(() => {
+    if (isNavigating) {
+      console.log('[Map] In navigation mode');
+    } else {
+      console.log('[Map] Not in navigation mode');
+    }
+  }, [isNavigating]);
 
   // Default map center and zoom
   const DEFAULT_VIEWPORT = {
@@ -661,13 +673,21 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
   return (
     <>
-      <div className={`map-container ${isNavigating ? 'navigating' : ''} ${requestedRegion ? 'region-view' : ''}`}>
-        {/* Show back button if navigating, else show header if no pin is selected */}
-        {isNavigating ? (
-          <button className="navigation-back-btn" onClick={handleStopNavigation} style={{ background: 'none', border: 'none', padding: '20px 24px 0 24px', fontSize: '32px', color: '#3416D8', cursor: 'pointer' }} aria-label="Back">
-            ←
-          </button>
-        ) : selectedArtwork == null && (
+      <div className={`map-container ${isNavigating ? 'navigating' : ''} ${requestedRegion ? 'region-view' : ''}`}
+        style={{ position: 'relative' }}>
+        {isNavigating && selectedArtwork == null && (
+          <div className="navigation-back-btn-container">
+            <button
+              className="navigation-back-btn"
+              onClick={handleStopNavigation}
+              aria-label="Back"
+            >
+              <span className="back-arrow">←</span>
+            </button>
+          </div>
+        )}
+        {/* Only show header if not navigating and no artwork is selected */}
+        {!isNavigating && selectedArtwork == null && (
           <div className="custom-mobile-header" style={{ background: '#EEFF00', padding: '20px 24px 0 24px' }}>
             <div className="header-left">
               <img src="/images/sama-logo.png" onClick={() => navigate('/')} alt="SAMA Logo" className="sama-logo" />
@@ -927,6 +947,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 setSelectedArtwork(null);
                 setNavigationRoute(null); // Clear route when closing popup
                 setViewport(DEFAULT_VIEWPORT); // Reset map to default view
+                console.log('[Map] Artwork popup closed');
               }}
               onNavigate={handleNavigateToArtwork}
             />

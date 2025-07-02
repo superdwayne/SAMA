@@ -1127,4 +1127,39 @@
   color: #3416D8;
   font-family: 'PP Neue Machina Plain Ultrabold', 'Inter', Arial, sans-serif;
   font-size: 36px;
+}
+
+.navigation-back-btn-container {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 5000;
+  width: auto;
+  display: flex;
+  justify-content: flex-start;
+  pointer-events: auto;
+}
+
+.navigation-back-btn {
+  background: #5B2EFF;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(91, 46, 255, 0.18);
+  transition: background 0.2s, transform 0.2s;
+  font-size: 2rem;
+  color: #fff;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0;
+}
+
+.navigation-back-btn:hover {
+  background: #3a1bb3;
+  transform: scale(1.05);
 } 

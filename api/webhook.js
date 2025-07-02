@@ -1,7 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
 const crypto = require('crypto');
-const { generateMagicToken, storeMagicLink } = require('./utils/magic-links');
 
 // Initialize SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -14,23 +13,29 @@ const generateAccessToken = (region) => {
   return `${regionCode}-${timestamp}-${randomStr}`;
 };
 
+// Create magic token with embedded data (same approach as send-magic-link.js)
+function createMagicToken(email, accessToken, region) {
+  const data = {
+    email,
+    accessToken,
+    region,
+    hasPurchased: true, // If they're getting this from webhook, they purchased
+    timestamp: Date.now()
+  };
+  
+  // Encode data in the token itself
+  const payload = JSON.stringify(data);
+  return Buffer.from(payload).toString('base64').replace(/[+/=]/g, '');
+}
+
 // Send magic link email
 async function sendMagicLinkEmail(email, accessToken, region, baseUrl) {
   const expirationDate = new Date();
   expirationDate.setDate(expirationDate.getDate() + 30);
   
-  // Generate magic link
-  const magicToken = generateMagicToken();
-  
-  // Store magic link mapping
-  await storeMagicLink(magicToken, {
-    email,
-    accessToken,
-    region,
-    accessExpiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000)
-  });
-  
-  const magicLink = `${baseUrl}/activate?token=${magicToken}&email=${encodeURIComponent(email)}`;
+  // Generate magic link using embedded token approach
+  const magicToken = createMagicToken(email, accessToken, region);
+  const magicLink = `${baseUrl}?magic=${magicToken}`;
   
   const msg = {
     to: email,
