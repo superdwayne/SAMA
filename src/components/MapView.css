@@ -12,6 +12,22 @@
   max-width: 200px;
 }
 
+.mapboxgl-ctrl-top-right {
+    position: absolute;
+    top: 650px !important;
+}
+
+.mapboxgl-ctrl-icon {
+  display: none;
+}
+
+.mapboxgl-ctrl-attrib {
+  display: none;
+}
+.sama-header-stack {
+  padding-top: 20px;
+}
+
 .mobile-header-content {
   display: flex;
   align-items: center;

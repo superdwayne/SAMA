@@ -10,7 +10,7 @@ const regions = [
   { 
     id: 'center', 
     title: 'Center', 
-    description: 'Tourists, tags & tension. The city\'s loudest gallery', 
+    description: 'Tourists, tags & tension. </br> The city\'s loudest gallery', 
     latitude: 52.3728, 
     longitude: 4.8936, 
     isFree: false,
@@ -32,7 +32,7 @@ const regions = [
     latitude: 52.3600, 
     longitude: 4.9400, 
     isFree: true,
-    image: '/east-region.jpg' // You'll need to add this image
+    image: '/images/center.png' 
   },
   { 
     id: 'nieuw-west', 
@@ -41,7 +41,7 @@ const regions = [
     latitude: 52.3700, 
     longitude: 4.8100, 
     isFree: true,
-    image: '/nieuw-west-region.jpg' // You'll need to add this image
+    image: '/images/center.png' 
   },
 ];
 
@@ -196,12 +196,14 @@ const Landing = () => {
       
       {/* Header with logo and title */}
       <header className="landing-new-header">
-        <div className="header-content">
-          <img src="images/sama-logo.png" alt="SAMA Logo" className="sama-logo" />
-          <div className="header-text">
-            <span className="sama-subtitle">Street Art</span>
-            <span className="sama-subtitle">Museum</span>
-            <span className="sama-subtitle">Amsterdam</span>
+        <div className="header-row">
+          <div className="header-left">
+            <img src="images/sama-logo.png" alt="SAMA Logo" className="sama-logo" />
+            <div className="header-text">
+              <span className="sama-subtitle">Street Art</span>
+              <span className="sama-subtitle">Museum</span>
+              <span className="sama-subtitle">Amsterdam</span>
+            </div>
           </div>
           <button className="info-button" onClick={() => setShowInfoModal(true)}>
             <span className="info-icon">i</span>
@@ -218,7 +220,7 @@ const Landing = () => {
       {/* Region cards */}
       <div className="region-cards-container">
         {regions.map(region => (
-          <div className="region-card-new" key={region.id}>
+          <div className="region-card-new" key={region.id} style={{ position: 'relative' }}>
             <div className="region-card-row">
               <div className="region-card-text">
                 <h2 className="region-title-new">{region.title}</h2>
@@ -243,7 +245,7 @@ const Landing = () => {
                         />
                       )}
                       <button
-                        className={`region-action-btn region-action-btn-overlay ${region.isFree ? 'free-region' : 'paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${region.isFree ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
                         {region.isFree ? 'Open map' : 'Get it now'}
@@ -255,7 +257,7 @@ const Landing = () => {
                         <span className="placeholder-text">Image Coming Soon</span>
                       </div>
                       <button
-                        className={`region-action-btn region-action-btn-overlay ${region.isFree ? 'free-region' : 'paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${region.isFree ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
                         {region.isFree ? 'Open map' : 'Get it now'}
@@ -264,6 +266,14 @@ const Landing = () => {
                   )}
                 </div>
               </div>
+            </div>
+            {/* Lock/Unlock icon at bottom left */}
+            <div className={`region-lock-badge${region.id === 'nieuw-west' ? ' unlocked' : ''}`}>
+              <img
+                src={region.id === 'nieuw-west' ? '/images/unlocked.png' : '/images/locked.png'}
+                alt={region.id === 'nieuw-west' ? 'Unlocked' : 'Locked'}
+                className="region-lock-icon"
+              />
             </div>
           </div>
         ))}

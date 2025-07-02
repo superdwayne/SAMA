@@ -291,7 +291,48 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   };
 
   const handleArtworkClick = (location) => {
-    console.log('Clicked location:', location);
+    setSelectedArtwork(location);
+
+    // Get the map instance
+    const map = mapRef.current?.getMap?.();
+    if (map) {
+      // Project the pin's coordinates to screen space
+      const point = map.project([location.longitude, location.latitude]);
+      // Offset upward by 200px (adjust for your popup height)
+      const offsetPoint = {
+        x: point.x,
+        y: point.y 
+      };
+      // Unproject back to map coordinates
+      const newCenter = map.unproject([offsetPoint.x, offsetPoint.y]);
+      setViewport(prev => ({
+        ...prev,
+        latitude: newCenter.lat,
+        longitude: newCenter.lng,
+        zoom: 17,
+        pitch: 0,
+        bearing: 0,
+        transitionDuration: 800,
+        transitionInterpolator: typeof window !== 'undefined' && window['mapboxgl']
+          ? new window.mapboxgl.FlyToInterpolator()
+          : undefined
+      }));
+    } else {
+      // Fallback to a small offset if map instance is not available
+      setViewport(prev => ({
+        ...prev,
+        latitude: location.latitude + 0.003,
+        longitude: location.longitude,
+        zoom: 17,
+        pitch: 0,
+        bearing: 0,
+        transitionDuration: 800,
+        transitionInterpolator: typeof window !== 'undefined' && window['mapboxgl']
+          ? new window.mapboxgl.FlyToInterpolator()
+          : undefined
+      }));
+    }
+
     if (location.district === 'Nieuw-West' && setUnlockedRegions && !unlockedRegions.includes('Nieuw-West')) {
       setUnlockedRegions(prev => {
         if (!prev.includes('Nieuw-West')) {
@@ -299,48 +340,6 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         }
         return prev;
       });
-    }
-    const isUnlocked = unlockedRegions.includes(location.district) || location.district === 'Nieuw-West';
-    if (isUnlocked) {
-      setSelectedArtwork(location);
-      
-      // Center map on the selected artwork for better viewing in popup
-      const map = mapRef.current?.getMap?.();
-      const mapContainer = document.querySelector('.map-container');
-      const popupHeightPx = mapContainer ? mapContainer.offsetHeight / 2 : 340; // Use half the map height
-      if (map) {
-        const point = map.project([location.longitude, location.latitude]);
-        const offsetPoint = {
-          x: point.x,
-          y: point.y - popupHeightPx / 2
-        };
-        const newCenter = map.unproject([offsetPoint.x, offsetPoint.y]);
-        setViewport(prev => ({
-          ...prev,
-          latitude: newCenter.lat,
-          longitude: newCenter.lng,
-          zoom: 18,
-          pitch: 0,
-          bearing: 0
-        }));
-      } else {
-        setViewport(prev => ({
-          ...prev,
-          latitude: location.latitude + 0.003,
-          longitude: location.longitude,
-          zoom: 18,
-          pitch: 0,
-          bearing: 0
-        }));
-      }
-    } else {
-      const region = amsterdamRegions.features.find(
-        f => f.properties.name === location.district
-      );
-      if (region) {
-        setRegionToUnlock(region.properties);
-        setShowUnlockPrompt(true);
-      }
     }
   };
 
@@ -649,393 +648,409 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     }
   };
 
+
+
+  // Default map center and zoom
+  const DEFAULT_VIEWPORT = {
+    latitude: 52.3676,
+    longitude: 4.9041,
+    zoom: 12,
+    pitch: 0,
+    bearing: 0
+  };
+
   return (
-    <div className={`map-container ${isNavigating ? 'navigating' : ''} ${requestedRegion ? 'region-view' : ''}`}>
-      {/* Custom Mobile Header (only on mobile) */}
-      {requestedRegion && !selectedArtwork && (
-        <div className="custom-mobile-header">
-          <div className="header-left">
-            <img 
-              src="/images/sama-logo.png" 
-              alt="SAMA Logo" 
-              className="sama-logo"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate('/')} 
-            />
-            <div className="sama-header-stack">
-              <span className="region-title">{requestedRegion}</span>
+    <>
+      <div className={`map-container ${isNavigating ? 'navigating' : ''} ${requestedRegion ? 'region-view' : ''}`}>
+        {/* Show back button if navigating, else show header if no pin is selected */}
+        {isNavigating ? (
+          <button className="navigation-back-btn" onClick={handleStopNavigation} style={{ background: 'none', border: 'none', padding: '20px 24px 0 24px', fontSize: '32px', color: '#3416D8', cursor: 'pointer' }} aria-label="Back">
+            ←
+          </button>
+        ) : selectedArtwork == null && (
+          <div className="custom-mobile-header" style={{ background: '#EEFF00', padding: '20px 24px 0 24px' }}>
+            <div className="header-left">
+              <img src="/images/sama-logo.png" onClick={() => navigate('/')} alt="SAMA Logo" className="sama-logo" />
+              <div className="header-text">
+                <span className="sama-subtitle">Street Art</span>
+                <span className="sama-subtitle">Museum</span>
+                <span className="sama-subtitle">Amsterdam</span>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Header */}
-      {/* Removed <MobileHeader ... /> */}
-
-      {/* Magic Link Status Overlay */}
-      {magicLinkStatus === 'verifying' && (
-        <div className="magic-link-status verifying">
-          <div className="status-content">
-            <div className="loading-spinner"></div>
-            <h3>🔐 Verifying Your Access...</h3>
-            <p>Please wait while we check your magic link.</p>
-          </div>
-        </div>
-      )}
-
-      {magicLinkStatus === 'success' && (
-        <div className="magic-link-status success">
-          <div className="status-content">
-            <div className="success-icon">🎉</div>
-            <h3>Welcome to Amsterdam Street Art Map!</h3>
-            <p>Your access has been activated successfully.</p>
-            {userAccess?.hasPurchased && (
-              <div className="premium-notice">
-                ✨ You have premium access to all regions!
+            {requestedRegion && (
+              <div className="sama-header-stack">
+                <span className="region-title-header">{requestedRegion}</span>
               </div>
             )}
           </div>
-        </div>
-      )}
+        )}
 
-      {magicLinkStatus === 'error' && (
-        <div className="magic-link-status error">
-          <div className="status-content">
-            <div className="error-icon">❌</div>
-            <h3>Access Link Invalid</h3>
-            <p>Your magic link has expired or is invalid.</p>
-            <button 
-              onClick={() => {
-                setMagicLinkStatus('idle');
-                setShowMagicLinkModal(true);
-              }}
-              className="retry-button"
-            >
-              Request New Link
+        {/* Magic Link Status Overlay */}
+        {magicLinkStatus === 'verifying' && (
+          <div className="magic-link-status verifying">
+            <div className="status-content">
+              <div className="loading-spinner"></div>
+              <h3>🔐 Verifying Your Access...</h3>
+              <p>Please wait while we check your magic link.</p>
+            </div>
+          </div>
+        )}
+
+        {magicLinkStatus === 'success' && (
+          <div className="magic-link-status success">
+            <div className="status-content">
+              <div className="success-icon">🎉</div>
+              <h3>Welcome to Amsterdam Street Art Map!</h3>
+              <p>Your access has been activated successfully.</p>
+              {userAccess?.hasPurchased && (
+                <div className="premium-notice">
+                  ✨ You have premium access to all regions!
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {magicLinkStatus === 'error' && (
+          <div className="magic-link-status error">
+            <div className="status-content">
+              <div className="error-icon">❌</div>
+              <h3>Access Link Invalid</h3>
+              <p>Your magic link has expired or is invalid.</p>
+              <button 
+                onClick={() => {
+                  setMagicLinkStatus('idle');
+                  setShowMagicLinkModal(true);
+                }}
+                className="retry-button"
+              >
+                Request New Link
+              </button>
+            </div>
+          </div>
+        )}
+        {/* Token status alert */}
+        {showTokenStatus && remainingDays <= 7 && remainingDays > 0 && (
+          <TokenStatus 
+            onRenew={() => navigate('/token')}
+          />
+        )}
+
+        {/* Welcome Tooltip */}
+        {/* {showWelcome && (
+          <WelcomeTooltip onClose={() => setShowWelcome(false)} />
+        )} */}
+        
+        {showUnlockPrompt && regionToUnlock && (
+          <UnlockPrompt 
+            region={regionToUnlock}
+            onUnlock={() => handleUnlockRegion(regionToUnlock)}
+            onClose={() => {
+              setShowUnlockPrompt(false);
+              setRegionToUnlock(null);
+            }}
+          />
+        )}
+
+        {showNavigationPopup && navigationTarget && (
+          <NavigationPopup
+            artwork={navigationTarget}
+            userLocation={userLocation}
+            onInAppNavigate={handleInAppNavigate}
+            onClose={() => {
+              setShowNavigationPopup(false);
+              setNavigationTarget(null);
+            }}
+          />
+        )}
+
+        {/* Route Navigator */}
+        {/* {showRouteNavigator && (
+          <RouteNavigator
+            unlockedRegions={unlockedRegions}
+            onSelectRoute={handleSelectRoute}
+            onClose={() => setShowRouteNavigator(false)}
+            currentLocation={userLocation}
+          />
+        )} */}
+
+        {/* Navigation controls */}
+        {isNavigating && navigationTarget && (
+          <div className="navigation-bar">
+            <div className="navigation-info">
+              <h3>Navigating to {navigationTarget.title}</h3>
+              {navigationRoute && (
+                <p>
+                  {(navigationRoute.properties.distance / 1000).toFixed(1)}km • 
+                  {Math.round(navigationRoute.properties.duration / 60)} min
+                </p>
+              )}
+            </div>
+            <button className="stop-navigation-button" onClick={handleStopNavigation}>
+              ✕ Stop Navigation
             </button>
           </div>
-        </div>
-      )}
-      {/* Token status alert */}
-      {showTokenStatus && remainingDays <= 7 && remainingDays > 0 && (
-        <TokenStatus 
-          onRenew={() => navigate('/token')}
-        />
-      )}
-
-      {/* Welcome Tooltip */}
-      {/* {showWelcome && (
-        <WelcomeTooltip onClose={() => setShowWelcome(false)} />
-      )} */}
-      
-      {showUnlockPrompt && regionToUnlock && (
-        <UnlockPrompt 
-          region={regionToUnlock}
-          onUnlock={() => handleUnlockRegion(regionToUnlock)}
-          onClose={() => {
-            setShowUnlockPrompt(false);
-            setRegionToUnlock(null);
-          }}
-        />
-      )}
-
-      {showNavigationPopup && navigationTarget && (
-        <NavigationPopup
-          artwork={navigationTarget}
-          userLocation={userLocation}
-          onInAppNavigate={handleInAppNavigate}
-          onClose={() => {
-            setShowNavigationPopup(false);
-            setNavigationTarget(null);
-          }}
-        />
-      )}
-
-      {/* Route Navigator */}
-      {/* {showRouteNavigator && (
-        <RouteNavigator
-          unlockedRegions={unlockedRegions}
-          onSelectRoute={handleSelectRoute}
-          onClose={() => setShowRouteNavigator(false)}
-          currentLocation={userLocation}
-        />
-      )} */}
-
-      {/* Navigation controls */}
-      {isNavigating && navigationTarget && (
-        <div className="navigation-bar">
-          <div className="navigation-info">
-            <h3>Navigating to {navigationTarget.title}</h3>
-            {navigationRoute && (
-              <p>
-                {(navigationRoute.properties.distance / 1000).toFixed(1)}km • 
-                {Math.round(navigationRoute.properties.duration / 60)} min
-              </p>
-            )}
-          </div>
-          <button className="stop-navigation-button" onClick={handleStopNavigation}>
-            ✕ Stop Navigation
-          </button>
-        </div>
-      )}
-      
-      <Map
-        ref={mapRef}
-        {...viewport}
-        mapboxAccessToken={mapboxToken}
-        onMove={evt => setViewport(evt.viewState)}
-        mapStyle="mapbox://styles/mapbox/light-v11"
-        interactiveLayerIds={['sama-map-regions-fill', 'sama-map-regions-outline']}
-        onClick={(event) => {
-          const features = event.features;
-          if (features && features.length > 0) {
-            const regionFeature = features.find(f =>
-              f.layer.id === 'sama-map-regions-fill' || f.layer.id === 'sama-map-regions-outline'
-            );
-            if (regionFeature) {
-              setSelectedRegion(regionFeature.properties);
-              return;
-            }
-
-            const pinFeature = features.find(f =>
-              f.layer['source-layer'] === 'NW-Artwork-Pins-2hom5o'
-            );
-            if (pinFeature) {
-              return;
-            }
-
-            const feature = features[0];
-            if (feature.layer.id.includes('regions')) {
-              const region = amsterdamRegions.features.find(
-                r => r.properties.name === feature.properties.name
-              );
-              if (region) handleRegionClick(region.properties);
-            }
-          }
-        }}
-      >
-        <NavigationControl position="top-right" />
-        <GeolocateControl 
-          position="top-right"
-          trackUserLocation
-          showUserHeading
-        />
+        )}
         
-        {/* Remove purple overlays (region highlights/fills) */}
-        {/*
-        <Source id="regions-unlocked" type="geojson" data={{
-          type: 'FeatureCollection',
-          features: amsterdamRegions.features.filter(f => 
-            unlockedRegions.includes(f.properties.name)
-          )
-        }}>
-        </Source>
-        <Source id="regions-locked" type="geojson" data={{
-          type: 'FeatureCollection',
-          features: amsterdamRegions.features.filter(f => 
-            !unlockedRegions.includes(f.properties.name)
-          )
-        }}>
-        </Source>
-        {requestedRegion && (
-          <Source id="requested-region" type="geojson" data={{
+        <Map
+          ref={mapRef}
+          {...viewport}
+          mapboxAccessToken={mapboxToken}
+          onMove={evt => setViewport(evt.viewState)}
+          mapStyle="mapbox://styles/mapbox/light-v11"
+          interactiveLayerIds={['sama-map-regions-fill', 'sama-map-regions-outline']}
+          onClick={(event) => {
+            const features = event.features;
+            if (features && features.length > 0) {
+              const regionFeature = features.find(f =>
+                f.layer.id === 'sama-map-regions-fill' || f.layer.id === 'sama-map-regions-outline'
+              );
+              if (regionFeature) {
+                setSelectedRegion(regionFeature.properties);
+                return;
+              }
+
+              const pinFeature = features.find(f =>
+                f.layer['source-layer'] === 'NW-Artwork-Pins-2hom5o'
+              );
+              if (pinFeature) {
+                return;
+              }
+
+              const feature = features[0];
+              if (feature.layer.id.includes('regions')) {
+                const region = amsterdamRegions.features.find(
+                  r => r.properties.name === feature.properties.name
+                );
+                if (region) handleRegionClick(region.properties);
+              }
+            }
+          }}
+        >
+          <NavigationControl position="top-right" />
+          <GeolocateControl 
+            position="top-right"
+            trackUserLocation
+            showUserHeading
+          />
+          
+          {/* Remove purple overlays (region highlights/fills) */}
+          {/*
+          <Source id="regions-unlocked" type="geojson" data={{
             type: 'FeatureCollection',
             features: amsterdamRegions.features.filter(f => 
-              f.properties.name === requestedRegion
+              unlockedRegions.includes(f.properties.name)
             )
           }}>
-            <Layer
-              id="requested-region-fill"
-              type="fill"
-              paint={{
-                'fill-color': '#8e44ad',
-                'fill-opacity': 0.3
-              }}
-            />
-            <Layer
-              id="requested-region-outline"
-              type="line"
-              paint={{
-                'line-color': '#8e44ad',
-                'line-width': 3
-              }}
-            />
           </Source>
-        )}
-        */}
+          <Source id="regions-locked" type="geojson" data={{
+            type: 'FeatureCollection',
+            features: amsterdamRegions.features.filter(f => 
+              !unlockedRegions.includes(f.properties.name)
+            )
+          }}>
+          </Source>
+          {requestedRegion && (
+            <Source id="requested-region" type="geojson" data={{
+              type: 'FeatureCollection',
+              features: amsterdamRegions.features.filter(f => 
+                f.properties.name === requestedRegion
+              )
+            }}>
+              <Layer
+                id="requested-region-fill"
+                type="fill"
+                paint={{
+                  'fill-color': '#8e44ad',
+                  'fill-opacity': 0.3
+                }}
+              />
+              <Layer
+                id="requested-region-outline"
+                type="line"
+                paint={{
+                  'line-color': '#8e44ad',
+                  'line-width': 3
+                }}
+              />
+            </Source>
+          )}
+          */}
 
-        {/* 3D buildings layer */}
-        <Layer {...buildingLayer} />
+          {/* 3D buildings layer */}
+          <Layer {...buildingLayer} />
 
-        {/* Show only Mapbox dataset locations, filtered by region if requested */}
-        {mapboxLocations
-          .filter(location => {
-            // If a specific region is requested, only show pins from that region
-            if (requestedRegion) {
-              return location.district === requestedRegion;
-            }
-            // Otherwise show all pins
-            return true;
-          })
-          .map(location => {
-          const isUnlocked = unlockedRegions.includes(location.district);
-          const isDestination = navigationTarget?.id === location.id;
-          const isRouteStop = activeRoute && routeStops.some(stop => stop.id === location.id);
-          const routeStopIndex = isRouteStop ? routeStops.findIndex(stop => stop.id === location.id) : -1;
-          
-          return (
-            <Marker
-              key={`marker-${location.id}-${location.latitude}-${location.longitude}`}
-              longitude={location.longitude}
-              latitude={location.latitude}
-              onClick={(e) => {
-                e.originalEvent.stopPropagation();
-                handleArtworkClick(location);
+          {/* Show only Mapbox dataset locations, filtered by region if requested */}
+          {mapboxLocations
+            .filter(location => {
+              // If a specific region is requested, only show pins from that region
+              if (requestedRegion) {
+                return location.district === requestedRegion;
+              }
+              // Otherwise show all pins
+              return true;
+            })
+            .map(location => {
+            const isUnlocked = unlockedRegions.includes(location.district);
+            const isDestination = navigationTarget?.id === location.id;
+            const isRouteStop = activeRoute && routeStops.some(stop => stop.id === location.id);
+            const routeStopIndex = isRouteStop ? routeStops.findIndex(stop => stop.id === location.id) : -1;
+            
+            return (
+              <Marker
+                key={`marker-${location.id}-${location.latitude}-${location.longitude}`}
+                longitude={location.longitude}
+                latitude={location.latitude}
+                onClick={(e) => {
+                  e.originalEvent.stopPropagation();
+                  handleArtworkClick(location);
+                }}
+              >
+                <div className={`street-art-marker ${!isUnlocked ? 'locked' : ''} ${isDestination ? 'destination' : ''} ${isRouteStop ? 'route-stop' : ''}`}>
+                  {isRouteStop ? (
+                    <div className="route-marker" style={{ backgroundColor: activeRoute.color }}>
+                      {routeStopIndex + 1}
+                    </div>
+                  ) : (
+                    <div className="marker-dot"></div>
+                  )}
+                </div>
+              </Marker>
+            );
+          })}
+
+          {/* Artwork Popup - Clean Full Screen Overlay with real Mapbox map */}
+          {selectedArtwork && (
+            <ArtworkPopup 
+              artwork={selectedArtwork} 
+              onClose={() => {
+                setSelectedArtwork(null);
+                setNavigationRoute(null); // Clear route when closing popup
+                setViewport(DEFAULT_VIEWPORT); // Reset map to default view
               }}
+              onNavigate={handleNavigateToArtwork}
+            />
+          )}
+
+          {/* User location marker */}
+          {userLocation && (
+            <Marker
+              longitude={userLocation.longitude}
+              latitude={userLocation.latitude}
             >
-              <div className={`street-art-marker ${!isUnlocked ? 'locked' : ''} ${isDestination ? 'destination' : ''} ${isRouteStop ? 'route-stop' : ''}`}>
-                {isRouteStop ? (
-                  <div className="route-marker" style={{ backgroundColor: activeRoute.color }}>
-                    {routeStopIndex + 1}
-                  </div>
-                ) : (
-                  <div className="marker-dot"></div>
-                )}
+              <div className="user-location-marker">
+                <div className="user-location-dot"></div>
+                <div className="user-location-pulse"></div>
               </div>
             </Marker>
-          );
-        })}
+          )}
 
-        {/* Artwork Popup - Clean Full Screen Overlay with real Mapbox map */}
-        {selectedArtwork && (
-          <ArtworkPopup 
-            artwork={selectedArtwork} 
-            onClose={() => {
-              setSelectedArtwork(null);
-              setNavigationRoute(null); // Clear route when closing popup
-            }}
-            onNavigate={handleNavigateToArtwork}
-          />
-        )}
+        
 
-        {/* User location marker */}
-        {userLocation && (
-          <Marker
-            longitude={userLocation.longitude}
-            latitude={userLocation.latitude}
+          <Source
+            id="nw-pins"
+            type="vector"
+            url="mapbox://sama-map.cmcdau2ox10ct1npijaxk0i7m-9z3su"
           >
-            <div className="user-location-marker">
-              <div className="user-location-dot"></div>
-              <div className="user-location-pulse"></div>
-            </div>
-          </Marker>
-        )}
-
-      
-
-        <Source
-          id="nw-pins"
-          type="vector"
-          url="mapbox://sama-map.cmcdau2ox10ct1npijaxk0i7m-9z3su"
-        >
-          <Layer
-            id="nw-pins-layer"
-            type="circle"
-            source="nw-pins"
-            source-layer="NW-Pins"
-            paint={{
-              'circle-radius': 7,
-              'circle-color': '#e74c3c',
-              'circle-stroke-width': 2,
-              'circle-stroke-color': '#fff'
-            }}
-          />
-        </Source>
-
-        {/* Simple route overlay */}
-        {navigationRoute && (
-          <Source id="simple-route" type="geojson" data={navigationRoute}>
             <Layer
-              id="simple-route-line"
-              type="line"
+              id="nw-pins-layer"
+              type="circle"
+              source="nw-pins"
+              source-layer="NW-Pins"
               paint={{
-                'line-color': '#1976D2',
-                'line-width': 6,
-                'line-opacity': 0.85
+                'circle-radius': 7,
+                'circle-color': '#e74c3c',
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#fff'
               }}
             />
           </Source>
+
+          {/* Simple route overlay */}
+          {navigationRoute && (
+            <Source id="simple-route" type="geojson" data={navigationRoute}>
+              <Layer
+                id="simple-route-line"
+                type="line"
+                paint={{
+                  'line-color': '#1976D2',
+                  'line-width': 6,
+                  'line-opacity': 0.85
+                }}
+              />
+            </Source>
+          )}
+        </Map>
+
+        {/* Active Route Panel */}
+        {/* {activeRoute && (
+          <ActiveRoute
+            route={activeRoute}
+            userLocation={userLocation}
+            onNavigateToStop={handleNavigateToRouteStop}
+            onEndRoute={handleEndRoute}
+            onNextStop={handleNextRouteStop}
+          />
+        )} */}
+
+        {/* Region info panel */}
+        {/* Removed RegionInfo popup for region selection */}
+
+        {/* Enhanced Navigation */}
+        {enhancedNavigation && (
+          <EnhancedNavigation
+            userLocation={enhancedNavigation.userLocation}
+            destination={enhancedNavigation.destination}
+            onNavigationEnd={handleStopNavigation}
+            mapRef={mapRef}
+            mapboxToken={mapboxToken}
+            onRouteCalculated={enhancedNavigation.onRouteCalculated}
+            onStepAdvanced={enhancedNavigation.onStepAdvanced}
+            viewport={viewport}
+          />
         )}
-      </Map>
 
-      {/* Active Route Panel */}
-      {/* {activeRoute && (
-        <ActiveRoute
-          route={activeRoute}
-          userLocation={userLocation}
-          onNavigateToStop={handleNavigateToRouteStop}
-          onEndRoute={handleEndRoute}
-          onNextStop={handleNextRouteStop}
-        />
-      )} */}
+        {/* Location Permission */}
+        {showLocationPermission && (
+          <LocationPermission
+            onLocationGranted={handleLocationGranted}
+            onLocationDenied={handleLocationDenied}
+            showAlways={false}
+          />
+        )}
 
-      {/* Region info panel */}
-      {/* Removed RegionInfo popup for region selection */}
+        {/* Navigation Compass */}
+        {isNavigating && userLocation && (
+          <NavigationCompass
+            bearing={userLocation.heading || viewport.bearing}
+            nextTurnBearing={currentNavigationStep?.maneuver?.bearing_after}
+            nextTurnDirection={
+              currentNavigationStep?.maneuver?.modifier?.includes('left') ? 'left' :
+              currentNavigationStep?.maneuver?.modifier?.includes('right') ? 'right' :
+              currentNavigationStep?.maneuver?.type === 'continue' ? 'straight' : null
+            }
+          />
+        )}
 
-      {/* Enhanced Navigation */}
-      {enhancedNavigation && (
-        <EnhancedNavigation
-          userLocation={enhancedNavigation.userLocation}
-          destination={enhancedNavigation.destination}
-          onNavigationEnd={handleStopNavigation}
-          mapRef={mapRef}
-          mapboxToken={mapboxToken}
-          onRouteCalculated={enhancedNavigation.onRouteCalculated}
-          onStepAdvanced={enhancedNavigation.onStepAdvanced}
-          viewport={viewport}
-        />
-      )}
+        {/* Mapbox Token Settings Modal */}
+        {showMapboxSettings && (
+          <MapboxTokenSettings
+            onTokenUpdate={(newToken) => {
+              setMapboxToken(newToken || MAPBOX_TOKEN);
+            }}
+            onClose={() => setShowMapboxSettings(false)}
+          />
+        )}
 
-      {/* Location Permission */}
-      {showLocationPermission && (
-        <LocationPermission
-          onLocationGranted={handleLocationGranted}
-          onLocationDenied={handleLocationDenied}
-          showAlways={false}
-        />
-      )}
-
-      {/* Navigation Compass */}
-      {isNavigating && userLocation && (
-        <NavigationCompass
-          bearing={userLocation.heading || viewport.bearing}
-          nextTurnBearing={currentNavigationStep?.maneuver?.bearing_after}
-          nextTurnDirection={
-            currentNavigationStep?.maneuver?.modifier?.includes('left') ? 'left' :
-            currentNavigationStep?.maneuver?.modifier?.includes('right') ? 'right' :
-            currentNavigationStep?.maneuver?.type === 'continue' ? 'straight' : null
-          }
-        />
-      )}
-
-      {/* Mapbox Token Settings Modal */}
-      {showMapboxSettings && (
-        <MapboxTokenSettings
-          onTokenUpdate={(newToken) => {
-            setMapboxToken(newToken || MAPBOX_TOKEN);
-          }}
-          onClose={() => setShowMapboxSettings(false)}
-        />
-      )}
-
-      {/* Magic Link Modal */}
-      {showMagicLinkModal && (
-        <EmailMagicLink
-          onSuccess={handleMagicLinkSuccess}
-          onClose={() => setShowMagicLinkModal(false)}
-        />
-      )}
-    </div>
+        {/* Magic Link Modal */}
+        {showMagicLinkModal && (
+          <EmailMagicLink
+            onSuccess={handleMagicLinkSuccess}
+            onClose={() => setShowMagicLinkModal(false)}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

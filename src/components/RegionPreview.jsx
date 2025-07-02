@@ -9,7 +9,7 @@ const regionStats = {
     galleries: 3,
     legalWalls: 2,
     featuredArtists: 15,
-    image: '/center-street-art.jpg'
+    image: '/images/collage.png'
   },
   'North': {
     artworks: 18,
@@ -78,7 +78,7 @@ const RegionPreview = ({ region, onClose }) => {
         <h1 className="region-name">{regionName}</h1>
         
         <div className="region-description-box">
-          <p className="region-description">{region.description}</p>
+          <p className="region-description" dangerouslySetInnerHTML={{ __html: region.description }} />
         </div>
         
         {/* Stats and Map Container - Single White Box */}

@@ -8,9 +8,9 @@ const InfoModal = ({ isOpen, onClose }) => {
     <div className="info-modal-overlay" onClick={onClose}>
       <div className="info-modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="info-modal-header">
+        <div className="header-row">
           <div className="header-left">
-            <img src="images/sama-logo.png" alt="SAMA Logo" className="modal-logo" />
+            <img src="images/sama-logo.png" alt="SAMA Logo" className="sama-logo" />
             <div className="header-text">
               <span className="modal-subtitle">Street Art</span>
               <span className="modal-subtitle">Museum</span>
