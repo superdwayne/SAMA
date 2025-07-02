@@ -50,13 +50,21 @@ const regions = [
 function getRegionFeature(region) {
   // Map region id/title to amsterdamRegions feature
   const nameMap = {
-    'center': 'Center',   // Updated to use Center
+    'center': 'Centre',   // Map to 'Centre' (what's actually in the data)
     'north': 'North', 
     'east': 'East',
     'nieuw-west': 'Nieuw-West',
   };
   const regionName = nameMap[region.id];
-  return amsterdamRegions.features.find(f => f.properties.name === regionName);
+  
+  console.log('🗺 Looking for region feature with name:', regionName);
+  console.log('🗺 Available regions in amsterdamRegions:', 
+    amsterdamRegions.features.map(f => f.properties.name));
+  
+  const feature = amsterdamRegions.features.find(f => f.properties.name === regionName);
+  console.log('🗺 Found feature:', feature);
+  
+  return feature;
 }
 
 const Landing = () => {
@@ -72,10 +80,14 @@ const Landing = () => {
   // Check for existing access on component load
   useEffect(() => {
     const checkExistingAccess = () => {
+      console.log('🔍 Checking existing access on component load...');
+      
       // Check magic link access
       const magicAccess = magicLink.getCurrentAccess();
       if (magicAccess) {
+        console.log('✅ Found magic link access:', magicAccess);
         const regions = magicLink.getUnlockedRegions();
+        console.log('🎆 Magic link unlocked regions:', regions);
         setUnlockedRegions(regions);
         return;
       }
@@ -86,8 +98,13 @@ const Landing = () => {
         try {
           const data = JSON.parse(tokenData);
           if (Date.now() <= data.expiresAt) {
-            setUnlockedRegions(data.regions || ['East', 'Nieuw-West']);
+            console.log('✅ Found token-based access:', data);
+            const regions = data.regions || ['East', 'Nieuw-West'];
+            console.log('🎆 Token unlocked regions:', regions);
+            setUnlockedRegions(regions);
             return;
+          } else {
+            console.log('⏰ Token-based access expired');
           }
         } catch (e) {
           console.error('Error reading token data:', e);
@@ -100,6 +117,7 @@ const Landing = () => {
         try {
           const data = JSON.parse(streetArtAccess);
           if (Date.now() <= data.expiresAt) {
+            console.log('✅ Found street art access:', data);
             // Map the region name to our regions array
             const regionMap = {
               'Centre': 'Center',  // Map Stripe "Centre" to "Center"
@@ -109,13 +127,22 @@ const Landing = () => {
               'Nieuw-West': 'Nieuw-West'
             };
             const mappedRegion = regionMap[data.region] || data.region;
-            setUnlockedRegions(prev => [...new Set([...prev, mappedRegion])]);
+            console.log('🗺 Mapped region:', data.region, '→', mappedRegion);
+            setUnlockedRegions(prev => {
+              const newRegions = [...new Set([...prev, mappedRegion])];
+              console.log('🎆 Final unlocked regions:', newRegions);
+              return newRegions;
+            });
             return;
+          } else {
+            console.log('⏰ Street art access expired');
           }
         } catch (e) {
           console.error('Error reading street art access:', e);
         }
       }
+      
+      console.log('🎆 No access found, using default regions: ["East", "Nieuw-West"]');
     };
     
     checkExistingAccess();
@@ -200,6 +227,13 @@ const Landing = () => {
   const debugState = () => {
     console.log('=== DEBUG STATE ===');
     console.log('unlockedRegions:', unlockedRegions);
+    
+    // Show locked vs unlocked for each region
+    regions.forEach(region => {
+      const isUnlocked = isRegionUnlocked(region.title);
+      console.log(`${region.title}: ${isUnlocked ? '🔓 UNLOCKED' : '🔒 LOCKED'}`);
+    });
+    
     console.log('localStorage streetArtAccess:', localStorage.getItem('streetArtAccess'));
     console.log('localStorage amsterdam_map_access:', localStorage.getItem('amsterdam_map_access'));
     console.log('magicLink.getCurrentAccess():', magicLink.getCurrentAccess());
