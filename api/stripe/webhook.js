@@ -18,12 +18,16 @@ const generateMagicToken = () => {
 };
 
 // Store purchase in database
-async function storePurchase(session) {
+async function storePurchase(session, region) {
   try {
+    // Debug: Log what metadata we're working with
+    console.log('💾 Storing purchase - session metadata:', session.metadata);
+    console.log('💾 Region being stored:', region);
+    
     const purchaseData = {
       stripe_session_id: session.id,
       customer_email: session.customer_details.email.toLowerCase().trim(),
-      region: session.metadata.region || 'Center',
+      region: region,
       amount: session.amount_total,
       currency: session.currency,
       payment_status: 'completed',
@@ -218,16 +222,38 @@ module.exports = async (req, res) => {
       case 'checkout.session.completed':
         const session = event.data.object;
         const customerEmail = session.customer_details?.email;
-        const region = session.metadata?.region || 'Center';
+        
+        // Debug: Log the entire session metadata
+        console.log('🔍 Full session metadata:', JSON.stringify(session.metadata, null, 2));
+        console.log('🔍 Session metadata keys:', Object.keys(session.metadata || {}));
+        
+        let region = session.metadata?.region || 'Center';
+        
+        // If no metadata on session, check if this came from a payment link
+        if (!session.metadata?.region && session.payment_link) {
+          try {
+            console.log('🔗 Session came from payment link, fetching metadata...');
+            const paymentLink = await stripe.paymentLinks.retrieve(session.payment_link);
+            console.log('🔍 Payment link metadata:', JSON.stringify(paymentLink.metadata, null, 2));
+            region = paymentLink.metadata?.region || 'Center';
+            
+            // Log additional metadata for debugging
+            console.log('🔍 Payment link source:', paymentLink.metadata?.source);
+            console.log('🔍 Payment link auto_generate_token:', paymentLink.metadata?.auto_generate_token);
+          } catch (error) {
+            console.error('❌ Error fetching payment link metadata:', error);
+          }
+        }
         
         console.log('💳 Processing completed payment:');
         console.log('  Email:', customerEmail);
         console.log('  Region:', region);
         console.log('  Amount:', session.amount_total);
+        console.log('  Session ID:', session.id);
         
         if (customerEmail) {
           // Store purchase in database
-          await storePurchase(session);
+          await storePurchase(session, region);
           
           // Send confirmation email with magic link
           const baseUrl = req.headers.host ? 
