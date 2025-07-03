@@ -19,13 +19,25 @@ const Payment = ({ setUnlockedRegions }) => {
   };
   
   const info = regionInfo[region?.toLowerCase()] || regionInfo['centre'];
-  const displayRegion = region ? region.charAt(0).toUpperCase() + region.slice(1) : 'Centre';
+  
+  // Properly format region names to match Stripe links
+  const formatRegionName = (regionStr) => {
+    if (!regionStr) return 'Centre';
+    const lower = regionStr.toLowerCase();
+    if (lower === 'nieuw-west' || lower === 'new-west') return 'Nieuw-West';
+    if (lower === 'centre' || lower === 'center') return 'Centre';
+    if (lower === 'noord' || lower === 'north') return 'Noord';
+    if (lower === 'east' || lower === 'oost') return 'East';
+    return regionStr.charAt(0).toUpperCase() + regionStr.slice(1);
+  };
+  
+  const displayRegion = formatRegionName(region);
 
   const handlePayment = async () => {
     setProcessing(true);
     setError(null);
 
-    // Direct Stripe links for each region
+    // Direct Stripe links for each region (with embedded metadata)
     const stripeLinks = {
       'Centre': 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01',
       'Center': 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01', // Alternative spelling

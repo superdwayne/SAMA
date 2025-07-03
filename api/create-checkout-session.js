@@ -12,7 +12,9 @@ const REGION_PRICES = {
   'East': 'price_1RgmMdJ3urOr8HD7RodagBPn',  // East region (corrected)
   'Oost': 'price_1RgmMdJ3urOr8HD7RodagBPn',  // Same as East (Dutch spelling)
   'Nieuw-West': 'price_1RgmTNJ3urOr8HD72uzjhCvR', // Nieuw-West region
+  'Nieuw-west': 'price_1RgmTNJ3urOr8HD72uzjhCvR', // Same as Nieuw-West (lowercase w)
   'New-West': 'price_1RgmTNJ3urOr8HD72uzjhCvR',   // Same as Nieuw-West (English spelling)
+  'New-west': 'price_1RgmTNJ3urOr8HD72uzjhCvR',   // Same as Nieuw-West (English spelling, lowercase w)
   // Available for future regions:
   // 'West': 'price_1234567890',
   // 'South': 'price_1234567891',
