@@ -29,6 +29,10 @@ const Payment = ({ setUnlockedRegions }) => {
 
   return (
     <div className="payment-container-new">
+      {/* Back Button */}
+      <button className="popup-back-btn payment-back-btn" onClick={() => navigate(-1)} aria-label="Back">
+        <span className="back-arrow">←</span>
+      </button>
       {/* Main Content */}
       <div className="payment-content-new">
         {/* Header */}

@@ -658,3 +658,11 @@
     font-size: 1.5rem;
   }
 }
+
+.payment-back-btn {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 5000;
+  /* Inherit all .popup-back-btn styles */
+}
