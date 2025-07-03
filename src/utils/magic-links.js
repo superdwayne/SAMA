@@ -1,9 +1,29 @@
 // src/utils/magicLinkUtils.js
-// Simple magic link utilities
+// Simple magic link utilities with readable date formatting
 
 export class SimpleMagicLink {
   constructor() {
     this.accessKey = 'amsterdam_map_access';
+  }
+
+  // Helper function to format timestamps
+  formatTimestamp(timestamp) {
+    return new Date(timestamp).toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+  }
+
+  // Helper function to get days remaining
+  getDaysRemaining(expiresAt) {
+    const remaining = expiresAt - Date.now();
+    if (remaining <= 0) return 0;
+    return Math.ceil(remaining / (24 * 60 * 60 * 1000));
   }
 
   // Check for magic link in URL
@@ -59,7 +79,16 @@ export class SimpleMagicLink {
     };
     
     localStorage.setItem(this.accessKey, JSON.stringify(accessData));
-    console.log('✅ Saved access data:', accessData);
+    
+    // Log readable information
+    console.log('✅ Access granted:', {
+      email: accessData.email,
+      regions: accessData.regions,
+      hasPurchased: accessData.hasPurchased,
+      accessedOn: this.formatTimestamp(accessData.accessedAt),
+      expiresOn: this.formatTimestamp(accessData.expiresAt),
+      daysOfAccess: this.getDaysRemaining(accessData.expiresAt)
+    });
   }
 
   // Get current access
@@ -104,10 +133,34 @@ export class SimpleMagicLink {
     const access = this.getCurrentAccess();
     if (!access) return 0;
     
-    const remaining = access.expiresAt - Date.now();
-    if (remaining <= 0) return 0;
-    
-    return Math.ceil(remaining / (24 * 60 * 60 * 1000));
+    return this.getDaysRemaining(access.expiresAt);
+  }
+
+  // Get readable access info
+  getReadableAccess() {
+    const access = this.getCurrentAccess();
+    if (!access) return null;
+
+    return {
+      email: access.email,
+      regions: access.regions,
+      hasPurchased: access.hasPurchased,
+      accessedOn: this.formatTimestamp(access.accessedAt),
+      expiresOn: this.formatTimestamp(access.expiresAt),
+      daysRemaining: this.getDaysRemaining(access.expiresAt),
+      isExpired: Date.now() > access.expiresAt
+    };
+  }
+
+  // Log readable access info to console
+  logAccessInfo() {
+    const readable = this.getReadableAccess();
+    if (readable) {
+      console.log('📅 Current Access Information:', readable);
+    } else {
+      console.log('❌ No access found');
+    }
+    return readable;
   }
 
   // Clear access
@@ -127,3 +180,16 @@ export class SimpleMagicLink {
 
 // Create singleton instance
 export const magicLink = new SimpleMagicLink();
+
+// Global helper functions for browser console
+if (typeof window !== 'undefined') {
+  // Make helper functions available in browser console
+  window.showMyAccess = () => magicLink.logAccessInfo();
+  window.getReadableAccess = () => magicLink.getReadableAccess();
+  window.formatTimestamp = (timestamp) => magicLink.formatTimestamp(timestamp);
+  
+  console.log('🔧 Helper functions available:');
+  console.log('- showMyAccess() - Shows your current access in readable format');
+  console.log('- getReadableAccess() - Returns readable access object');
+  console.log('- formatTimestamp(timestamp) - Converts timestamp to readable date');
+}
