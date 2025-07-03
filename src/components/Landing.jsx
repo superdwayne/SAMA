@@ -42,7 +42,7 @@ const regions = [
     description: 'Emerging street art destination with fresh perspectives', 
     latitude: 52.3700, 
     longitude: 4.8100, 
-    isFree: false,  // No longer free
+    isFree: true,  // This region is free
     image: '/images/center.png' 
   },
 ];
@@ -72,7 +72,7 @@ const Landing = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
-  const [unlockedRegions, setUnlockedRegions] = useState([]); // Start with all regions locked
+  const [unlockedRegions, setUnlockedRegions] = useState(['Nieuw-West']); // Nieuw-West is free, others require purchase
   const navigate = useNavigate();
   const location = useLocation();
   const [regionFeature, setRegionFeature] = useState(null);
@@ -289,8 +289,8 @@ const Landing = () => {
     console.log('🔓 isRegionUnlocked(region.title):', isRegionUnlocked(region.title));
     console.log('🎆 unlockedRegions:', unlockedRegions);
     
-    if (isRegionUnlocked(region.title)) {
-      // For unlocked regions, go to the region-specific map
+    if (region.isFree || isRegionUnlocked(region.title)) {
+      // For free regions or unlocked regions, go to the region-specific map
       console.log('✅ Going to map for region:', region.title);
       navigate(`/map?region=${region.title}`);
     } else {
@@ -433,10 +433,10 @@ const Landing = () => {
                         />
                       )}
                       <button
-                        className={`region-action-btn region-action-btn-overlay${isRegionUnlocked(region.title) ? ' open-map-btn unlocked-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
-                        {isRegionUnlocked(region.title) ? 'Open map' : 'Get it now'}
+                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
                       </button>
                     </>
                   ) : (
@@ -445,10 +445,10 @@ const Landing = () => {
                         <span className="placeholder-text">Image Coming Soon</span>
                       </div>
                       <button
-                        className={`region-action-btn region-action-btn-overlay${isRegionUnlocked(region.title) ? ' open-map-btn unlocked-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                       >
-                        {isRegionUnlocked(region.title) ? 'Open map' : 'Get it now'}
+                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
                       </button>
                     </>
                   )}
@@ -456,10 +456,10 @@ const Landing = () => {
               </div>
             </div>
             {/* Lock/Unlock icon at bottom left */}
-            <div className={`region-lock-badge${isRegionUnlocked(region.title) ? ' unlocked' : ''}`}>
+            <div className={`region-lock-badge${(region.isFree || isRegionUnlocked(region.title)) ? ' unlocked' : ''}`}>
               <img
-                src={isRegionUnlocked(region.title) ? '/images/unlocked.png' : '/images/locked.png'}
-                alt={isRegionUnlocked(region.title) ? 'Unlocked' : 'Locked'}
+                src={(region.isFree || isRegionUnlocked(region.title)) ? '/images/unlocked.png' : '/images/locked.png'}
+                alt={(region.isFree || isRegionUnlocked(region.title)) ? 'Unlocked' : 'Locked'}
                 className="region-lock-icon"
               />
             </div>

@@ -17,6 +17,7 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.2.0",
+    "@supabase/supabase-js": "^2.50.3",
     "axios": "^1.6.2",
     "firebase": "^10.7.1",
     "jq": "^1.7.2",

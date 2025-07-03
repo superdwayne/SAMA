@@ -16,7 +16,7 @@ import './App.css';
 import './components/RegionPreview.css'; // Force load RegionPreview styles
 
 function App() {
-  const [unlockedRegions, setUnlockedRegions] = useState([]); // Start with no regions unlocked
+  const [unlockedRegions, setUnlockedRegions] = useState(['Nieuw-West']); // Nieuw-West is free
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

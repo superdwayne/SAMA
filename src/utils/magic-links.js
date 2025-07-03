@@ -86,10 +86,11 @@ export class SimpleMagicLink {
   // Get unlocked regions
   getUnlockedRegions() {
     const access = this.getCurrentAccess();
-    if (!access) return []; // No free regions - everything locked by default
+    if (!access) return ['Nieuw-West']; // Nieuw-West is always free
     
-    // Return only the specific regions they have access to
-    return access.regions || [];
+    // Return Nieuw-West + any purchased regions
+    const purchasedRegions = access.regions || [];
+    return ['Nieuw-West', ...purchasedRegions.filter(region => region !== 'Nieuw-West')];
   }
 
   // Get user email
