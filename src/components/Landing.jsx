@@ -10,8 +10,8 @@ import './Landing.css';
 // Updated region data - all regions now require purchase
 const regions = [
   { 
-    id: 'center', 
-    title: 'Center', 
+    id: 'centre', 
+    title: 'Centre', 
     description: 'Tourists, tags & tension. </br> The city\'s loudest gallery', 
     latitude: 52.3728, 
     longitude: 4.8936, 
@@ -19,9 +19,9 @@ const regions = [
     image: '/images/center.png'
   },
   { 
-    id: 'north', 
-    title: 'North', 
-    description: 'From shipyards to street art. North is culture unleashed', 
+    id: 'noord', 
+    title: 'Noord', 
+    description: 'From shipyards to street art. Noord is culture unleashed', 
     latitude: 52.4000, 
     longitude: 4.9000, 
     isFree: false,
@@ -50,8 +50,8 @@ const regions = [
 function getRegionFeature(region) {
   // Map region id/title to amsterdamRegions feature
   const nameMap = {
-    'center': 'Centre',   // Map to 'Centre' (what's actually in the data)
-    'north': 'North', 
+    'centre': 'Centre',   // Match database naming
+    'noord': 'Noord', 
     'east': 'East',
     'nieuw-west': 'Nieuw-West',
   };
@@ -120,9 +120,10 @@ const Landing = () => {
             console.log('✅ Found street art access:', data);
             // Map the region name to our regions array
             const regionMap = {
-              'Centre': 'Center',  // Map Stripe "Centre" to "Center"
-              'Center': 'Center', 
-              'North': 'North',
+              'Centre': 'Centre',  // Keep Centre as Centre
+              'Center': 'Centre',  // Map Center to Centre 
+              'Noord': 'Noord',    // Keep Noord as Noord
+              'North': 'Noord',    // Map North to Noord
               'East': 'East',
               'Nieuw-West': 'Nieuw-West'
             };
