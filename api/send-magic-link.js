@@ -1,7 +1,15 @@
-// api/send-magic-link.js
-// Simple magic link that works on serverless
-
 const sgMail = require('@sendgrid/mail');
+const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
+
+// Initialize SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -19,7 +27,8 @@ export default async function handler(req, res) {
     const normalizedEmail = email.toLowerCase().trim();
     console.log('📧 Normalized email:', normalizedEmail);
     
-    const purchaseData = checkPurchaseHistory(normalizedEmail);
+    // Check purchase history in database
+    const purchaseData = await checkPurchaseHistory(normalizedEmail);
     console.log('💳 Purchase data result:', purchaseData);
     
     if (!purchaseData.found) {
@@ -30,92 +39,131 @@ export default async function handler(req, res) {
         code: 'NO_PURCHASE_FOUND',
         email: normalizedEmail
       });
-    } else if (!purchaseData.hasPurchased) {
-      console.log('❌ Purchase required, returning 403');
+    }
+
+    if (purchaseData.regions.length === 0) {
+      console.log('❌ No regions purchased, returning 403');
       return res.status(403).json({
-        error: 'Purchase required',
+        error: 'No regions purchased',
         message: 'You need to purchase access to unlock premium regions. Please make a purchase first.',
-        code: 'PURCHASE_REQUIRED',
+        code: 'NO_REGIONS_PURCHASED',
         email: normalizedEmail
-      });
-    } else {
-      console.log('✅ Purchase found, sending magic link');
-      // Create a simple magic token with email and timestamp embedded
-      const magicToken = createMagicToken(normalizedEmail, purchaseData);
-      // Create magic link URL
-      const magicLinkUrl = `${req.headers.origin || 'https://amsterdamstreetart-byu4ocgn-dpms-projects-8cd1083b.vercel.app'}?magic=${magicToken}`;
-      // Send email
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-      const emailSent = await sendMagicLinkEmail(normalizedEmail, magicLinkUrl, purchaseData.hasPurchased);
-      if (!emailSent) {
-        throw new Error('Failed to send email');
-      }
-      res.status(200).json({
-        success: true,
-        message: 'Magic link sent successfully!',
-        hasPurchased: purchaseData.hasPurchased
       });
     }
 
+    console.log('✅ Purchase found, sending magic link');
+    
+    // Create magic link
+    const magicToken = await createMagicLink(normalizedEmail);
+    const magicLinkUrl = `${req.headers.origin || 'https://www.streetartmapamsterdam.nl'}?magic=${magicToken}`;
+    
+    // Send email
+    const emailSent = await sendMagicLinkEmail(normalizedEmail, magicLinkUrl, purchaseData);
+    
+    if (!emailSent) {
+      throw new Error('Failed to send email');
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Magic link sent successfully!',
+      regions: purchaseData.regions
+    });
+
   } catch (error) {
-    console.error('Magic link error:', error);
+    console.error('❌ Magic link error:', error);
     res.status(500).json({ 
-      error: 'Failed to send magic link. Please try again.' 
+      error: 'Failed to send magic link. Please try again.',
+      details: error.message 
     });
   }
 }
 
-// Check purchase history
-function checkPurchaseHistory(email) {
-  // TESTING: Only these emails have purchases
-  const purchasedEmails = {
-    'superdwayne@gmail.com': { 
-      hasPurchased: true, 
-      regions: ['Center']  // Only Center purchased for testing
+// Check purchase history from database
+async function checkPurchaseHistory(email) {
+  try {
+    console.log(`🔎 Checking purchase history for: "${email}"`);
+    
+    const { data: purchases, error } = await supabase
+      .from('purchases')
+      .select('*')
+      .eq('customer_email', email)
+      .eq('payment_status', 'completed');
+    
+    if (error) {
+      console.error('❌ Database error:', error);
+      throw error;
     }
-    // NO OTHER EMAILS HAVE PURCHASES FOR TESTING
-  };
-  
-  console.log(`🔎 Checking purchase history for: "${email}"`);
-  console.log(`💰 Emails with purchases:`, Object.keys(purchasedEmails));
-  console.log(`🎯 Email match check: ${email} in list? ${email in purchasedEmails}`);
-  
-  if (purchasedEmails[email]) {
-    console.log(`✅ FOUND purchase for ${email}:`, purchasedEmails[email]);
+    
+    if (!purchases || purchases.length === 0) {
+      console.log(`❌ No purchases found for "${email}"`);
+      return {
+        found: false,
+        regions: []
+      };
+    }
+    
+    // Extract unique regions
+    const regions = [...new Set(purchases.map(p => p.region))];
+    
+    console.log(`✅ Found ${purchases.length} purchases for ${email}:`, regions);
     return {
       found: true,
-      hasPurchased: true,
-      ...purchasedEmails[email]
+      regions,
+      purchaseCount: purchases.length,
+      purchases: purchases.map(p => ({
+        region: p.region,
+        date: p.created_at,
+        amount: p.amount
+      }))
+    };
+    
+  } catch (error) {
+    console.error('❌ Error checking purchase history:', error);
+    return {
+      found: false,
+      regions: []
     };
   }
-  
-  console.log(`❌ NO PURCHASE found for "${email}" - should return 404`);
-  // No purchase record found
-  return {
-    found: false,
-    hasPurchased: false
-  };
 }
 
-// Create magic token with embedded data (no storage needed)
-function createMagicToken(email, purchaseData) {
-  const data = {
-    email,
-    hasPurchased: purchaseData.hasPurchased,
-    regions: purchaseData.regions || ['East'],
-    timestamp: Date.now()
-  };
-  
-  // Encode data in the token itself
-  const payload = JSON.stringify(data);
-  return Buffer.from(payload).toString('base64').replace(/[+/=]/g, '');
+// Create and store magic link token
+async function createMagicLink(email) {
+  try {
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+    
+    const { data, error } = await supabase
+      .from('magic_links')
+      .insert([{
+        email: email.toLowerCase().trim(),
+        token,
+        expires_at: expiresAt.toISOString(),
+        used: false
+      }])
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('❌ Error creating magic link:', error);
+      throw error;
+    }
+    
+    console.log('✅ Magic link created:', data.id);
+    return token;
+    
+  } catch (error) {
+    console.error('❌ Failed to create magic link:', error);
+    throw error;
+  }
 }
 
 // Send magic link email
-async function sendMagicLinkEmail(email, magicLinkUrl, hasPurchased) {
-  const subject = hasPurchased 
-    ? '🎨 Your Amsterdam Street Art Map Access Link'
-    : '🎨 Welcome to Amsterdam Street Art Map';
+async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
+  const regions = purchaseData.regions;
+  const regionText = regions.length === 1 ? 
+    `the ${regions[0]} region` : 
+    `${regions.length} regions: ${regions.join(', ')}`;
 
   const html = `
     <!DOCTYPE html>
@@ -124,30 +172,36 @@ async function sendMagicLinkEmail(email, magicLinkUrl, hasPurchased) {
       <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 12px 12px 0 0; }
-        .content { padding: 40px 20px; background: white; border: 1px solid #ddd; }
-        .access-button { display: inline-block; background: #3498db; color: white; padding: 16px 32px; text-decoration: none; border-radius: 10px; font-weight: bold; margin: 20px 0; }
-        .status-box { background: ${hasPurchased ? '#d4edda' : '#fff3cd'}; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
-        .warning { background: #fff3cd; padding: 15px; border-radius: 6px; margin: 20px 0; }
+        .content { padding: 40px 20px; background: white; border: 1px solid #ddd; border-radius: 0 0 12px 12px; }
+        .access-button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; font-size: 18px; }
+        .access-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .status-box { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
+        .regions-list { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .warning { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 15px; border-radius: 6px; margin: 20px 0; }
         .button-container { text-align: center; margin: 30px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+        .region-badge { display: inline-block; background: #667eea; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin: 2px; }
       </style>
     </head>
     <body>
       <div class="header">
         <h1>🎨 Amsterdam Street Art Map</h1>
-        <p>Your magic access link is ready!</p>
+        <p>Your access link is ready!</p>
       </div>
+      
       <div class="content">
-        ${hasPurchased ? `
-          <div class="status-box">
-            <h2>🎉 Welcome Back!</h2>
-            <p>We found your previous purchase! You have full access to all map regions.</p>
-          </div>
-        ` : `
-          <div class="status-box">
-            <h2>🗺️ Welcome!</h2>
-            <p>You'll have access to the East region (free) and can purchase additional regions once inside.</p>
-          </div>
-        `}
+        <div class="status-box">
+          <h2>🎉 Welcome Back!</h2>
+          <p>We found your purchase history! You have access to ${regionText}.</p>
+        </div>
+        
+        <div class="regions-list">
+          <h3>Your Accessible Regions:</h3>
+          <p>
+            ${regions.map(region => `<span class="region-badge">${region}</span>`).join('')}
+          </p>
+          <p><small>You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.</small></p>
+        </div>
         
         <h2>Ready to explore Amsterdam's street art?</h2>
         <p>Click the button below to access your interactive map:</p>
@@ -157,8 +211,22 @@ async function sendMagicLinkEmail(email, magicLinkUrl, hasPurchased) {
         </div>
         
         <div class="warning">
-          ⏰ <strong>Important:</strong> This magic link expires in 10 minutes and can only be used once.
+          <p><strong>⏰ Important:</strong></p>
+          <ul>
+            <li>This magic link expires in <strong>30 minutes</strong></li>
+            <li>Can only be used <strong>once</strong></li>
+            <li>Your access will be permanent after activation</li>
+            <li>You can always request a new magic link with this email</li>
+          </ul>
         </div>
+        
+        <p>Can't click the button? Copy and paste this link:<br>
+        <code style="background: #f8f9fa; padding: 8px; border-radius: 4px; font-size: 12px; word-break: break-all;">${magicLinkUrl}</code></p>
+      </div>
+      
+      <div class="footer">
+        <p>© 2024 Amsterdam Street Art Map</p>
+        <p>Need help? Reply to this email or contact us at info@streetartmapamsterdam.com</p>
       </div>
     </body>
     </html>
@@ -170,15 +238,16 @@ async function sendMagicLinkEmail(email, magicLinkUrl, hasPurchased) {
       email: process.env.SENDER_EMAIL || 'admin@creativetechnologists.nl',
       name: 'Amsterdam Street Art Map'
     },
-    subject: subject,
+    subject: `🎨 Your Amsterdam Street Art Map Access Link`,
     html: html
   };
 
   try {
     await sgMail.send(msg);
+    console.log('✅ Magic link email sent to:', email);
     return true;
   } catch (error) {
-    console.error('SendGrid error:', error);
+    console.error('❌ SendGrid error:', error);
     return false;
   }
 }
