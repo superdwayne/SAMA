@@ -10,7 +10,8 @@ export const amsterdamRegions = {
         galleryCount: 3,
         legalWallCount: 2,
         artistCount: 15,
-        featuredInfo: 'Home to STRAAT Museum and numerous hidden gems in the Jordaan neighborhood.'
+        featuredInfo: 'Home to STRAAT Museum and numerous hidden gems in the Jordaan neighborhood.',
+        aliases: ['Center'] // Alternative names
       },
       geometry: {
         type: 'Polygon',
@@ -26,13 +27,14 @@ export const amsterdamRegions = {
     {
       type: 'Feature',
       properties: {
-        name: 'North',
+        name: 'Noord',
         description: 'Amsterdam Noord is the street art capital with massive murals and the famous NDSM wharf.',
         artworkCount: 40,
         galleryCount: 5,
         legalWallCount: 4,
         artistCount: 25,
-        featuredInfo: 'NDSM wharf is a creative hub with legal walls and stunning large-scale murals.'
+        featuredInfo: 'NDSM wharf is a creative hub with legal walls and stunning large-scale murals.',
+        aliases: ['North'] // Alternative names
       },
       geometry: {
         type: 'Polygon',
@@ -54,7 +56,8 @@ export const amsterdamRegions = {
         galleryCount: 2,
         legalWallCount: 1,
         artistCount: 12,
-        featuredInfo: 'Visit MOCO Museum for contemporary street art exhibitions.'
+        featuredInfo: 'Visit MOCO Museum for contemporary street art exhibitions.',
+        aliases: ['Zuid']
       },
       geometry: {
         type: 'Polygon',
@@ -76,7 +79,8 @@ export const amsterdamRegions = {
         galleryCount: 2,
         legalWallCount: 3,
         artistCount: 18,
-        featuredInfo: 'Javastraat and Dappermarkt area showcase international street art styles.'
+        featuredInfo: 'Javastraat and Dappermarkt area showcase international street art styles.',
+        aliases: ['Oost']
       },
       geometry: {
         type: 'Polygon',
@@ -98,7 +102,8 @@ export const amsterdamRegions = {
         galleryCount: 3,
         legalWallCount: 2,
         artistCount: 14,
-        featuredInfo: 'The Westerpark area hosts regular street art festivals and events.'
+        featuredInfo: 'The Westerpark area hosts regular street art festivals and events.',
+        aliases: ['Westerpark']
       },
       geometry: {
         type: 'Polygon',
@@ -120,7 +125,8 @@ export const amsterdamRegions = {
         galleryCount: 1,
         legalWallCount: 2,
         artistCount: 10,
-        featuredInfo: 'Bijlmer area features powerful community-driven street art projects.'
+        featuredInfo: 'Bijlmer area features powerful community-driven street art projects.',
+        aliases: ['Zuidoost']
       },
       geometry: {
         type: 'Polygon',
@@ -142,7 +148,8 @@ export const amsterdamRegions = {
         galleryCount: 1,
         legalWallCount: 3,
         artistCount: 8,
-        featuredInfo: 'Sloterplas area features new generation street artists and experimental works.'
+        featuredInfo: 'Sloterplas area features new generation street artists and experimental works.',
+        aliases: ['New-West']
       },
       geometry: {
         type: 'Polygon',

@@ -1,4 +1,4 @@
-// Updated authentication utilities with database-backed magic links
+// Updated authentication utilities with strict region locking
 
 // Token structure: {token: string, expiresAt: timestamp, regions: array, email: string}
 export const checkAccessToken = async () => {
@@ -43,18 +43,18 @@ export const validateMagicLink = async (magicToken) => {
     if (response.ok && result.success) {
       console.log('✅ Magic link validated successfully');
       
-      // Save the access data
+      // Save the access data - ONLY purchased regions
       const accessData = {
         token: magicToken,
         expiresAt: result.expiresAt,
-        regions: result.regions,
+        regions: result.regions, // Only regions from purchases
         email: result.email,
         createdAt: Date.now()
       };
       
       localStorage.setItem('streetArtMapTokenData', JSON.stringify(accessData));
       localStorage.setItem('userEmail', result.email);
-      saveUnlockedRegions(result.regions);
+      saveUnlockedRegions(result.regions); // Only purchased regions
       
       return { 
         valid: true, 
@@ -199,7 +199,9 @@ export const handleMagicLinkAuth = async () => {
 
 // Show success message after authentication
 function showAuthSuccessMessage(email, regions) {
-  const message = `🎉 Welcome! You now have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}`;
+  const message = regions.length > 0 
+    ? `🎉 Welcome! You now have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}`
+    : `🎉 Welcome! Please purchase a region to start exploring Amsterdam's street art.`;
   
   // Create and show a temporary success notification
   const notification = document.createElement('div');
@@ -266,7 +268,7 @@ export const saveAccessToken = (token, regions, email = null) => {
   const tokenData = {
     token,
     expiresAt: Date.now() + (365 * 24 * 60 * 60 * 1000), // 1 year from now
-    regions,
+    regions, // Only purchased regions, no freebies
     createdAt: Date.now(),
     email
   };
@@ -275,7 +277,7 @@ export const saveAccessToken = (token, regions, email = null) => {
   if (email) {
     localStorage.setItem('userEmail', email);
   }
-  saveUnlockedRegions(regions);
+  saveUnlockedRegions(regions); // Only purchased regions
 };
 
 export const getTokenData = () => {
@@ -297,24 +299,37 @@ export const getUserEmail = () => {
   return data?.email || localStorage.getItem('userEmail');
 };
 
+// UPDATED: No free regions - all regions must be purchased
 export const getUnlockedRegions = () => {
   const regions = localStorage.getItem('unlockedRegions');
   if (!regions) {
-    return ['Nieuw-West']; // Default free region
+    return []; // NO FREE REGIONS
   }
   try {
     const parsed = JSON.parse(regions);
-    // Always include the free region
-    return [...new Set([...parsed, 'Nieuw-West'])];
+    return parsed; // Return only purchased regions
   } catch {
-    return ['Nieuw-West'];
+    return [];
   }
 };
 
+// UPDATED: Save only purchased regions
 export const saveUnlockedRegions = (regions) => {
-  // Always include the free region
-  const allRegions = [...new Set([...regions, 'Nieuw-West'])];
-  localStorage.setItem('unlockedRegions', JSON.stringify(allRegions));
+  // Save only the purchased regions, no automatic free regions
+  localStorage.setItem('unlockedRegions', JSON.stringify(regions));
+};
+
+// Check if user has access to a specific region
+export const hasRegionAccess = (regionName) => {
+  const unlockedRegions = getUnlockedRegions();
+  return unlockedRegions.includes(regionName);
+};
+
+// Get list of locked regions
+export const getLockedRegions = () => {
+  const allRegions = ['Centre', 'Noord', 'East', 'Nieuw-West', 'West', 'South', 'South-East'];
+  const unlockedRegions = getUnlockedRegions();
+  return allRegions.filter(region => !unlockedRegions.includes(region));
 };
 
 export const getRemainingDays = () => {

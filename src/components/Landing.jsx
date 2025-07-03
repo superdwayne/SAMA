@@ -42,7 +42,7 @@ const regions = [
     description: 'Emerging street art destination with fresh perspectives', 
     latitude: 52.3700, 
     longitude: 4.8100, 
-    isFree: true,  // This region is free
+    isFree: false,  // Now requires purchase like all others
     image: '/images/center.png' 
   },
 ];
@@ -72,7 +72,7 @@ const Landing = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
-  const [unlockedRegions, setUnlockedRegions] = useState(['Nieuw-West']); // Nieuw-West is free, others require purchase
+  const [unlockedRegions, setUnlockedRegions] = useState([]); // No free regions - all require purchase
   const navigate = useNavigate();
   const location = useLocation();
   const [regionFeature, setRegionFeature] = useState(null);

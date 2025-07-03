@@ -10,15 +10,17 @@ import QuickTest from './components/QuickTest';
 import Success from './components/Success';
 import ActivatePage from './pages/ActivatePage';
 import Landing from './components/Landing';
+import NoAccessPrompt from './components/NoAccessPrompt';
 
 import { checkAccessToken, getUnlockedRegions, handleMagicLinkAuth } from './utils/auth';
 import './App.css';
 import './components/RegionPreview.css'; // Force load RegionPreview styles
 
 function App() {
-  const [unlockedRegions, setUnlockedRegions] = useState(['Nieuw-West']); // Nieuw-West is free
+  const [unlockedRegions, setUnlockedRegions] = useState([]); // 🔒 NO FREE REGIONS
   const [isLoading, setIsLoading] = useState(true);
   const [authMessage, setAuthMessage] = useState(null);
+  const [showNoAccess, setShowNoAccess] = useState(false);
 
   useEffect(() => {
     // Check which regions user has access to
@@ -30,25 +32,42 @@ function App() {
         if (magicLinkResult.success) {
           // Magic link authentication successful
           const regions = magicLinkResult.regions;
-          const allRegions = [...new Set([...regions, 'Nieuw-West'])]; // Always include free region
-          setUnlockedRegions(allRegions);
-          setAuthMessage({
-            type: 'success',
-            message: `Welcome! You now have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}`
-          });
+          setUnlockedRegions(regions); // Only purchased regions
+          
+          if (regions.length > 0) {
+            setAuthMessage({
+              type: 'success',
+              message: `Welcome! You now have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}`
+            });
+            setShowNoAccess(false);
+          } else {
+            setAuthMessage({
+              type: 'success',
+              message: 'Authentication successful! Please purchase a region to start exploring.'
+            });
+            setShowNoAccess(true);
+          }
         } else if (magicLinkResult.error && magicLinkResult.error !== 'No magic link found') {
           // Magic link authentication failed
           setAuthMessage({
             type: 'error',
             message: `Authentication failed: ${magicLinkResult.error}`
           });
+          setShowNoAccess(true);
         }
         
         // Check existing access token
         const hasAccess = await checkAccessToken();
         if (hasAccess) {
           const regions = getUnlockedRegions();
-          setUnlockedRegions(regions);
+          setUnlockedRegions(regions); // Only purchased regions
+          
+          console.log('🔑 User has access to regions:', regions);
+          setShowNoAccess(regions.length === 0);
+        } else {
+          console.log('🔒 No existing access found - all regions locked');
+          setUnlockedRegions([]); // Ensure no regions are unlocked
+          setShowNoAccess(true);
         }
       } catch (error) {
         console.error('Error during authentication check:', error);
@@ -56,6 +75,8 @@ function App() {
           type: 'error',
           message: 'Authentication error. Please try again.'
         });
+        setUnlockedRegions([]); // Ensure no regions are unlocked on error
+        setShowNoAccess(true);
       } finally {
         setIsLoading(false);
       }
@@ -97,6 +118,11 @@ function App() {
               </button>
             </div>
           </div>
+        )}
+
+        {/* Show no access prompt when user has no unlocked regions and is on map route */}
+        {showNoAccess && window.location.pathname === '/map' && (
+          <NoAccessPrompt onRequestMagicLink={() => setShowNoAccess(false)} />
         )}
 
         <Routes>

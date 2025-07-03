@@ -9,7 +9,7 @@ const UnlockPrompt = ({ region, onUnlock, onClose }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/create-checkout-session`, {
+      const response = await fetch(`/api/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ region: region.name }),
@@ -72,14 +72,22 @@ const UnlockPrompt = ({ region, onUnlock, onClose }) => {
           {error && <p className="unlock-error">{error}</p>}
           
           <p className="unlock-note">
-            You'll receive a unique access token via email after payment
+            You'll receive a magic link via email after payment for instant access
           </p>
         </div>
         
-        <p className="continue-free">
-          <button className="text-button" onClick={onClose} disabled={loading}>
-            Continue exploring free areas
+        <div className="alternative-options">
+          <p className="or-text">Or</p>
+          <button className="text-button request-magic-link" onClick={() => {
+            // Navigate to magic link request
+            window.location.href = '/token';
+          }}>
+            🔗 Already purchased? Request Magic Link
           </button>
+        </div>
+        
+        <p className="premium-note">
+          <strong>🎨 Premium Experience:</strong> All regions require purchase to access Amsterdam's best street art locations.
         </p>
       </div>
     </div>
