@@ -183,7 +183,11 @@ function getRawBody(req) {
 }
 
 module.exports = async (req, res) => {
-  console.log('🔔 Stripe webhook received');
+  console.log('🔔 Stripe webhook received - START');
+  console.log('🔍 Request method:', req.method);
+  console.log('🔍 Request headers:', JSON.stringify(req.headers, null, 2));
+  console.log('🔍 Request body type:', typeof req.body);
+  console.log('🔍 Request body preview:', req.body ? String(req.body).substring(0, 200) : 'No body');
   
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');

@@ -74,14 +74,31 @@ app.post('/api/stripe/webhook', async (req, res) => {
     
     const customerEmail = session.customer_details?.email || session.customer_email;
     const accessToken = session.metadata?.access_token;
-    const region = session.metadata?.region;
+    let region = session.metadata?.region;
     
     console.log('📧 Customer email:', customerEmail);
     console.log('🔑 Access token from metadata:', accessToken);
-    console.log('🗺️ Region from metadata:', region);
+    console.log('🗺️ Region from session metadata:', region);
+    
+    // If no metadata on session, check if this came from a payment link
+    if (!region && session.payment_link) {
+      try {
+        console.log('🔗 Session came from payment link, fetching metadata...');
+        const paymentLink = await stripe.paymentLinks.retrieve(session.payment_link);
+        console.log('🔍 Payment link metadata:', JSON.stringify(paymentLink.metadata, null, 2));
+        region = paymentLink.metadata?.region || 'Center';
+        
+        // Log additional metadata for debugging
+        console.log('🔍 Payment link source:', paymentLink.metadata?.source);
+        console.log('🔍 Payment link auto_generate_token:', paymentLink.metadata?.auto_generate_token);
+      } catch (error) {
+        console.error('❌ Error fetching payment link metadata:', error);
+      }
+    }
     
     // Check if this is a hardcoded payment link with metadata
-    const isHardcodedLink = session.metadata?.source === 'hardcoded_link' || session.metadata?.auto_generate_token === 'true';
+    const isHardcodedLink = session.metadata?.source === 'hardcoded_link' || session.metadata?.auto_generate_token === 'true' || 
+                           (session.payment_link && !accessToken); // Also detect payment links without explicit source
     
     // For hardcoded links with region metadata, generate token
     if (isHardcodedLink && region && customerEmail) {

@@ -1,4 +1,5 @@
 chmod +x debug-webhook.sh
+chmod +x debug-webhook-detailed.sh
 chmod +x test-flow.sh
 chmod +x fix-pending-tokens.sh
 chmod +x test-webhook.sh
