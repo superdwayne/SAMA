@@ -94,8 +94,7 @@
 
 .payment-success-modal {
   background: white;
-  border-radius: 20px;
-  padding: 40px 32px;
+  padding: 20px;
   max-width: 400px;
   width: 100%;
   text-align: center;
@@ -128,13 +127,15 @@
 
 .success-message {
   margin-bottom: 30px;
-}
-
-.success-message p {
-  color: #374151;
-  font-size: 16px;
+  background-color: #FAE0DF;
+  border-radius: 0px !important;
+  border: none !important;
+  color: #3416D8;
+  font-size: 14px;
   line-height: 1.5;
   margin: 8px 0;
+  font-family: 'PPNeueMachina-PlainRegular', Arial, sans-serif;
+  text-align: left;
 }
 
 .success-steps {
@@ -150,41 +151,42 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  background: #D2E3F2;
+  border-radius: 0px;
+  border: 1px solid #D2E3F2;
 }
 
 .step-number {
   background: #1e40af;
   color: white;
   font-weight: bold;
-  font-size: 14px;
-  width: 24px;
-  height: 24px;
+  font-size: 18px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  font-family: 'PPNeueMachina-PlainUltrabold', Arial, sans-serif;
 }
 
 .step-text {
-  color: #374151;
-  font-size: 15px;
-  font-weight: 500;
+  color: #3416D8;
+  font-size: 16px;
+  font-family: 'PPNeueMachina-PlainRegular', Arial, sans-serif;
 }
 
 .close-success-btn {
-  background: #1e40af;
+  background: #3416D8;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 0px;
   padding: 14px 32px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-family: 'PPNeueMachina-InktrapUltrabold', Arial, sans-serif;
   width: 100%;
 }
 
@@ -205,6 +207,8 @@
   
   .success-message p {
     font-size: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 }
 
@@ -1096,19 +1100,6 @@
 .region-lock-icon {
   width: 20px;
   height: 20px;
-}
-
-@font-face {
-  font-family: 'PP Neue Machina';
-  src: url('/fonts/PPNeueMachina-PlainRegular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'PP Neue Machina';
-  src: url('/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
 }
 
 .main-title, .title-line, .region-title-new {

@@ -472,7 +472,8 @@
 
 .success-message {
   text-align: center;
-  padding: 40px;
+  padding: 20px;
+  color: #3416D8;
 }
 
 .success-icon {
@@ -481,7 +482,7 @@
 }
 
 .success-message h2 {
-  color: #4caf50;
+  color: #FAE0DF;
   margin-bottom: 20px;
 }
 

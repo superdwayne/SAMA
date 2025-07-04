@@ -17,15 +17,22 @@ const Success = () => {
         padding: '40px',
         boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
       }}>
-        <h1 style={{ fontSize: '48px', marginBottom: '20px' }}>🎉</h1>
-        <h1 style={{ color: '#333', marginBottom: '30px' }}>Payment Successful!</h1>
+        
+        <h1 style={{ 
+          color: '#3416D8', 
+          marginBottom: '30px', 
+          fontFamily: 'PPNeueMachina-PlainUltrabold, Arial, sans-serif', 
+          fontSize: '29px' 
+        }}>
+          Payment Successful!
+        </h1>
         
         <div style={{ 
-          background: '#d4edda', 
+          background: '#FAE0DF', 
           padding: '20px', 
           borderRadius: '10px',
           margin: '20px 0',
-          border: '1px solid #c3e6cb'
+         
         }}>
           <h2 style={{ color: '#155724', marginBottom: '10px' }}>
             ✅ Your order is complete!

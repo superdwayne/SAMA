@@ -367,12 +367,21 @@ const Landing = () => {
       {showPaymentSuccess && (
         <div className="payment-success-overlay">
           <div className="payment-success-modal">
-            <div className="success-icon">🎉</div>
-            <h2 className="success-title">Payment Successful!</h2>
+            
+            <h2 
+              className="success-title"
+              style={{ 
+                color: '#3416D8', 
+                fontFamily: 'PPNeueMachina-PlainUltrabold, Arial, sans-serif', 
+                fontSize: '29px' 
+              }}
+            >
+              Payment Successful!
+            </h2>
             <div className="success-message">
-              <p><strong>Thank you for your purchase!</strong></p>
+              <strong style={{ fontFamily: 'PPNeueMachina-PlainUltrabold, Arial, sans-serif', fontSize: '16px' }}>Thank you for your purchase!</strong>
               <p>We've sent a magic link to your email address.</p>
-              <p><strong>Check your inbox and click the link to unlock your map access.</strong></p>
+              <p>Check your inbox and click the link to unlock your map access.</p>
             </div>
             <div className="success-steps">
               <div className="step">
