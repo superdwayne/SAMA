@@ -12,6 +12,10 @@
   max-width: 200px;
 }
 
+.navigation-compass {
+  display: none !important;
+}
+
 .mapboxgl-ctrl-top-right {
     position: absolute;
     top: 150px !important;

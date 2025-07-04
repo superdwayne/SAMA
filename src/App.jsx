@@ -121,12 +121,13 @@ function App() {
         )}
 
         {/* Show no access prompt when user has no unlocked regions and is on map route */}
-        {showNoAccess && window.location.pathname === '/map' && (
+        {showNoAccess && (window.location.pathname === '/map' || window.location.pathname === '/') && (
           <NoAccessPrompt onRequestMagicLink={() => setShowNoAccess(false)} />
         )}
 
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<Map unlockedRegions={unlockedRegions} setUnlockedRegions={setUnlockedRegions} />} />
+          <Route path="/landing" element={<Landing />} />
           <Route path="/region/:id" element={<Landing />} />
           <Route path="/map" element={<Map unlockedRegions={unlockedRegions} setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/payment/:region" element={<Payment setUnlockedRegions={setUnlockedRegions} />} />

@@ -161,13 +161,13 @@ const Landing = () => {
     if (paymentSuccess === 'true') {
       setShowPaymentSuccess(true);
       // Clean up URL after showing success message
-      window.history.replaceState({}, document.title, '/');
+      window.history.replaceState({}, document.title, '/landing');
     }
     
     if (activated === 'true') {
       // User just activated via magic link, show a brief success message
       setTimeout(() => {
-        navigate('/map');
+        navigate('/');
       }, 1000);
     }
     
@@ -197,7 +197,7 @@ const Landing = () => {
         
         // Show success message and redirect
         setTimeout(() => {
-          navigate('/map?activated=true');
+          navigate('/?activated=true');
         }, 1000);
       } else {
         console.error('❌ Magic link verification failed:', result.error);
@@ -317,7 +317,7 @@ const Landing = () => {
     if (region.isFree || isRegionUnlocked(region.title)) {
       // For free regions or unlocked regions, go to the region-specific map
       console.log('✅ Going to map for region:', region.title);
-      navigate(`/map?region=${region.title}`);
+      navigate(`/?region=${region.title}`);
     } else {
       // For locked regions, show the preview/payment flow
       console.log('💳 Going to payment for region:', region.id);
@@ -330,7 +330,7 @@ const Landing = () => {
   const handleClosePreview = () => {
     setPreviewRegion(null);
     setRegionFeature(null);
-    navigate('/');
+    navigate('/landing');
   };
 
   React.useEffect(() => {

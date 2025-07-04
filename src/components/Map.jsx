@@ -8,6 +8,8 @@ import UnlockPrompt from './UnlockPrompt';
 import NavigationPopup from './NavigationPopup';
 import TokenStatus from './TokenStatus';
 import EnhancedNavigation from './EnhancedNavigation';
+import SmartNavigation from './SmartNavigation';
+import { enhancedNavigationService } from '../utils/enhancedNavigation';
 import EnhancedRouteLayer from './EnhancedRouteLayer';
 import LocationPermission from './LocationPermission';
 import NavigationCompass from './NavigationCompass';
@@ -380,7 +382,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     }
 
     setIsNavigating(true);
-    console.log('[Map] Navigation started', { artwork });
+    console.log('[Map] Enhanced Navigation started', { artwork });
     setNavigationTarget(artwork);
     
     setViewport(prev => ({
@@ -392,11 +394,13 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
       bearing: 0
     }));
     
+    // Use enhanced navigation service
     setEnhancedNavigation({
       userLocation,
       destination: artwork,
       onRouteCalculated: (route) => {
         setNavigationRoute(route);
+        console.log('🗺️ Enhanced route calculated:', route);
         setTimeout(() => {
           setViewport(prev => ({
             ...prev,
@@ -409,6 +413,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
       },
       onStepAdvanced: (step) => {
         setCurrentNavigationStep(step);
+        console.log('📍 Navigation step advanced:', step);
       }
     });
   };
@@ -419,8 +424,12 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     setNavigationTarget(null);
     setEnhancedNavigation(null);
     setCurrentNavigationStep(null);
+    
+    // Stop enhanced navigation service
+    enhancedNavigationService.stopNavigation();
     locationService.stopWatching();
-    console.log('[Map] Navigation stopped');
+    
+    console.log('[Map] Enhanced Navigation stopped');
     
     setViewport(prev => ({
       ...prev,
@@ -1039,7 +1048,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
         {/* Enhanced Navigation */}
         {enhancedNavigation && (
-          <EnhancedNavigation
+          <SmartNavigation
             userLocation={enhancedNavigation.userLocation}
             destination={enhancedNavigation.destination}
             onNavigationEnd={handleStopNavigation}
