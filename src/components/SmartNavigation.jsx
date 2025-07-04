@@ -43,6 +43,7 @@ const SmartNavigation = ({
 
   // Start enhanced navigation
   const startNavigation = async () => {
+    console.log('🚀 SmartNavigation: Starting enhanced navigation', { userLocation, destination });
     try {
       setIsNavigating(true);
       setWrongTurnCount(0);
@@ -203,6 +204,7 @@ const SmartNavigation = ({
   };
 
   if (!isNavigating || !currentStep) {
+    console.log('📺 SmartNavigation: Not rendering - isNavigating:', isNavigating, 'currentStep:', currentStep);
     return null;
   }
 
@@ -211,6 +213,8 @@ const SmartNavigation = ({
   const nextBearing = currentStep.maneuver.bearing_after || 0;
   const relativeArrowRotation = nextBearing - mapBearing;
   const qualityIndicator = getQualityIndicator();
+
+  console.log('✨ SmartNavigation: Rendering enhanced navigation with quality:', navigationQuality, qualityIndicator);
 
   return (
     <div className="enhanced-navigation smart-navigation">
