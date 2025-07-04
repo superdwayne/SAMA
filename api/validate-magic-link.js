@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     }
 
     // Get user's purchased regions
-    const purchaseData = await getUserPurchases(validation.email);
+    const purchaseData = getUserRegions(validation.user);
     
     console.log('✅ Magic link validated successfully for:', validation.email);
     
@@ -56,47 +56,59 @@ export default async function handler(req, res) {
 // Validate magic link token
 async function validateMagicLink(token) {
   try {
-    // Find the magic link
-    const { data: magicLink, error } = await supabase
-      .from('magic_links')
+    // Find the user with this magic token
+    const { data: user, error } = await supabase
+      .from('users')
       .select('*')
-      .eq('token', token)
-      .eq('used', false)
+      .eq('magic_token', token)
       .single();
     
-    if (error || !magicLink) {
+    if (error || !user) {
       return {
         valid: false,
-        error: 'Magic link not found or already used'
+        error: 'Magic link not found or invalid'
       };
     }
     
     // Check if token has expired
     const now = new Date();
-    const expiresAt = new Date(magicLink.expires_at);
+    const tokenExpiresAt = new Date(user.magic_token_expires_at);
     
-    if (now > expiresAt) {
+    if (now > tokenExpiresAt) {
       return {
         valid: false,
         error: 'Magic link has expired'
       };
     }
     
-    // Mark token as used
+    // Check if user's regions access has expired
+    const regionsExpiresAt = new Date(user.regions_expires_at);
+    if (now > regionsExpiresAt) {
+      return {
+        valid: false,
+        error: 'Your access has expired. Please purchase again to continue using the map.'
+      };
+    }
+    
+    // Clear the magic token after use (one-time use)
     const { error: updateError } = await supabase
-      .from('magic_links')
-      .update({ used: true })
-      .eq('id', magicLink.id);
+      .from('users')
+      .update({ 
+        magic_token: null,
+        magic_token_expires_at: null,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', user.id);
     
     if (updateError) {
-      console.error('❌ Error marking magic link as used:', updateError);
+      console.error('❌ Error clearing magic token:', updateError);
       // Continue anyway, as the validation is still valid
     }
     
     return {
       valid: true,
-      email: magicLink.email,
-      id: magicLink.id
+      email: user.email,
+      user: user
     };
     
   } catch (error) {
@@ -108,39 +120,20 @@ async function validateMagicLink(token) {
   }
 }
 
-// Get user's purchased regions
-async function getUserPurchases(email) {
+// Get user's regions from user object
+function getUserRegions(user) {
   try {
-    const { data: purchases, error } = await supabase
-      .from('purchases')
-      .select('*')
-      .eq('customer_email', email)
-      .eq('payment_status', 'completed');
-    
-    if (error) {
-      console.error('❌ Error fetching purchases:', error);
-      return { regions: [] };
-    }
-    
-    if (!purchases || purchases.length === 0) {
-      return { regions: [] };
-    }
-    
-    // Extract unique regions
-    const regions = [...new Set(purchases.map(p => p.region))];
+    const regions = user.regions || [];
     
     return {
       regions,
-      purchaseCount: purchases.length,
-      purchases: purchases.map(p => ({
-        region: p.region,
-        date: p.created_at,
-        amount: p.amount
-      }))
+      purchaseCount: regions.length,
+      totalSpent: user.total_spent || 0,
+      lastPurchase: user.last_purchase_at
     };
     
   } catch (error) {
-    console.error('❌ Error fetching user purchases:', error);
+    console.error('❌ Error getting user regions:', error);
     return { regions: [] };
   }
 }

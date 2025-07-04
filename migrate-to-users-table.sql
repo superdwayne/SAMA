@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   regions TEXT[] DEFAULT '{}',
+  regions_expires_at TIMESTAMPTZ, -- When the regions access expires
   total_spent INTEGER DEFAULT 0,
   first_purchase_at TIMESTAMPTZ,
   last_purchase_at TIMESTAMPTZ,
@@ -32,10 +33,11 @@ CREATE INDEX IF NOT EXISTS idx_purchase_history_user_id ON purchase_history(user
 CREATE INDEX IF NOT EXISTS idx_purchase_history_stripe_session ON purchase_history(stripe_session_id);
 
 -- Step 2: Migrate existing purchase data
-INSERT INTO users (email, regions, total_spent, first_purchase_at, last_purchase_at)
+INSERT INTO users (email, regions, regions_expires_at, total_spent, first_purchase_at, last_purchase_at)
 SELECT 
   customer_email,
   ARRAY_AGG(DISTINCT region) as regions,
+  MAX(created_at) + INTERVAL '30 days' as regions_expires_at, -- 30 days from last purchase
   SUM(amount) as total_spent,
   MIN(created_at) as first_purchase_at,
   MAX(created_at) as last_purchase_at
@@ -43,6 +45,7 @@ FROM purchases
 GROUP BY customer_email
 ON CONFLICT (email) DO UPDATE SET
   regions = EXCLUDED.regions,
+  regions_expires_at = EXCLUDED.regions_expires_at,
   total_spent = EXCLUDED.total_spent,
   first_purchase_at = LEAST(users.first_purchase_at, EXCLUDED.first_purchase_at),
   last_purchase_at = GREATEST(users.last_purchase_at, EXCLUDED.last_purchase_at);
@@ -64,6 +67,11 @@ JOIN users u ON u.email = p.customer_email;
 SELECT 
   email,
   regions,
+  regions_expires_at,
+  CASE 
+    WHEN regions_expires_at > NOW() THEN 'ACTIVE'
+    ELSE 'EXPIRED'
+  END as status,
   total_spent,
   array_length(regions, 1) as region_count,
   first_purchase_at,

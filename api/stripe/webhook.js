@@ -37,12 +37,15 @@ async function storePurchase(session, region) {
     }
     
     if (!user) {
-      // Create new user
+      // Create new user with 30-day expiration
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+      
       const { data: newUser, error: createError } = await supabase
         .from('users')
         .insert([{
           email: customerEmail,
           regions: [region],
+          regions_expires_at: expiresAt.toISOString(),
           total_spent: session.amount_total,
           first_purchase_at: new Date().toISOString(),
           last_purchase_at: new Date().toISOString()
@@ -52,18 +55,22 @@ async function storePurchase(session, region) {
       
       if (createError) throw createError;
       user = newUser;
-      console.log('✅ Created new user:', user.id);
+      console.log('✅ Created new user with 30-day access:', user.id);
     } else {
-      // Update existing user - add region if not already present
+      // Update existing user - add region if not already present and extend expiration
       const currentRegions = user.regions || [];
       const updatedRegions = currentRegions.includes(region) 
         ? currentRegions 
         : [...currentRegions, region];
       
+      // Extend expiration by 30 days from now (regardless of when previous access expires)
+      const newExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      
       const { error: updateError } = await supabase
         .from('users')
         .update({
           regions: updatedRegions,
+          regions_expires_at: newExpiresAt.toISOString(),
           total_spent: (user.total_spent || 0) + session.amount_total,
           last_purchase_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
@@ -71,7 +78,8 @@ async function storePurchase(session, region) {
         .eq('id', user.id);
       
       if (updateError) throw updateError;
-      console.log('✅ Updated user regions:', updatedRegions);
+      console.log('✅ Updated user regions and extended access to:', newExpiresAt.toISOString());
+      console.log('✅ User now has regions:', updatedRegions);
     }
     
     // Add to purchase history
@@ -133,6 +141,14 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
     // Create magic link
     const { token } = await createMagicLink(email);
     const magicLink = `${baseUrl}?magic=${token}`;
+    
+    // Calculate expiration date (30 days from now)
+    const expirationDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    const formattedExpiration = expirationDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
 
     const msg = {
       to: email,
@@ -174,8 +190,9 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
                 <li>✅ Artist information and artwork details</li>
                 <li>✅ Navigation and route planning</li>
                 <li>✅ Hidden gems only locals know about</li>
-                <li>✅ Regular updates with new artwork</li>
+                <li>✅ <strong>30 days of unlimited access</strong></li>
               </ul>
+              <p><strong>📅 Your access expires on: ${formattedExpiration}</strong></p>
             </div>
             
             <div class="button-container">

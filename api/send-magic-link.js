@@ -32,6 +32,17 @@ export default async function handler(req, res) {
     console.log('💳 Purchase data result:', purchaseData);
     
     if (!purchaseData.found) {
+      if (purchaseData.expired) {
+        console.log('❌ Access expired, returning 410');
+        return res.status(410).json({
+          error: 'Access expired',
+          message: 'Your map access has expired. Please purchase again to continue exploring Amsterdam\'s street art.',
+          code: 'ACCESS_EXPIRED',
+          email: normalizedEmail,
+          expiredAt: purchaseData.expiredAt
+        });
+      }
+      
       console.log('❌ No purchase found, returning 404');
       return res.status(404).json({
         error: 'No purchase record found',
@@ -84,38 +95,49 @@ async function checkPurchaseHistory(email) {
   try {
     console.log(`🔎 Checking purchase history for: "${email}"`);
     
-    const { data: purchases, error } = await supabase
-      .from('purchases')
+    // Check the new users table
+    const { data: user, error } = await supabase
+      .from('users')
       .select('*')
-      .eq('customer_email', email)
-      .eq('payment_status', 'completed');
+      .eq('email', email)
+      .single();
     
-    if (error) {
+    if (error && error.code !== 'PGRST116') {
       console.error('❌ Database error:', error);
       throw error;
     }
     
-    if (!purchases || purchases.length === 0) {
-      console.log(`❌ No purchases found for "${email}"`);
+    if (!user) {
+      console.log(`❌ No user found for "${email}"`);
       return {
         found: false,
         regions: []
       };
     }
     
-    // Extract unique regions
-    const regions = [...new Set(purchases.map(p => p.region))];
+    const regions = user.regions || [];
     
-    console.log(`✅ Found ${purchases.length} purchases for ${email}:`, regions);
+    // Check if user's access has expired
+    const now = new Date();
+    const regionsExpiresAt = new Date(user.regions_expires_at);
+    
+    if (now > regionsExpiresAt) {
+      console.log(`❌ User access has expired on ${regionsExpiresAt.toISOString()}`);
+      return {
+        found: false,
+        regions: [],
+        expired: true,
+        expiredAt: user.regions_expires_at
+      };
+    }
+    
+    console.log(`✅ Found user with active regions (expires ${regionsExpiresAt.toISOString()}):`, regions);
     return {
       found: true,
       regions,
-      purchaseCount: purchases.length,
-      purchases: purchases.map(p => ({
-        region: p.region,
-        date: p.created_at,
-        amount: p.amount
-      }))
+      purchaseCount: regions.length,
+      totalSpent: user.total_spent || 0,
+      lastPurchase: user.last_purchase_at
     };
     
   } catch (error) {
@@ -133,14 +155,15 @@ async function createMagicLink(email) {
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
     
+    // Update the user with the new magic token
     const { data, error } = await supabase
-      .from('magic_links')
-      .insert([{
-        email: email.toLowerCase().trim(),
-        token,
-        expires_at: expiresAt.toISOString(),
-        used: false
-      }])
+      .from('users')
+      .update({
+        magic_token: token,
+        magic_token_expires_at: expiresAt.toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('email', email.toLowerCase().trim())
       .select()
       .single();
     
@@ -149,7 +172,7 @@ async function createMagicLink(email) {
       throw error;
     }
     
-    console.log('✅ Magic link created:', data.id);
+    console.log('✅ Magic link created for user:', data.id);
     return token;
     
   } catch (error) {
