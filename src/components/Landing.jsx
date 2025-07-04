@@ -124,8 +124,12 @@ const Landing = () => {
               'Center': 'Centre',  // Map Center to Centre 
               'Noord': 'Noord',    // Keep Noord as Noord
               'North': 'Noord',    // Map North to Noord
-              'East': 'East',
-              'Nieuw-West': 'Nieuw-West'
+              'East': 'East',      // Keep East as East
+              'Oost': 'East',      // Map Oost to East
+              'Nieuw-West': 'Nieuw-West',
+              'New-West': 'Nieuw-West',
+              'Nieuw-west': 'Nieuw-West',  // Handle lowercase variations
+              'New-west': 'Nieuw-West'
             };
             const mappedRegion = regionMap[data.region] || data.region;
             console.log('🗺 Mapped region:', data.region, '→', mappedRegion);
@@ -208,7 +212,27 @@ const Landing = () => {
   
   // Helper function to check if a region is unlocked
   const isRegionUnlocked = (regionTitle) => {
-    return unlockedRegions.includes(regionTitle);
+    // Create a mapping for both English and Dutch region names
+    const regionVariants = {
+      'Centre': ['Centre', 'Center'],
+      'Noord': ['Noord', 'North'],
+      'East': ['East', 'Oost'],
+      'Nieuw-West': ['Nieuw-West', 'New-West', 'Nieuw-west', 'New-west']
+    };
+    
+    // Get all possible names for this region
+    const possibleNames = regionVariants[regionTitle] || [regionTitle];
+    
+    // Check if any of the possible names are in unlocked regions
+    const hasAccess = possibleNames.some(name => unlockedRegions.includes(name));
+    
+    console.log(`🔍 Checking access for ${regionTitle}:`, {
+      possibleNames,
+      unlockedRegions,
+      hasAccess
+    });
+    
+    return hasAccess;
   };
   
   // Debug function to manually add Center access (temporary)
