@@ -233,17 +233,17 @@ module.exports = async (req, res) => {
         
         let region = session.metadata?.region || 'Center';
         
-        // If no metadata on session, check if this came from a payment link
-        if (!session.metadata?.region && session.payment_link) {
+        // For payment links, check payment link metadata first
+        if (session.payment_link) {
           try {
             console.log('🔗 Session came from payment link, fetching metadata...');
             const paymentLink = await stripe.paymentLinks.retrieve(session.payment_link);
             console.log('🔍 Payment link metadata:', JSON.stringify(paymentLink.metadata, null, 2));
-            region = paymentLink.metadata?.region || 'Center';
             
-            // Log additional metadata for debugging
-            console.log('🔍 Payment link source:', paymentLink.metadata?.source);
-            console.log('🔍 Payment link auto_generate_token:', paymentLink.metadata?.auto_generate_token);
+            if (paymentLink.metadata?.region) {
+              region = paymentLink.metadata.region;
+              console.log('✅ Using region from payment link metadata:', region);
+            }
           } catch (error) {
             console.error('❌ Error fetching payment link metadata:', error);
           }
@@ -253,31 +253,20 @@ module.exports = async (req, res) => {
         if (!region || region === 'Center') {
           try {
             console.log('🏷️ Checking price metadata from line items...');
-            if (session.line_items?.data?.[0]?.price?.id) {
-              const priceId = session.line_items.data[0].price.id;
-              console.log('🔍 Found price ID:', priceId);
-              const price = await stripe.prices.retrieve(priceId);
+            
+            // Expand line_items to get price data
+            const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
+              expand: ['line_items', 'line_items.data.price']
+            });
+            
+            if (expandedSession.line_items?.data?.[0]?.price) {
+              const price = expandedSession.line_items.data[0].price;
+              console.log('🔍 Price ID:', price.id);
               console.log('🔍 Price metadata:', JSON.stringify(price.metadata, null, 2));
               
               if (price.metadata?.region) {
                 region = price.metadata.region;
                 console.log('✅ Using region from price metadata:', region);
-              }
-            } else {
-              // Expand line_items if not already expanded
-              console.log('📋 Expanding session line items...');
-              const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
-                expand: ['line_items', 'line_items.data.price']
-              });
-              
-              if (expandedSession.line_items?.data?.[0]?.price) {
-                const price = expandedSession.line_items.data[0].price;
-                console.log('🔍 Expanded price metadata:', JSON.stringify(price.metadata, null, 2));
-                
-                if (price.metadata?.region) {
-                  region = price.metadata.region;
-                  console.log('✅ Using region from expanded price metadata:', region);
-                }
               }
             }
           } catch (error) {
