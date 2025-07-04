@@ -20,33 +20,76 @@ const generateMagicToken = () => {
 // Store purchase in database
 async function storePurchase(session, region) {
   try {
-    // Debug: Log what metadata we're working with
     console.log('💾 Storing purchase - session metadata:', session.metadata);
     console.log('💾 Region being stored:', region);
     
-    const purchaseData = {
-      stripe_session_id: session.id,
-      customer_email: session.customer_details.email.toLowerCase().trim(),
-      region: region,
-      amount: session.amount_total,
-      currency: session.currency,
-      payment_status: 'completed',
-      stripe_payment_intent_id: session.payment_intent
-    };
-
-    const { data, error } = await supabase
-      .from('purchases')
-      .insert([purchaseData])
-      .select()
+    const customerEmail = session.customer_details.email.toLowerCase().trim();
+    
+    // First, get or create the user
+    let { data: user, error: userFetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', customerEmail)
       .single();
-
-    if (error) {
-      console.error('❌ Error storing purchase:', error);
-      throw error;
+    
+    if (userFetchError && userFetchError.code !== 'PGRST116') {
+      throw userFetchError;
     }
-
-    console.log('✅ Purchase stored in database:', data.id);
-    return data;
+    
+    if (!user) {
+      // Create new user
+      const { data: newUser, error: createError } = await supabase
+        .from('users')
+        .insert([{
+          email: customerEmail,
+          regions: [region],
+          total_spent: session.amount_total,
+          first_purchase_at: new Date().toISOString(),
+          last_purchase_at: new Date().toISOString()
+        }])
+        .select()
+        .single();
+      
+      if (createError) throw createError;
+      user = newUser;
+      console.log('✅ Created new user:', user.id);
+    } else {
+      // Update existing user - add region if not already present
+      const currentRegions = user.regions || [];
+      const updatedRegions = currentRegions.includes(region) 
+        ? currentRegions 
+        : [...currentRegions, region];
+      
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({
+          regions: updatedRegions,
+          total_spent: (user.total_spent || 0) + session.amount_total,
+          last_purchase_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
+      
+      if (updateError) throw updateError;
+      console.log('✅ Updated user regions:', updatedRegions);
+    }
+    
+    // Add to purchase history
+    const { error: historyError } = await supabase
+      .from('purchase_history')
+      .insert([{
+        user_id: user.id,
+        stripe_session_id: session.id,
+        stripe_payment_intent_id: session.payment_intent,
+        region: region,
+        amount: session.amount_total,
+        currency: session.currency
+      }]);
+    
+    if (historyError) throw historyError;
+    
+    console.log('✅ Purchase stored successfully');
+    return { user, region };
   } catch (error) {
     console.error('❌ Failed to store purchase:', error);
     throw error;
@@ -59,14 +102,15 @@ async function createMagicLink(email) {
     const token = generateMagicToken();
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
 
+    // Update the user with the new magic token
     const { data, error } = await supabase
-      .from('magic_links')
-      .insert([{
-        email: email.toLowerCase().trim(),
-        token,
-        expires_at: expiresAt.toISOString(),
-        used: false
-      }])
+      .from('users')
+      .update({
+        magic_token: token,
+        magic_token_expires_at: expiresAt.toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('email', email.toLowerCase().trim())
       .select()
       .single();
 
@@ -75,7 +119,7 @@ async function createMagicLink(email) {
       throw error;
     }
 
-    console.log('✅ Magic link created:', data.id);
+    console.log('✅ Magic link created for user:', data.id);
     return { token, expiresAt };
   } catch (error) {
     console.error('❌ Failed to create magic link:', error);
