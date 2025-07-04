@@ -249,6 +249,42 @@ module.exports = async (req, res) => {
           }
         }
         
+        // If still no region, check the price metadata from line items
+        if (!region || region === 'Center') {
+          try {
+            console.log('🏷️ Checking price metadata from line items...');
+            if (session.line_items?.data?.[0]?.price?.id) {
+              const priceId = session.line_items.data[0].price.id;
+              console.log('🔍 Found price ID:', priceId);
+              const price = await stripe.prices.retrieve(priceId);
+              console.log('🔍 Price metadata:', JSON.stringify(price.metadata, null, 2));
+              
+              if (price.metadata?.region) {
+                region = price.metadata.region;
+                console.log('✅ Using region from price metadata:', region);
+              }
+            } else {
+              // Expand line_items if not already expanded
+              console.log('📋 Expanding session line items...');
+              const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
+                expand: ['line_items', 'line_items.data.price']
+              });
+              
+              if (expandedSession.line_items?.data?.[0]?.price) {
+                const price = expandedSession.line_items.data[0].price;
+                console.log('🔍 Expanded price metadata:', JSON.stringify(price.metadata, null, 2));
+                
+                if (price.metadata?.region) {
+                  region = price.metadata.region;
+                  console.log('✅ Using region from expanded price metadata:', region);
+                }
+              }
+            }
+          } catch (error) {
+            console.error('❌ Error fetching price metadata:', error);
+          }
+        }
+        
         console.log('💳 Processing completed payment:');
         console.log('  Email:', customerEmail);
         console.log('  Region:', region);
