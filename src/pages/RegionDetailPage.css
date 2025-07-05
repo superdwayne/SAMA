@@ -100,10 +100,10 @@
   background: #c3f53c;
   padding: 32px 24px 40px 24px;
   z-index: 5;
-  min-height: 60vh;
+  min-height: 80vh; /* Increased to ensure scrollable content */
   display: flex;
   flex-direction: column;
- 
+  border-radius: 20px 20px 0 0;
 }
 
 .tour-label {
@@ -322,7 +322,7 @@
   .region-content-overlay {
     margin-top: 30vh; /* Less space on mobile */
     padding: 24px 20px 60px 20px; /* Extra bottom padding for scrolling */
-    min-height: 70vh;
+    min-height: 90vh; /* Increased to ensure scrollable content */
   }
 }
 
@@ -330,7 +330,7 @@
   .region-content-overlay {
     margin-top: 25vh; /* Even less space on small mobile */
     padding: 20px 16px 80px 16px; /* More bottom padding */
-    min-height: 75vh;
+    min-height: 95vh; /* Increased to ensure scrollable content */
   }
   
   .get-it-now-btn {
@@ -343,6 +343,7 @@
   .region-content-overlay {
     margin-top: 20vh;
     padding: 16px 12px 100px 12px; /* Maximum bottom padding for tiny screens */
+    min-height: 100vh; /* Increased to ensure scrollable content */
   }
   
   .get-it-now-btn {

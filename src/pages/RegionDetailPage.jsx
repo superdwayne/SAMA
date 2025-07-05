@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './RegionDetailPage.css';
 
@@ -76,6 +76,40 @@ const regionStats = {
 const RegionDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  
+  // Enable scrolling for this page
+  useEffect(() => {
+    // Add class to body to enable scrolling
+    document.body.classList.add('region-detail-page');
+    document.getElementById('root')?.classList.add('region-detail-container');
+    
+    // Override global styles for scrolling
+    const originalBodyStyle = document.body.style.cssText;
+    const originalRootStyle = document.getElementById('root')?.style.cssText;
+    
+    document.body.style.position = 'static';
+    document.body.style.height = 'auto';
+    document.body.style.overflow = 'auto';
+    
+    const root = document.getElementById('root');
+    if (root) {
+      root.style.position = 'static';
+      root.style.height = 'auto';
+      root.style.overflow = 'auto';
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('region-detail-page');
+      document.getElementById('root')?.classList.remove('region-detail-container');
+      
+      // Restore original styles
+      document.body.style.cssText = originalBodyStyle;
+      if (root) {
+        root.style.cssText = originalRootStyle || '';
+      }
+    };
+  }, []);
   
   // Find the region by ID
   const region = regions.find(r => r.id === id);
