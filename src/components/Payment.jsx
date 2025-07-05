@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { trackPaymentEvent, trackRegionInteraction, trackUserJourney } from '../utils/analytics';
 import './Payment.css';
 
 const Payment = ({ setUnlockedRegions }) => {
@@ -32,6 +33,12 @@ const Payment = ({ setUnlockedRegions }) => {
   };
   
   const displayRegion = formatRegionName(region);
+  
+  // Track payment page view
+  useEffect(() => {
+    trackRegionInteraction(displayRegion, 'payment_page_viewed');
+    trackUserJourney('payment_page_view', { region: displayRegion });
+  }, [displayRegion]);
 
   const handlePayment = async () => {
     setProcessing(true);
@@ -52,6 +59,11 @@ const Payment = ({ setUnlockedRegions }) => {
     
     if (stripeUrl) {
       console.log('🔗 Redirecting to Stripe for', displayRegion, '→', stripeUrl);
+      
+      // Track payment initiation
+      trackPaymentEvent(displayRegion, 4.99, 'EUR', 'redirected');
+      trackUserJourney('payment_redirect_to_stripe', { region: displayRegion });
+      
       window.location.href = stripeUrl;
     } else {
       console.error('❌ No Stripe link found for region:', displayRegion);

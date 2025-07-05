@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { trackPageView, trackUserJourney, trackMagicLinkEvent } from './utils/analytics';
+import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import Map from './components/Map';
 import Payment from './components/Payment';
 import TokenEntry from './components/TokenEntry';
@@ -11,6 +13,7 @@ import Success from './components/Success';
 import ActivatePage from './pages/ActivatePage';
 import Landing from './components/Landing';
 import NoAccessPrompt from './components/NoAccessPrompt';
+import AnalyticsTracker from './components/AnalyticsTracker';
 
 import { checkAccessToken, getUnlockedRegions, handleMagicLinkAuth } from './utils/auth';
 import './App.css';
@@ -22,7 +25,13 @@ function App() {
   const [authMessage, setAuthMessage] = useState(null);
   const [showNoAccess, setShowNoAccess] = useState(false);
 
+  // Initialize Google Analytics
+  useGoogleAnalytics();
+
   useEffect(() => {
+    // Track app initialization
+    trackUserJourney('app_initialized');
+    
     // Check which regions user has access to
     const checkAccess = async () => {
       try {
@@ -33,6 +42,10 @@ function App() {
           // Magic link authentication successful
           const regions = magicLinkResult.regions;
           setUnlockedRegions(regions); // Only purchased regions
+          
+          // Track magic link success
+          trackMagicLinkEvent(magicLinkResult.email, regions, true);
+          trackUserJourney('magic_link_success', { regions: regions.length });
           
           if (regions.length > 0) {
             setAuthMessage({
@@ -104,6 +117,7 @@ function App() {
 
   return (
     <Router>
+      <AnalyticsTracker />
       <div className="app">
         {/* Authentication status message */}
         {authMessage && (
