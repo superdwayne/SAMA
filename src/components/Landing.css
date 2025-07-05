@@ -944,7 +944,7 @@
 .stat-item {
   display: flex;
  
-  gap: 8px;
+  gap: 0px !important;
 
 }
 
