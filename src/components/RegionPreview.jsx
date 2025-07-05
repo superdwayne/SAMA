@@ -69,7 +69,9 @@ const RegionPreview = ({ region, onClose }) => {
       
       {/* Back Button */}
       <button className="region-back-btn" onClick={onClose} aria-label="Back">
-        <span className="back-arrow">←</span>
+        <span className="back-arrow">
+          <img src="/images/back.png" alt="Back" className="back-arrow-img" />
+        </span>
       </button>
       
       {/* Main Content Overlay - Yellow Section */}
@@ -81,48 +83,29 @@ const RegionPreview = ({ region, onClose }) => {
           <p className="region-description" dangerouslySetInnerHTML={{ __html: region.description }} />
         </div>
         
-        {/* Stats and Map Container - Single White Box */}
-        <div className="stats-map-container">
-          {/* Stats List */}
-          <div className="stats-list">
-            <div className="stat-item">
-              <div className="stat-icon">🎨</div>
-              <div className="stat-text">
-                <span className="stat-number">{stats.artworks}</span>
-                <span className="stat-label">Artworks</span>
-              </div>
-            </div>
-            
-            <div className="stat-item">
-              <div className="stat-icon">🏛️</div>
-              <div className="stat-text">
-                <span className="stat-number">{stats.galleries}</span>
-                <span className="stat-label">Galleries</span>
-              </div>
-            </div>
-            
-            <div className="stat-item">
-              <div className="stat-icon">🎯</div>
-              <div className="stat-text">
-                <span className="stat-number">{stats.legalWalls}</span>
-                <span className="stat-label">Legal Walls</span>
-              </div>
-            </div>
-            
-            <div className="stat-item">
-              <div className="stat-icon">👥</div>
-              <div className="stat-text">
-                <span className="stat-number">{stats.featuredArtists}</span>
-                <span className="stat-label">Featured Artists</span>
-              </div>
+        {/* Stats and Map Container - Flexbox Layout */}
+        <div className="stats-map-flex">
+          <div className="stat-flex-item">
+            <div className="stat-row">
+              <span className="stat-icon">📍</span>
+              <span className="stat-number">{stats.artworks}</span>
+              <span className="stat-label">Artworks</span>
+
+              <span className="stat-icon">🏛️</span>
+              <span className="stat-number">{stats.galleries}</span>
+              <span className="stat-label">Galleries</span>
+
+              <span className="stat-icon">🎨</span>
+              <span className="stat-number">{stats.legalWalls}</span>
+              <span className="stat-label">Legal Walls</span>
             </div>
           </div>
-          
-          {/* Map Preview Circle */}
-          <div className="map-preview-circle">
-            <div className="map-preview-content">
-              <div className="map-preview-text">Map Preview</div>
-            </div>
+          <div className="map-flex-item">
+            <img
+              src="/images/map.png"
+              alt="Map preview"
+              className="map-preview-img"
+            />
           </div>
         </div>
         

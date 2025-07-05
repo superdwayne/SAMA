@@ -50,7 +50,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [showUnlockPrompt, setShowUnlockPrompt] = useState(false);
   const [regionToUnlock, setRegionToUnlock] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
@@ -702,7 +702,9 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
               onClick={handleStopNavigation}
               aria-label="Back"
             >
-              <span className="back-arrow">←</span>
+              <span className="back-arrow">
+                <img src="/images/back.png" alt="Back" className="back-arrow-img" />
+              </span>
             </button>
           </div>
         )}
@@ -946,6 +948,33 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             const isRouteStop = activeRoute && routeStops.some(stop => stop.id === location.id);
             const routeStopIndex = isRouteStop ? routeStops.findIndex(stop => stop.id === location.id) : -1;
             
+            // Determine marker icon based on type
+            const getMarkerIcon = (type) => {
+              switch(type?.toLowerCase()) {
+                case 'mural': return '🎨';
+                case 'sculpture': return '🗿';
+                case 'graffiti': return '✨';
+                case 'gallery': return '🏛️';
+                case 'shop': return '🏪';
+                case 'studio': return '🏠';
+                case 'wall': return '🧱';
+                case 'artwork': default: return '🎯';
+              }
+            };
+            
+            const getMarkerColor = (type) => {
+              switch(type?.toLowerCase()) {
+                case 'mural': return '#e74c3c';      // Red
+                case 'sculpture': return '#8e44ad';  // Purple
+                case 'graffiti': return '#f39c12';   // Orange
+                case 'gallery': return '#2980b9';    // Blue
+                case 'shop': return '#27ae60';       // Green
+                case 'studio': return '#e67e22';     // Dark orange
+                case 'wall': return '#95a5a6';       // Gray
+                case 'artwork': default: return '#FFD700'; // Gold
+              }
+            };
+            
             return (
               <Marker
                 key={`marker-${location.id}-${location.latitude}-${location.longitude}`}
@@ -962,7 +991,27 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                       {routeStopIndex + 1}
                     </div>
                   ) : (
-                    <div className="marker-dot"></div>
+                    <div 
+                      className="marker-dot marker-with-icon" 
+                      style={{ 
+                        backgroundColor: getMarkerColor(location.type),
+                        position: 'relative'
+                      }}
+                    >
+                      <span 
+                        className="marker-icon" 
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          fontSize: '12px',
+                          lineHeight: 1
+                        }}
+                      >
+                        {getMarkerIcon(location.type)}
+                      </span>
+                    </div>
                   )}
                 </div>
               </Marker>

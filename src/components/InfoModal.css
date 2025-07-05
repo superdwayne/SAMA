@@ -89,12 +89,9 @@
 
 .modal-main-title {
 
-  font-weight: 900;
   color: #0066FF;
-  line-height: 0.9;
   margin: 0 0 32px 0;
-  letter-spacing: -1px;
-      font-family: 'PP Neue Machina', 'Inter', Arial, sans-serif;
+font-family: 'PP Neue Machina', 'Inter', Arial, sans-serif;
 }
 
 .modal-body {

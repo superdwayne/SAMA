@@ -23,7 +23,9 @@ const ArtworkPopup = ({ artwork, onClose, onNavigate }) => {
     <>
       <div className="popup-back-btn-container">
         <button className="popup-back-btn" onClick={onClose} aria-label="Back">
-          <span className="back-arrow">←</span>
+          <span className="back-arrow">
+            <img src="/images/back.png" alt="Back" className="back-arrow-img" />
+          </span>
         </button>
       </div>
       <div className="artwork-popup-bottom-sheet">

@@ -35,7 +35,9 @@ const UnlockPrompt = ({ region, onUnlock, onClose }) => {
       <div className="unlock-prompt">
         <button className="close-button" onClick={onClose}>×</button>
         
-        <div className="unlock-icon">🔒</div>
+        <div className="unlock-icon">
+          <img src="/images/unlockdis.png" alt="Locked" className="unlock-icon-img" />
+        </div>
         
         <h2>Unlock {region.name} District</h2>
         

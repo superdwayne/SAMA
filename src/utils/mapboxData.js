@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 // Fetch all street art locations from your Mapbox dataset directly from Mapbox API
 export const fetchMapboxDataset = async () => {
   const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
-  const DATASET_ID = 'cmcdau2ox10ct1npijaxk0i7m';
+  const DATASET_ID = 'cmcqcjc7f0nm71no2kwuyzgdb';
   const USERNAME = 'sama-map';
   try {
     console.log('🔄 Fetching locations directly from Mapbox dataset...');
@@ -30,12 +30,12 @@ export const fetchMapboxDataset = async () => {
       return {
         id: feature.id || `mapbox-${index}`,
         title: props.title || props.Title || 'Untitled Location',
-        artist: props.artist || props.Artist || 'Unknown Artist',
+        artist: props.artist || 'Unknown Artist',
         description: props.description || props.des || '',
         des: props.des || props.description || '',
         image_url: props.image_url || '',
         type: props.type || 'artwork',
-        district: props.district || props.Region || 'Centre',
+        district: props.region || 'Centre',
         latitude: coords[1],
         longitude: coords[0],
         address: props.address || '',

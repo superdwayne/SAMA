@@ -34,7 +34,7 @@
 .magic-link-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3416D8 100%);
 }
 
 .info-button {
@@ -119,7 +119,7 @@
 }
 
 .success-title {
-  color: #1e40af;
+  color: #3416D8;
   font-size: 28px;
   font-weight: 800;
   margin: 0 0 20px 0;
@@ -157,7 +157,7 @@
 }
 
 .step-number {
-  background: #1e40af;
+  background: #3416D8;
   color: white;
   font-weight: bold;
   font-size: 18px;
@@ -642,9 +642,8 @@
   font-size: 48px;
   font-weight: 900;
   color: #0066FF;
-  line-height: 0.9;
   margin: 0;
-  letter-spacing: -1px;
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif !important;
 }
 
 .region-cards-container {
@@ -703,7 +702,8 @@
 
 .region-action-btn.region-action-btn-overlay {
   position: absolute;
-  left: 0;
+    left: 10%;
+  
   bottom: 0;
   width: 100%;
   min-height: 38px;
@@ -800,7 +800,7 @@
  
   .region-action-btn.region-action-btn-overlay {
     font-size: 0.95rem;
-    min-height: 32px;
+   
     width: 125px !important;
         margin: 10px;
   }
@@ -943,11 +943,9 @@
 
 .stat-item {
   display: flex;
-  align-items: center;
+ 
   gap: 8px;
-  background: rgba(255, 255, 255, 0.3);
-  padding: 12px;
-  border-radius: 12px;
+
 }
 
 .stat-icon {
@@ -957,16 +955,18 @@
 }
 
 .stat-number {
-  font-size: 18px;
-  font-weight: 700;
-  color: #333;
-  min-width: 24px;
+  font-size: 13px;
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+  color: #3416D8;
+ 
+  font-weight: 500;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #333;
-  font-weight: 500;
+  color: #3416D8;
+
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
 }
 
 .map-preview-circle {
@@ -975,7 +975,7 @@
   right: 24px;
   width: 80px;
   height: 80px;
-  border-radius: 50%;
+
   background: rgba(255, 255, 255, 0.9);
   border: 2px solid #ddd;
   display: flex;
@@ -1105,6 +1105,7 @@
 .main-title, .title-line, .region-title-new {
   font-family: 'PP Neue Machina', 'Inter', Arial, sans-serif;
   font-size: 34px !important;
+  color: #3416D8;
 }
 
 @font-face {

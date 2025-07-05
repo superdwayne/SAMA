@@ -132,10 +132,7 @@ function App() {
           </div>
         )}
 
-        {/* Show no access prompt when user has no unlocked regions and is on map route */}
-        {showNoAccess && window.location.pathname === '/map' && (
-          <NoAccessPrompt onRequestMagicLink={() => setShowNoAccess(false)} />
-        )}
+       
 
         <Routes>
           <Route path="/" element={<Landing />} />

@@ -66,7 +66,7 @@ const InfoModal = ({ isOpen, onClose }) => {
           {/* Logos */}
           <div className="footer-logos">
             <img 
-              src="/af-logo.png" 
+              src="/images/AFK-logo.png" 
               alt="Amsterdam Fonds voor de Kunst" 
               className="footer-logo af-logo"
               onError={(e) => {
@@ -74,7 +74,7 @@ const InfoModal = ({ isOpen, onClose }) => {
               }}
             />
             <img 
-              src="/eu-logo.png" 
+              src="/images/EU-logo.png" 
               alt="European Union - Creative Europe Programme" 
               className="footer-logo eu-logo"
               onError={(e) => {

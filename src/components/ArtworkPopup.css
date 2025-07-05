@@ -92,6 +92,12 @@
   line-height: 1;
 }
 
+.back-arrow-img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
 .map-pin-indicator {
   display: flex;
   align-items: center;

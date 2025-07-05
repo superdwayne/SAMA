@@ -76,7 +76,9 @@ const Payment = ({ setUnlockedRegions }) => {
     <div className="payment-container-new">
       {/* Back Button */}
       <button className="popup-back-btn payment-back-btn" onClick={() => navigate(-1)} aria-label="Back">
-        <span className="back-arrow">←</span>
+        <span className="back-arrow">
+          <img src="/images/back.png" alt="Back" className="back-arrow-img" />
+        </span>
       </button>
       
       {/* Main Content */}
@@ -93,30 +95,31 @@ const Payment = ({ setUnlockedRegions }) => {
         {/* What is included Section */}
         <div className="included-section">
           <h3 className="included-title">What is included:</h3>
-          <div className="included-stats">
-            <div className="stat-item">
-              <span className="stat-number">{info.artworks}</span>
-              <span className="stat-label">Artworks</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">{info.galleries}</span>
-              <span className="stat-label">Galleries</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">{info.walls}</span>
-              <span className="stat-label">Legal Walls</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">{info.artists}</span>
-              <span className="stat-label">Artists</span>
-            </div>
+          <div className="included-row">
+            <span className="stat-icon">📍</span>
+            <span className="stat-number">{info.artworks}</span>
+            <span className="stat-label">Artworks</span>
+
+            <span className="stat-icon">🏛️</span>
+            <span className="stat-number">{info.galleries}</span>
+            <span className="stat-label">Galleries</span>
+
+            <span className="stat-icon">🎨</span>
+            <span className="stat-number">{info.walls}</span>
+            <span className="stat-label">Legal Walls</span>
+
+            <span className="stat-icon">👥</span>
+            <span className="stat-number">{info.artists}</span>
+            <span className="stat-label">Artists</span>
           </div>
         </div>
         
         {/* Price and Payment Button */}
         <div className="payment-section">
           <div className="price-section">
-            <div className="lock-icon">🔒</div>
+            <div className="lock-icon">
+              <img src="/images/unlockdis.png" alt="Locked" className="unlock-icon-img" />
+            </div>
             <div className="price-large">€4,99</div>
             <div className="price-subtitle">One-time payment</div>
             <div className="price-description">

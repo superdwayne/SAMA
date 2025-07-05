@@ -7,7 +7,7 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  background: #c3f53c;
+  background: #EEFF00;
   font-family: 'Inter', Arial, sans-serif;
   overflow-y: auto;
   z-index: 3000;
@@ -24,8 +24,9 @@
 
 /* Header */
 .unlock-title {
-  color: #1e40af;
-  font-size: 32px;
+  color: #3416D8;
+  font-size: 23px;
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
   font-weight: 800;
   text-align: center;
   margin: 0;
@@ -35,21 +36,23 @@
 
 /* Featured Highlight Section */
 .featured-highlight {
-  background: rgba(156, 163, 175, 0.3);
-  border-radius: 16px;
+  background: #D2E3F2;
+  border-radius: 0;
   padding: 20px;
 }
 
 .highlight-title {
-  color: #1e40af;
+  color: #3416D8;
   font-size: 16px;
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
   font-weight: 700;
   margin: 0 0 8px 0;
 }
 
 .highlight-description {
-  color: #374151;
+  color: #3416D8;
   font-size: 16px;
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
   font-weight: 500;
   margin: 0;
   line-height: 1.4;
@@ -59,14 +62,15 @@
 /* What is included Section */
 .included-section {
   background: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
+ 
   padding: 20px;
   backdrop-filter: blur(10px);
 }
 
 .included-title {
-  color: #7c3aed;
+  color: #3416D8;
   font-size: 16px;
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
   font-weight: 700;
   margin: 0 0 16px 0;
 }
@@ -96,8 +100,8 @@
 
 /* Price Section */
 .price-section {
-  background: #f8d7da;
-  border-radius: 16px;
+  background: #FAE0DF;
+  border-radius: 0;
   padding: 32px 20px;
   text-align: center;
   display: flex;
@@ -112,24 +116,26 @@
 }
 
 .price-large {
-  color: #1e40af;
-  font-size: 48px;
+  font-size: 44px;
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
   font-weight: 800;
   line-height: 1;
   margin: 0;
+  color: #3416D8;
 }
 
 .price-subtitle {
-  color: #1e40af;
   font-size: 16px;
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
   font-weight: 600;
   margin: 0;
+  color: #3416D8;
 }
 
 .price-description {
-  color: #374151;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+  color: #3416D8;
   line-height: 1.3;
   text-align: center;
   margin-top: 8px;
@@ -147,13 +153,13 @@
 
 /* Unlock Button */
 .unlock-button {
-  background: #1e40af;
-  color: white;
+  border-radius: 0;
+  font-family: 'PPNeueMachina-InktrapUltrabold', 'PPNeueMachina', Arial, sans-serif;
   font-size: 18px;
-  font-weight: 700;
+  color: #fff;
+  background: #3416D8;
   border: none;
-  border-radius: 16px;
-  padding: 18px 32px;
+  padding: 15px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: none;
@@ -188,11 +194,11 @@
 /* Mobile Responsiveness */
 @media (max-width: 480px) {
   .payment-content-new {
-    padding: 40px 20px 32px 20px;
+    padding: 60px 20px 32px 20px;
   }
   
   .unlock-title {
-    font-size: 28px;
+    font-size: 23px;
   }
   
   .price-large {
@@ -217,6 +223,18 @@
   
   .price-large {
     font-size: 36px;
+  }
+  .included-row {
+    display: flex;
+    align-items: center;
+    width: 60% !important;
+    font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+    font-size: 13px;
+    color: #3416D8;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    flex-wrap: wrap;
+    margin-top: 12px;
   }
 }
 
@@ -295,13 +313,13 @@
   padding: 20px 10px;
   background: white;
   border-radius: 12px;
-  border: 1px solid #e0e0e0;
+
 }
 
 .stat-icon {
   font-size: 2rem;
   display: block;
-  margin-bottom: 10px;
+ 
 }
 
 .stat-number {
@@ -658,6 +676,18 @@
   .stat-number {
     font-size: 1.5rem;
   }
+  .included-row {
+    display: flex;
+    align-items: center;
+    width: 53%;
+    font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+    font-size: 13px;
+    color: #3416D8;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
 }
 
 .payment-back-btn {
@@ -666,4 +696,32 @@
   left: 18px;
   z-index: 5000;
   /* Inherit all .popup-back-btn styles */
+}
+
+.included-row {
+  display: flex;
+  align-items: center;
+  width: 53%;
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+  font-size: 13px;
+  color: #3416D8;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.included-row .stat-number {
+  font-size: 13px;
+  font-weight: 400;
+  margin-right: 6px;
+  color: #3416D8;
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+}
+
+.included-row .stat-label {
+  font-size: 13px;
+  font-weight: 400;
+  margin-right: 24px;
+  color: #3416D8;
 }
