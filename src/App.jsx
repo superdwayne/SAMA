@@ -13,7 +13,6 @@ import Success from './components/Success';
 import ActivatePage from './pages/ActivatePage';
 import Landing from './components/Landing';
 import NoAccessPrompt from './components/NoAccessPrompt';
-import AnalyticsTracker from './components/AnalyticsTracker';
 
 import { checkAccessToken, getUnlockedRegions, handleMagicLinkAuth } from './utils/auth';
 import './App.css';
@@ -117,7 +116,6 @@ function App() {
 
   return (
     <Router>
-      <AnalyticsTracker />
       <div className="app">
         {/* Authentication status message */}
         {authMessage && (

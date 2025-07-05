@@ -1,1 +1,69 @@
-import { useEffect } from 'react';\n\n// Google Analytics initialization hook\nexport const useGoogleAnalytics = () => {\n  useEffect(() => {\n    const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;\n    \n    // Only initialize if we have a valid GA ID\n    if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === 'G-XXXXXXXXXX') {\n      console.warn('⚠️ Google Analytics not initialized - missing VITE_GA_MEASUREMENT_ID');\n      return;\n    }\n\n    // Check if already loaded\n    if (window.gtag) {\n      console.log('📊 Google Analytics already loaded');\n      return;\n    }\n\n    console.log('📊 Initializing Google Analytics with ID:', GA_MEASUREMENT_ID);\n\n    // Load GA script\n    const script = document.createElement('script');\n    script.async = true;\n    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;\n    document.head.appendChild(script);\n\n    // Initialize GA\n    window.dataLayer = window.dataLayer || [];\n    window.gtag = function() {\n      window.dataLayer.push(arguments);\n    };\n    \n    script.onload = () => {\n      window.gtag('js', new Date());\n      window.gtag('config', GA_MEASUREMENT_ID, {\n        page_title: 'Amsterdam Street Art Map',\n        page_location: window.location.href,\n        send_page_view: true,\n        // Enhanced measurement\n        enhanced_measurement_settings: {\n          scrolls: true,\n          outbound_clicks: true,\n          site_search: true,\n          video_engagement: true,\n          file_downloads: true\n        },\n        // Custom parameters for your app\n        custom_map: {\n          app_name: 'Amsterdam Street Art Map',\n          app_version: '1.0.0',\n          environment: import.meta.env.MODE\n        }\n      });\n      \n      console.log('✅ Google Analytics initialized successfully');\n    };\n\n    script.onerror = () => {\n      console.error('❌ Failed to load Google Analytics script');\n    };\n\n  }, []);\n};\n\n// Export the GA ID for use in analytics utilities\nexport const getGAMeasurementId = () => {\n  return import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-8J50MVTWQN';\n};\n
+import { useEffect } from 'react';
+
+// Google Analytics initialization hook
+export const useGoogleAnalytics = () => {
+  useEffect(() => {
+    const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+    
+    // Only initialize if we have a valid GA ID
+    if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === 'G-8J50MVTWQN') {
+      console.warn('⚠️ Google Analytics not initialized - missing VITE_GA_MEASUREMENT_ID');
+      return;
+    }
+
+    // Check if already loaded
+    if (window.gtag) {
+      console.log('📊 Google Analytics already loaded');
+      return;
+    }
+
+    console.log('📊 Initializing Google Analytics with ID:', GA_MEASUREMENT_ID);
+
+    // Load GA script
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    document.head.appendChild(script);
+
+    // Initialize GA
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() {
+      window.dataLayer.push(arguments);
+    };
+    
+    script.onload = () => {
+      window.gtag('js', new Date());
+      window.gtag('config', GA_MEASUREMENT_ID, {
+        page_title: 'Amsterdam Street Art Map',
+        page_location: window.location.href,
+        send_page_view: true,
+        // Enhanced measurement
+        enhanced_measurement_settings: {
+          scrolls: true,
+          outbound_clicks: true,
+          site_search: true,
+          video_engagement: true,
+          file_downloads: true
+        },
+        // Custom parameters for your app
+        custom_map: {
+          app_name: 'Amsterdam Street Art Map',
+          app_version: '1.0.0',
+          environment: import.meta.env.MODE
+        }
+      });
+      
+      console.log('✅ Google Analytics initialized successfully');
+    };
+
+    script.onerror = () => {
+      console.error('❌ Failed to load Google Analytics script');
+    };
+
+  }, []);
+};
+
+// Export the GA ID for use in analytics utilities
+export const getGAMeasurementId = () => {
+  return import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-8J50MVTWQN';
+};

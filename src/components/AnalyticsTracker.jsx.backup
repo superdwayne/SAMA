@@ -1,0 +1,77 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { trackPageView, trackUserJourney } from '../utils/analytics';
+
+// Component to track route changes and page views
+const AnalyticsTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Track page view on route change
+    const path = location.pathname;
+    const search = location.search;
+    
+    // Determine page title and track specific events
+    let pageTitle = 'Amsterdam Street Art Map';
+    let journeyEvent = null;
+    
+    switch (path) {
+      case '/':
+        pageTitle = 'Landing Page - Amsterdam Street Art Map';
+        journeyEvent = 'landing_page_view';
+        break;
+      case '/map':
+        pageTitle = 'Interactive Map - Amsterdam Street Art Map';
+        journeyEvent = 'map_view';
+        break;
+      case '/success':
+      case '/thank-you':
+        pageTitle = 'Payment Success - Amsterdam Street Art Map';
+        journeyEvent = 'payment_success_page';
+        break;
+      case '/activate':
+        pageTitle = 'Account Activation - Amsterdam Street Art Map';
+        journeyEvent = 'activation_page_view';
+        break;
+      default:
+        if (path.startsWith('/payment/')) {
+          const region = path.split('/payment/')[1];
+          pageTitle = `Payment for ${region} - Amsterdam Street Art Map`;
+          journeyEvent = 'payment_page_view';
+        } else if (path.startsWith('/region/')) {
+          const region = path.split('/region/')[1];
+          pageTitle = `${region} Region - Amsterdam Street Art Map`;
+          journeyEvent = 'region_deep_link';
+        }
+    }
+    
+    // Track page view
+    trackPageView(path + search, pageTitle, {
+      previous_page: document.referrer,
+      timestamp: Date.now()
+    });
+    
+    // Track user journey event
+    if (journeyEvent) {
+      trackUserJourney(journeyEvent, {
+        path: path,
+        search_params: search,
+        timestamp: Date.now()
+      });
+    }
+    
+    // Track deep link usage if applicable
+    const urlParams = new URLSearchParams(search);
+    if (urlParams.get('magic')) {
+      trackUserJourney('magic_link_clicked');
+    }
+    if (urlParams.get('token')) {
+      trackUserJourney('token_entry_attempted');
+    }
+    
+  }, [location]);
+
+  return null; // This component doesn't render anything
+};
+
+export default AnalyticsTracker;
