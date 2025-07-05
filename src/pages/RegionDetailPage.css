@@ -351,6 +351,21 @@
   }
 }
 
+/* CSS-only mobile scrolling fallback */
+@media (max-width: 768px) {
+  body.region-detail-page {
+    position: static !important;
+    height: auto !important;
+    overflow: auto !important;
+  }
+  
+  #root.region-detail-container {
+    position: static !important;
+    height: auto !important;
+    overflow: auto !important;
+  }
+}
+
 /* Smooth scrolling for all devices */
 * {
   -webkit-overflow-scrolling: touch;
