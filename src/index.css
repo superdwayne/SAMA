@@ -71,7 +71,7 @@ body {
   
   /* Allow scrolling for region detail pages */
   .region-detail-page {
-  
+  position: relative;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }

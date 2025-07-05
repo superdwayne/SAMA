@@ -1,6 +1,6 @@
 /* RegionDetailPage component styles - Mobile scrollable */
 .region-detail-page {
-
+  position: relative;
   width: 100vw;
   min-height: 100vh;
   z-index: 1000;
