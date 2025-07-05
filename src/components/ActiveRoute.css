@@ -179,21 +179,25 @@
 }
 
 .navigate-btn {
-  background: #17a2b8;
-  color: white;
-  border: 2px solid #000;
-  border-radius: 8px;
-  padding: 10px 15px;
-  font-weight: 700;
+  font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
+  font-size: 17px;
+  background: #3416D8;
+  color: #fff;
+  border: none;
+  padding: 18px 32px;
+  margin-top: auto;
   cursor: pointer;
-  transition: all 0.3s ease;
-  grid-column: 1 / -1;
-  box-shadow: 3px 3px 0px #000;
+  font-weight: 800;
+  text-align: center;
+  transition: background 0.2s;
+  display: block;
+  width: 70%;
+  margin: 0px auto;
+  margin-top: 20px;
 }
 
 .navigate-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 5px 5px 0px #000;
+  background: #2200b8;
 }
 
 .complete-btn {

@@ -1,0 +1,322 @@
+/* RegionDetailPage component styles matching the exact design */
+.region-detail-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background: #f5f5f5;
+  font-family: 'Inter', Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Background Image */
+.region-background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.background-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
+  position: relative;
+}
+
+/* Background placeholder */
+.background-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: 1;
+}
+
+.placeholder-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 2px, transparent 2px),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 3px, transparent 3px),
+    radial-gradient(circle at 40% 70%, rgba(255,255,255,0.1) 2px, transparent 2px),
+    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.1) 4px, transparent 4px),
+    radial-gradient(circle at 10% 90%, rgba(255,255,255,0.1) 2px, transparent 2px),
+    radial-gradient(circle at 60% 10%, rgba(255,255,255,0.1) 3px, transparent 3px);
+  background-size: 50px 50px;
+  opacity: 0.6;
+}
+
+/* Back Button */
+.region-back-btn {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  background: #4f46e5;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.region-back-btn:hover {
+  background: #3730a3;
+  transform: scale(1.05);
+}
+
+.back-arrow {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.back-arrow-img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+/* Main Content Overlay - Yellow Section */
+.region-content-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #c3f53c;
+  padding: 32px 24px 40px 24px;
+  z-index: 5;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tour-label {
+  color: #3416D8;
+  font-size: 12px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-family: 'PP Neue Machina Inktrap', 'Inter', Arial, sans-serif;
+}
+
+.region-name {
+  color: #3416D8;
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+  line-height: 1;
+  font-family: 'PP Neue Machina Plain Ultrabold', 'Inter', Arial, sans-serif;
+}
+
+/* Description Box */
+.region-description-box {
+  background: #D2E3F2;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.region-description {
+  color: #3416D8;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
+  font-family: 'PP Neue Machina Plain', 'Inter', Arial, sans-serif;
+}
+
+/* Stats and Map Container - Horizontal Layout */
+.stats-map-flex {
+  display: flex;
+  background: #fff;
+
+  align-items: center;
+  gap: 30px;
+}
+
+.stat-flex-item {
+  flex: 1;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+ margin-left: 30px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-icon {
+  font-size: 24px;
+  width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3416D8;
+  font-family: 'PPNeueMachina-PlainUltrabold', Arial, sans-serif;
+  min-width: 30px;
+}
+
+.stat-label {
+  font-size: 24px;
+  font-weight: 400;
+  color: #3416D8;
+  font-family: 'PPNeueMachina-PlainUltrabold', Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.map-flex-item {
+  flex: 0 0 auto;
+}
+
+.map-preview-img {
+  width: 148px;
+  height: 148px;
+  object-fit: cover;
+
+
+  background: #f0f0f0;
+}
+
+/* Action Button */
+.get-it-now-btn {
+  font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
+  font-size: 17px;
+  background: #3416D8;
+  color: #fff;
+  border: none;
+  padding: 18px 32px;
+  margin-top: auto;
+  cursor: pointer;
+  font-weight: 800;
+  text-align: center;
+  transition: background 0.2s;
+  display: block;
+  width: 70%;
+  margin: 0px auto;
+  margin-top: 20px;
+}
+
+.get-it-now-btn:hover {
+  background: #2200b8;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+ 
+  
+  .map-flex-item {
+    align-self: center;
+  }
+  
+  .map-preview-img {
+    width: 148px;
+  height: 148px;
+  }
+}
+
+@media (max-width: 480px) {
+  .region-content-overlay {
+    padding: 24px 20px 32px 20px;
+    min-height: 55vh;
+  }
+  
+  .region-name {
+    font-size: 40px;
+  }
+  
+  .stat-number {
+    font-size: 20px;
+  }
+  
+  .stat-label {
+    font-size: 20px;
+  }
+  
+  .stat-icon {
+    font-size: 20px;
+  }
+  
+  .map-preview-img {
+    width: 148px;
+  height: 148px;
+  }
+}
+
+@media (max-width: 380px) {
+  .region-content-overlay {
+    padding: 20px 16px 28px 16px;
+  }
+  
+  .region-name {
+    font-size: 36px;
+  }
+  
+  .stat-number {
+    font-size: 18px;
+  }
+  
+  .stat-label {
+    font-size: 18px;
+  }
+  
+  .stat-icon {
+    font-size: 18px;
+  }
+  
+  .map-preview-img {
+    width: 100px;
+    height: 80px;
+  }
+}
+
+/* Font face declarations */
+@font-face {
+  font-family: 'PP Neue Machina Inktrap';
+  src: url('/fonts/PPNeueMachina-InktrapRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PP Neue Machina Plain Ultrabold';
+  src: url('/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+.info-icon {
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.info-button {
+  background: #3416D8;
+}
+
+.main-title {
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
+}

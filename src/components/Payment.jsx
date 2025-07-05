@@ -75,7 +75,7 @@ const Payment = ({ setUnlockedRegions }) => {
   return (
     <div className="payment-container-new">
       {/* Back Button */}
-      <button className="popup-back-btn payment-back-btn" onClick={() => navigate(-1)} aria-label="Back">
+      <button className="popup-back-btn payment-back-btn" onClick={() => navigate(`/region/${region}`)} aria-label="Back">
         <span className="back-arrow">
           <img src="/images/back.png" alt="Back" className="back-arrow-img" />
         </span>

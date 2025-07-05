@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import RegionPreview from './RegionPreview';
 import InfoModal from './InfoModal';
 import EmailMagicLink from './EmailMagicLink';
-import { amsterdamRegions } from '../data/regions';
 import { magicLink } from '../utils/magic-links';
 import './Landing.css'; 
 
@@ -47,35 +45,15 @@ const regions = [
   },
 ];
 
-function getRegionFeature(region) {
-  // Map region id/title to amsterdamRegions feature
-  const nameMap = {
-    'centre': 'Centre',   // Match database naming
-    'noord': 'Noord', 
-    'east': 'East',
-    'nieuw-west': 'Nieuw-West',
-  };
-  const regionName = nameMap[region.id];
-  
-  console.log('🗺 Looking for region feature with name:', regionName);
-  console.log('🗺 Available regions in amsterdamRegions:', 
-    amsterdamRegions.features.map(f => f.properties.name));
-  
-  const feature = amsterdamRegions.features.find(f => f.properties.name === regionName);
-  console.log('🗺 Found feature:', feature);
-  
-  return feature;
-}
+// Removed getRegionFeature - no longer needed for modal
 
 const Landing = () => {
-  const [previewRegion, setPreviewRegion] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
   const [unlockedRegions, setUnlockedRegions] = useState([]); // No free regions - all require purchase
   const navigate = useNavigate();
   const location = useLocation();
-  const [regionFeature, setRegionFeature] = useState(null);
   
   // Check for existing access on component load
   useEffect(() => {
@@ -319,47 +297,15 @@ const Landing = () => {
       console.log('✅ Going to map for region:', region.title);
       navigate(`/map?region=${region.title}`);
     } else {
-      // For locked regions, show the preview/payment flow
-      console.log('💳 Going to payment for region:', region.id);
-      setPreviewRegion(region);
-      setRegionFeature(getRegionFeature(region));
+      // For locked regions, go directly to the region detail page (no modal)
+      console.log('💼 Going to region detail page for region:', region.id);
       navigate(`/region/${region.id}`);
     }
   };
 
-  const handleClosePreview = () => {
-    setPreviewRegion(null);
-    setRegionFeature(null);
-    navigate('/');
-  };
+  // Removed handleClosePreview - no longer needed without modal
 
-  React.useEffect(() => {
-    // Open modal if URL is /region/:id
-    console.log('📏 Checking URL pathname:', location.pathname);
-    const match = location.pathname.match(/^\/region\/([\w-]+)/);
-    console.log('🎯 URL match result:', match);
-    
-    if (match) {
-      const regionId = match[1];
-      console.log('🔍 Looking for region with id:', regionId);
-      const region = regions.find(r => r.id === regionId);
-      console.log('🎆 Found region:', region);
-      
-      if (region) {
-        console.log('✅ Setting preview region:', region.title);
-        setPreviewRegion(region);
-        const feature = getRegionFeature(region);
-        console.log('🗺 Region feature:', feature);
-        setRegionFeature(feature);
-      } else {
-        console.log('❌ No region found for id:', regionId);
-      }
-    } else {
-      console.log('🏠 Not a region URL, clearing preview');
-      setPreviewRegion(null);
-      setRegionFeature(null);
-    }
-  }, [location.pathname]);
+  // Removed useEffect for modal handling - region pages are now separate components
 
   return (
     <div className="landing-new-container">
@@ -501,13 +447,7 @@ const Landing = () => {
         ))}
       </div>
 
-      {previewRegion && regionFeature && (
-        <RegionPreview 
-          region={previewRegion} 
-          regionFeature={regionFeature} 
-          onClose={handleClosePreview} 
-        />
-      )}
+      {/* Removed RegionPreview modal - now using dedicated page */}
       
       <InfoModal 
         isOpen={showInfoModal}

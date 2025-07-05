@@ -666,7 +666,7 @@
   }
   
   .stat-item {
-    padding: 15px 10px;
+    padding: 0px !important;
   }
   
   .stat-icon {
@@ -679,7 +679,7 @@
   .included-row {
     display: flex;
     align-items: center;
-    width: 53%;
+    width: 60% !important;
     font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
     font-size: 13px;
     color: #3416D8;
@@ -701,7 +701,7 @@
 .included-row {
   display: flex;
   align-items: center;
-  width: 53%;
+  width: 60% !important;
   font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
   font-size: 13px;
   color: #3416D8;
@@ -716,6 +716,7 @@
   font-weight: 400;
   margin-right: 6px;
   color: #3416D8;
+  text-align: center;
   font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
 }
 

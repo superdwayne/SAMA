@@ -11,12 +11,12 @@ import DatasetDebug from './components/DatasetDebug';
 import QuickTest from './components/QuickTest';
 import Success from './components/Success';
 import ActivatePage from './pages/ActivatePage';
+import RegionDetailPage from './pages/RegionDetailPage';
 import Landing from './components/Landing';
 import NoAccessPrompt from './components/NoAccessPrompt';
 
 import { checkAccessToken, getUnlockedRegions, handleMagicLinkAuth } from './utils/auth';
 import './App.css';
-import './components/RegionPreview.css'; // Force load RegionPreview styles
 
 function App() {
   const [unlockedRegions, setUnlockedRegions] = useState([]); // 🔒 NO FREE REGIONS
@@ -136,7 +136,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/region/:id" element={<Landing />} />
+          <Route path="/region/:id" element={<RegionDetailPage />} />
           <Route path="/map" element={<Map unlockedRegions={unlockedRegions} setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/payment/:region" element={<Payment setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/token" element={<TokenEntry setUnlockedRegions={setUnlockedRegions} />} />

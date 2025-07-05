@@ -34,7 +34,7 @@ export const fetchMapboxDataset = async () => {
         description: props.description || props.des || '',
         des: props.des || props.description || '',
         image_url: props.image_url || '',
-        type: props.type || 'artwork',
+        type: props.type || 'mural',
         district: props.region || 'Centre',
         latitude: coords[1],
         longitude: coords[0],
