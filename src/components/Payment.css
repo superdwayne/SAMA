@@ -691,7 +691,7 @@
 }
 
 .payment-back-btn {
-  position: fixed;
+  position: sticky;
   top: 18px;
   left: 18px;
   z-index: 5000;
