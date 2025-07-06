@@ -9,6 +9,37 @@ const Payment = ({ setUnlockedRegions }) => {
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
   
+  // Enable scrolling for payment page
+  useEffect(() => {
+    console.log('Payment page mounted, region:', region);
+    
+    // Add classes for CSS styling
+    document.body.classList.add('payment-page');
+    const root = document.getElementById('root');
+    if (root) {
+      root.classList.add('payment-container');
+    }
+    
+    // Minimal style override for mobile scrolling
+    const body = document.body;
+    if (body && window.innerWidth <= 768) {
+      body.style.position = 'static';
+      body.style.overflow = 'auto';
+      if (root) {
+        root.style.position = 'static';
+        root.style.overflow = 'auto';
+      }
+    }
+    
+    // Cleanup
+    return () => {
+      document.body.classList.remove('payment-page');
+      if (root) {
+        root.classList.remove('payment-container');
+      }
+    };
+  }, [region]);
+  
   // Get region info
   const regionInfo = {
     'centre': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },

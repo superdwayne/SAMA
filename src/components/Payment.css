@@ -1,25 +1,23 @@
-/* Payment component styles matching the exact design */
+/* Payment component styles matching the exact design - Scrollable */
 .payment-container-new {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: #EEFF00;
   font-family: 'Inter', Arial, sans-serif;
+  overflow-x: hidden;
   overflow-y: auto;
   z-index: 3000;
 }
 
 .payment-content-new {
-  padding: 60px 24px 40px 24px;
+  padding: 60px 24px 80px 24px; /* Increased bottom padding for scrolling */
   max-width: 400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-height: 80vh; /* Ensure content is tall enough to scroll */
 }
 
 /* Header */
@@ -191,10 +189,11 @@
   border-radius: 3px;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - Enhanced for scrolling */
 @media (max-width: 480px) {
   .payment-content-new {
-    padding: 60px 20px 32px 20px;
+    padding: 60px 20px 100px 20px; /* More bottom padding on mobile */
+    min-height: 90vh; /* More content height on mobile */
   }
   
   .unlock-title {
@@ -214,7 +213,8 @@
 
 @media (max-width: 380px) {
   .payment-content-new {
-    padding: 32px 16px 28px 16px;
+    padding: 32px 16px 120px 16px; /* Maximum bottom padding for tiny screens */
+    min-height: 95vh; /* Maximum content height for tiny screens */
   }
   
   .unlock-title {
@@ -696,6 +696,27 @@
   left: 18px;
   z-index: 5000;
   /* Inherit all .popup-back-btn styles */
+}
+
+/* CSS-only mobile scrolling fallback for payment page */
+@media (max-width: 768px) {
+  body.payment-page {
+    position: static !important;
+    height: auto !important;
+    overflow: auto !important;
+  }
+  
+  #root.payment-container {
+    position: static !important;
+    height: auto !important;
+    overflow: auto !important;
+  }
+}
+
+/* Smooth scrolling */
+.payment-container-new {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .included-row {
