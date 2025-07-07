@@ -10,7 +10,7 @@ const regions = [
   { 
     id: 'centre', 
     title: 'Centre', 
-    description: 'Tourists, tags & tension. </br> The city\'s loudest gallery', 
+    description: 'Tourists, tags & tension.<br /> The city\'s loudest gallery', 
     latitude: 52.3728, 
     longitude: 4.8936, 
     isFree: false,

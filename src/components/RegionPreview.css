@@ -61,7 +61,7 @@
 
 /* Back Button */
 .region-back-btn {
-  position: absolute;
+  position: sticky;
   left: 20px;
   top: 20px;
   background: #4f46e5;
@@ -468,4 +468,20 @@
 
 .main-title {
   font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
+}
+
+.contact-title {
+  font-family: 'PPNeueMachina-PlainUltrabold', 'PPNeueMachina', Arial, sans-serif;
+  font-size: 18px;
+  color: #3416D8;
+}
+
+.contact-email {
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+  font-size: 15px;
+}
+
+.modal-body {
+  font-family: 'PPNeueMachina-PlainRegular', 'PPNeueMachina', Arial, sans-serif;
+  font-size: 18px;
 }
