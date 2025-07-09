@@ -134,11 +134,15 @@ const LocationPermission = ({ onLocationGranted, onLocationDenied, showAlways = 
   };
 
   const getErrorMessage = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    
     switch (error) {
       case 'PERMISSION_DENIED':
         return 'You denied location access. Enable it in your browser settings to use navigation.';
       case 'POSITION_UNAVAILABLE':
-        return 'Your location could not be determined. Please check your GPS and internet connection.';
+        return isIOS 
+          ? `📱 Location unavailable. This often happens on iOS when:\n\n• You're indoors or underground (GPS signal blocked)\n• Location Services are disabled for Safari/your browser\n• Your device has poor GPS reception\n\n💡 Try moving outdoors for better GPS signal or check your iOS Location Services settings.`
+          : 'Your location could not be determined. Please check your GPS and internet connection.';
       case 'TIMEOUT':
         return 'Location request timed out. Please try again.';
       case 'GEOLOCATION_NOT_SUPPORTED':

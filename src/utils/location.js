@@ -33,7 +33,7 @@ export class LocationService {
     return this.permissionStatus;
   }
 
-  // Request location permission with user-friendly flow
+  // Request location permission with user-friendly flow and iOS CoreLocation fallback
   async requestPermission(options = {}) {
     const {
       showPrompt = true,
@@ -47,23 +47,19 @@ export class LocationService {
     }
 
     try {
-      // First try to get current position to trigger permission prompt
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          resolve,
-          reject,
-          {
-            enableHighAccuracy,
-            timeout,
-            maximumAge
-          }
-        );
+      // First try high accuracy GPS
+      const position = await this._tryGetPosition({
+        enableHighAccuracy,
+        timeout,
+        maximumAge
       });
 
       this.currentLocation = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         accuracy: position.coords.accuracy,
+        heading: position.coords.heading,
+        speed: position.coords.speed,
         timestamp: position.timestamp
       };
 
@@ -72,6 +68,38 @@ export class LocationService {
       return this.currentLocation;
 
     } catch (error) {
+      // For iOS CoreLocation kCLErrorLocationUnknown, try fallback
+      if (error.code === 2) { // POSITION_UNAVAILABLE
+        console.log('Location unavailable, trying fallback options...');
+        
+        try {
+          // Fallback: Try network-based location with less strict requirements
+          const fallbackPosition = await this._tryGetPosition({
+            enableHighAccuracy: false,
+            timeout: 8000,
+            maximumAge: 600000 // Accept older cached positions (10 minutes)
+          });
+
+          this.currentLocation = {
+            latitude: fallbackPosition.coords.latitude,
+            longitude: fallbackPosition.coords.longitude,
+            accuracy: fallbackPosition.coords.accuracy,
+            heading: fallbackPosition.coords.heading,
+            speed: fallbackPosition.coords.speed,
+            timestamp: fallbackPosition.timestamp
+          };
+
+          this.permissionStatus = 'granted';
+          this.notifyCallbacks('granted', this.currentLocation);
+          return this.currentLocation;
+
+        } catch (fallbackError) {
+          console.log('Fallback location also failed:', fallbackError);
+          this.permissionStatus = 'denied';
+          throw new Error('POSITION_UNAVAILABLE');
+        }
+      }
+      
       this.permissionStatus = 'denied';
       
       // Handle different error types
@@ -86,6 +114,17 @@ export class LocationService {
           throw new Error('UNKNOWN_ERROR');
       }
     }
+  }
+
+  // Helper method to wrap geolocation calls with better error handling
+  async _tryGetPosition(options) {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        resolve,
+        reject,
+        options
+      );
+    });
   }
 
   // Start watching location changes
@@ -198,6 +237,7 @@ export class LocationService {
   // Get settings instructions for different browsers
   getSettingsInstructions() {
     const userAgent = navigator.userAgent.toLowerCase();
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     
     if (userAgent.includes('chrome')) {
       return {
@@ -218,18 +258,34 @@ export class LocationService {
         ]
       };
     } else if (userAgent.includes('safari')) {
+      const steps = [
+        'Tap the "aA" icon in the address bar',
+        'Select "Website Settings"',
+        'Tap "Location" and choose "Allow"'
+      ];
+      
+      if (isIOS) {
+        steps.unshift('📱 Also check: Settings > Privacy & Security > Location Services > Safari');
+      } else {
+        steps.unshift('Go to Safari > Preferences > Websites');
+        steps.push('Click "Location" in the sidebar');
+        steps.push('Set this website to "Allow"');
+      }
+      
       return {
-        browser: 'Safari',
-        steps: [
-          'Go to Safari > Preferences > Websites',
-          'Click "Location" in the sidebar',
-          'Set this website to "Allow"'
-        ]
+        browser: isIOS ? 'Safari (iOS)' : 'Safari',
+        steps
       };
     } else {
       return {
         browser: 'Browser',
-        steps: [
+        steps: isIOS ? [
+          '📱 Check: Settings > Privacy & Security > Location Services',
+          'Ensure Location Services are enabled',
+          'Find your browser app and enable location access',
+          'Look for a location icon in the address bar',
+          'Allow location access for this website'
+        ] : [
           'Look for a location icon in the address bar',
           'Allow location access for this website',
           'Refresh the page if needed'

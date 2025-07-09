@@ -655,7 +655,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     // eslint-disable-next-line
   }, [requestedRegion, allLocations]);
 
-  // Simple navigation handler
+  // Simple navigation handler with fallback for iOS CoreLocation issues
   const handleNavigateToArtwork = async (artwork) => {
     console.log('[Map] 🚀 Starting navigation to:', artwork.title);
     setIsNavigating(true);
@@ -663,9 +663,33 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     
     try {
       console.log('[Map] 📍 Requesting location permission...');
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
-      });
+      
+      // Try high accuracy first, then fallback to network-based location
+      let position;
+      try {
+        position = await new Promise((resolve, reject) => {
+          const options = {
+            enableHighAccuracy: true,
+            timeout: 15000, // 15 seconds timeout
+            maximumAge: 300000 // Accept cached position up to 5 minutes old
+          };
+          
+          navigator.geolocation.getCurrentPosition(resolve, reject, options);
+        });
+      } catch (highAccuracyError) {
+        console.log('[Map] 🔄 High accuracy failed, trying network-based location...');
+        
+        // Fallback: Try with less strict options
+        position = await new Promise((resolve, reject) => {
+          const fallbackOptions = {
+            enableHighAccuracy: false, // Use network-based location
+            timeout: 10000, // Shorter timeout
+            maximumAge: 600000 // Accept older cached position (10 minutes)
+          };
+          
+          navigator.geolocation.getCurrentPosition(resolve, reject, fallbackOptions);
+        });
+      }
       
       console.log('[Map] ✅ Location obtained:', position.coords);
       const coords = position.coords;
@@ -724,9 +748,16 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         setShowLocationPermission(true);
         setNavigationTarget(artwork);
       } else if (error.code === 2) {
-        // Position unavailable
-        console.log('[Map] 📡 Position unavailable - GPS/location services issue');
-        alert(`📍 Unable to get your location. Please:\n\n• Check that Location Services are enabled in your device settings\n• Try moving to an area with better GPS signal (outdoors)\n• Make sure you have internet connectivity\n\nYou can still view the artwork location on the map!`);
+        // Position unavailable (includes kCLErrorLocationUnknown)
+        console.log('[Map] 📡 Position unavailable - GPS/location services issue:', error.message);
+        
+        // More specific guidance for CoreLocation errors
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const iosGuidance = isIOS ? 
+          '\n• Go to Settings > Privacy & Security > Location Services\n• Enable Location Services for your browser (Safari/Chrome)\n• Try switching between WiFi and cellular data' : 
+          '';
+        
+        alert(`📍 Unable to determine your location. This often happens when:\n\n• You're indoors or underground (GPS signal blocked)\n• Location Services are disabled${iosGuidance}\n• Your device has poor GPS reception\n\n💡 Try:\n• Moving outdoors for better GPS signal\n• Refreshing the page\n• Checking your device's location settings\n\nYou can still view artwork locations and get directions using other map apps!`);
       } else if (error.code === 3) {
         // Timeout
         console.log('[Map] ⏰ Location request timed out');
