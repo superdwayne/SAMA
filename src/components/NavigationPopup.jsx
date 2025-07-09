@@ -131,9 +131,12 @@ const NavigationPopup = ({ artwork, userLocation, onNavigate, onClose, onInAppNa
             <div className="location-required">
               <p>📍 Enable location services to get directions</p>
               <button className="enable-location-button" onClick={() => {
-                navigator.geolocation.getCurrentPosition(() => {
-                  window.location.reload();
-                });
+                // Close the popup and let the main map handle location permission
+                onClose();
+                // Trigger location permission request
+                if (window.dispatchEvent) {
+                  window.dispatchEvent(new CustomEvent('requestLocationPermission'));
+                }
               }}>
                 Enable Location
               </button>

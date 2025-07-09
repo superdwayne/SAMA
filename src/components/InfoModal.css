@@ -14,6 +14,10 @@
   padding: 0;
 }
 
+.legal-text {
+  margin-bottom: 20px;
+}
+
 .info-modal-content {
   background: #FAE0DF; /* Light pink background */
   border-radius: 0;

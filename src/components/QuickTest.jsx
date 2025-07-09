@@ -152,8 +152,10 @@ const QuickTest = () => {
           <li><strong>Go to main map</strong> - Visit / to see if it appears</li>
         </ol>
         
-        <p><strong>Dataset ID:</strong> cmc36v4j505jd1nn170guhizs</p>
-        <p><strong>Manage at:</strong> <a href="https://studio.mapbox.com/datasets/cmc36v4j505jd1nn170guhizs" target="_blank">Mapbox Studio</a></p>
+        <p><strong>Center Dataset ID:</strong> cmcut1t446aqw1lljnelbo105</p>
+        <p><strong>Other Regions Dataset ID:</strong> cmcqcjc7f0nm71no2kwuyzgdb</p>
+        <p><strong>Manage Center at:</strong> <a href="https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105" target="_blank">Mapbox Studio (Center)</a></p>
+        <p><strong>Manage Others at:</strong> <a href="https://studio.mapbox.com/datasets/cmcqcjc7f0nm71no2kwuyzgdb" target="_blank">Mapbox Studio (Others)</a></p>
       </div>
     </div>
   );

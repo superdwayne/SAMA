@@ -212,7 +212,11 @@ const LocationPermission = ({ onLocationGranted, onLocationDenied, showAlways = 
                 </button>
                 <button 
                   className="skip-button"
-                  onClick={() => onLocationDenied && onLocationDenied({ message: 'User skipped location' })}
+                  onClick={() => {
+                    if (onLocationDenied) {
+                      onLocationDenied({ message: 'User skipped location' });
+                    }
+                  }}
                 >
                   Skip Navigation
                 </button>

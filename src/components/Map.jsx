@@ -144,7 +144,17 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   useEffect(() => {
     const loadMapboxData = async () => {
       try {
-        const mapboxData = await fetchMapboxDataset();
+        // If specific region is requested, fetch that region's dataset first
+        // Handle region name variations (Centre, Center, Centrum)
+        let targetRegion = requestedRegion;
+        if (requestedRegion === 'Centre' || requestedRegion === 'Center') {
+          targetRegion = 'Centrum'; // Use the actual dataset region name
+        }
+        
+        const mapboxData = requestedRegion 
+          ? await fetchMapboxDataset(targetRegion)
+          : await fetchMapboxDataset();
+        
         setMapboxLocations(mapboxData);
         
         // Combine local data with Mapbox dataset data
@@ -152,6 +162,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         setAllLocations(combinedLocations);
         
         console.log(`✅ Loaded ${mapboxData.length} locations from Mapbox dataset`);
+        console.log('🎯 Target region:', requestedRegion || 'All regions');
       } catch (error) {
         console.error('❌ Failed to load Mapbox dataset:', error);
         // Fallback to local data only
@@ -160,7 +171,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     };
 
     loadMapboxData();
-  }, []);
+  }, [requestedRegion]); // Re-fetch when requested region changes
 
   // Remove auto-unlock - only unlock purchased regions
   // useEffect(() => {
@@ -192,6 +203,17 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     };
 
     initializeLocation();
+
+    // Listen for custom location permission requests
+    const handleLocationPermissionRequest = () => {
+      setShowLocationPermission(true);
+    };
+
+    window.addEventListener('requestLocationPermission', handleLocationPermissionRequest);
+
+    return () => {
+      window.removeEventListener('requestLocationPermission', handleLocationPermissionRequest);
+    };
 
     // Add location service callback
     const handleLocationUpdate = (event, data) => {
@@ -500,7 +522,14 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
   const handleLocationDenied = (error) => {
     setLocationPermissionStatus('denied');
-    console.error('Location permission denied:', error);
+    setShowLocationPermission(false);
+    setNavigationTarget(null); // Clear any pending navigation
+    console.log('Location permission denied or skipped:', error);
+    
+    // Show a helpful message if user skipped
+    if (error?.message === 'User skipped location') {
+      console.log('User chose to skip navigation - they can still browse the map');
+    }
   };
 
   const getRegionLayer = (isUnlocked) => ({
@@ -628,13 +657,17 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
   // Simple navigation handler
   const handleNavigateToArtwork = async (artwork) => {
+    console.log('[Map] 🚀 Starting navigation to:', artwork.title);
     setIsNavigating(true);
-    console.log('[Map] handleNavigateToArtwork called', { artwork });
     setSelectedArtwork(null);
+    
     try {
+      console.log('[Map] 📍 Requesting location permission...');
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
       });
+      
+      console.log('[Map] ✅ Location obtained:', position.coords);
       const coords = position.coords;
       setUserLocation({
         latitude: coords.latitude,
@@ -642,14 +675,20 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         accuracy: coords.accuracy,
         timestamp: position.timestamp
       });
+      
       // Fetch route from user location to artwork
+      console.log('[Map] 🗺️ Fetching route...');
       const currentToken = mapboxToken || MAPBOX_TOKEN;
       const response = await fetch(
         `https://api.mapbox.com/directions/v5/mapbox/walking/${coords.longitude},${coords.latitude};${artwork.longitude},${artwork.latitude}?geometries=geojson&steps=true&access_token=${currentToken}`
       );
+      
       const data = await response.json();
+      console.log('[Map] 📊 Route response:', data);
+      
       if (data.routes && data.routes.length > 0) {
         const route = data.routes[0];
+        console.log('[Map] ✅ Route found! Distance:', route.distance, 'Duration:', route.duration);
         setNavigationRoute({
           type: 'Feature',
           properties: {
@@ -658,6 +697,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           },
           geometry: route.geometry
         });
+        
         setViewport(prev => ({
           ...prev,
           latitude: coords.latitude,
@@ -668,9 +708,36 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           transitionDuration: 1500,
           transitionInterpolator: typeof window !== 'undefined' && window['mapboxgl'] ? new window.mapboxgl.FlyToInterpolator() : undefined
         }));
+        
+        console.log('[Map] 🎯 Navigation active!');
+      } else {
+        console.log('[Map] ❌ No route found in response');
+        setIsNavigating(false);
       }
     } catch (error) {
-      alert('Location access is required for navigation.');
+      console.log('[Map] ❌ Navigation failed:', error.code, error.message);
+      
+      // Handle different types of location errors
+      if (error.code === 1) {
+        // Permission denied
+        console.log('[Map] 🚫 Location permission denied by user');
+        setShowLocationPermission(true);
+        setNavigationTarget(artwork);
+      } else if (error.code === 2) {
+        // Position unavailable
+        console.log('[Map] 📡 Position unavailable - GPS/location services issue');
+        alert(`📍 Unable to get your location. Please:\n\n• Check that Location Services are enabled in your device settings\n• Try moving to an area with better GPS signal (outdoors)\n• Make sure you have internet connectivity\n\nYou can still view the artwork location on the map!`);
+      } else if (error.code === 3) {
+        // Timeout
+        console.log('[Map] ⏰ Location request timed out');
+        alert(`⏰ Location request timed out. Please:\n\n• Try again in a moment\n• Check your GPS signal\n• Make sure Location Services are enabled\n\nYou can still view the artwork location on the map!`);
+      } else {
+        console.log('[Map] ❓ Unknown location error');
+        setShowLocationPermission(true);
+        setNavigationTarget(artwork);
+      }
+      
+      setIsNavigating(false);
     }
   };
 
@@ -681,6 +748,8 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
       console.log('[Map] Not in navigation mode');
     }
   }, [isNavigating]);
+
+
 
   // Default map center and zoom
   const DEFAULT_VIEWPORT = {
@@ -925,19 +994,35 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           {/* Show only Mapbox dataset locations, filtered by unlocked regions */}
           {mapboxLocations
             .filter(location => {
+              // Debug: Log location details
+             // console.log(`🔍 Checking location: "${location.title}" - district: "${location.district}" - requestedRegion: "${requestedRegion}"`);
+              
               // If a specific region is requested, only show pins from that region
               if (requestedRegion) {
-                return location.district === requestedRegion;
+                // More flexible region matching
+                const locationRegion = location.district;
+                const regionMatches = 
+                  locationRegion === requestedRegion ||
+                  locationRegion.toLowerCase() === requestedRegion.toLowerCase() ||
+                  // Handle Center/Centre/Centrum variations
+                  (requestedRegion === 'Centre' && (locationRegion === 'Center' || locationRegion === 'centre' || locationRegion === 'Centrum')) ||
+                  (requestedRegion === 'Center' && (locationRegion === 'Centre' || locationRegion === 'center' || locationRegion === 'Centrum')) ||
+                  (requestedRegion === 'Centrum' && (locationRegion === 'Centre' || locationRegion === 'Center' || locationRegion === 'center' || locationRegion === 'centre'));
+                
+               // console.log(`📍 Region match check: "${locationRegion}" vs "${requestedRegion}" = ${regionMatches}`);
+                return regionMatches;
               }
+              
               // Otherwise, only show pins from unlocked regions
               const isUnlocked = unlockedRegions.some(unlockedRegion => {
                 // Case-insensitive matching for region names
                 const normalizedUnlocked = unlockedRegion.toLowerCase().replace(/[^a-z]/g, '');
                 const normalizedDistrict = location.district.toLowerCase().replace(/[^a-z]/g, '');
                 return normalizedUnlocked === normalizedDistrict || 
-                       // Also try American vs British spelling
-                       (normalizedUnlocked === 'center' && normalizedDistrict === 'centre') ||
-                       (normalizedUnlocked === 'centre' && normalizedDistrict === 'center');
+                       // Handle Center/Centre/Centrum variations
+                       (normalizedUnlocked === 'center' && (normalizedDistrict === 'centre' || normalizedDistrict === 'centrum')) ||
+                       (normalizedUnlocked === 'centre' && (normalizedDistrict === 'center' || normalizedDistrict === 'centrum')) ||
+                       (normalizedUnlocked === 'centrum' && (normalizedDistrict === 'center' || normalizedDistrict === 'centre'));
               });
               console.log(`📍 Pin "${location.title}" in district "${location.district}": ${isUnlocked ? 'SHOW' : 'HIDE'} (unlocked: ${unlockedRegions.join(', ')})`);
               return isUnlocked;
@@ -1046,24 +1131,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           )}
 
       
-          <Source
-            id="nw-pins"
-            type="vector"
-            url="mapbox://sama-map.cmcdau2ox10ct1npijaxk0i7m-9z3su"
-          >
-            <Layer
-              id="nw-pins-layer"
-              type="circle"
-              source="nw-pins"
-              source-layer="NW-Pins"
-              paint={{
-                'circle-radius': 7,
-                'circle-color': '#e74c3c',
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#fff'
-              }}
-            />
-          </Source>
+          {/* Removed problematic vector source that was causing 404 errors */}
 
           {/* Simple route overlay */}
           {navigationRoute && (
