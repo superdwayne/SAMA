@@ -8,6 +8,7 @@ const NoAccessPrompt = ({ onRequestMagicLink }) => {
   const availableRegions = [
     { name: 'Centre', price: '€4.99', highlights: 'Historic canals, STRAAT Museum, Jordaan gems' },
     { name: 'Noord', price: '€4.99', highlights: 'NDSM wharf, massive murals, creative hub' },
+    { name: 'South', price: '€4.99', highlights: 'Upscale galleries, sophisticated street art, cultural fusion' },
     { name: 'East', price: '€4.99', highlights: 'Multicultural art, Javastraat, diverse styles' },
     { name: 'Nieuw-West', price: '€4.99', highlights: 'Emerging artists, experimental works, fresh perspectives' }
   ];

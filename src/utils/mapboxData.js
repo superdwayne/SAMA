@@ -9,13 +9,14 @@ const REGION_DATASETS = {
   'Centre': 'cmcut1t446aqw1lljnelbo105', // New Center dataset
   'Center': 'cmcut1t446aqw1lljnelbo105', // Alternative spelling
   'Centrum': 'cmcut1t446aqw1lljnelbo105', // Dutch name for Center
-  'Noord': 'cmcqcjc7f0nm71no2kwuyzgdb', // Default dataset for other regions
-  'North': 'cmcqcjc7f0nm71no2kwuyzgdb',
-  'East': 'cmcqcjc7f0nm71no2kwuyzgdb',
-  'Nieuw-West': 'cmcqcjc7f0nm71no2kwuyzgdb',
-  'West': 'cmcqcjc7f0nm71no2kwuyzgdb',
-  'South': 'cmcqcjc7f0nm71no2kwuyzgdb',
-  'South-East': 'cmcqcjc7f0nm71no2kwuyzgdb'
+  'Noord': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
+  'North': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
+  'East': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
+  'Nieuw-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // New Nieuw-West specific dataset
+  'New-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // Alternative spelling
+  'West': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
+  'South': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
+  'South-East': 'cmcut1t446aqw1lljnelbo105' // TEMP: Using Centre dataset until proper dataset is created
 };
 
 // Fetch all street art locations from your Mapbox dataset directly from Mapbox API
@@ -44,8 +45,8 @@ export const fetchMapboxDataset = async (specificRegion = null) => {
       console.log('🔄 Fetching locations from all region datasets...');
       
       for (const [region, datasetId] of Object.entries(REGION_DATASETS)) {
-        // Skip duplicates (Center/Centre use same dataset)
-        if (region === 'Center' || region === 'North') continue;
+        // Skip duplicates (Center/Centre and New-West/Nieuw-West use same datasets)
+        if (region === 'Center' || region === 'North' || region === 'New-West') continue;
         
         try {
           const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${datasetId}/features?access_token=${MAPBOX_TOKEN}`);
@@ -149,6 +150,7 @@ export const testDatasetConnection = async () => {
 export const addLocationToDataset = async (locationData, targetRegion = 'Centre') => {
   try {
     const datasetId = REGION_DATASETS[targetRegion] || REGION_DATASETS['Centre'];
+    console.log(`📍 Adding location to ${targetRegion} dataset: ${datasetId}`);
     
     const response = await fetch(`${API_URL}/mapbox/locations`, {
       method: 'POST',
@@ -175,19 +177,86 @@ export const addLocationToDataset = async (locationData, targetRegion = 'Centre'
   }
 };
 
+// Debug function to list all available datasets in your Mapbox account
+export const listAvailableDatasets = async () => {
+  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+  const USERNAME = 'sama-map';
+  
+  try {
+    console.log('🔍 Fetching all available datasets from your Mapbox account...');
+    const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}?access_token=${MAPBOX_TOKEN}`);
+    
+    if (!response.ok) {
+      throw new Error(`Mapbox API error! status: ${response.status}`);
+    }
+    
+    const datasets = await response.json();
+    console.log(`📋 Found ${datasets.length} datasets in your account:`);
+    
+    datasets.forEach((dataset, index) => {
+      console.log(`${index + 1}. ID: ${dataset.id}`);
+      console.log(`   Name: ${dataset.name || 'Unnamed'}`);
+      console.log(`   Created: ${new Date(dataset.created).toLocaleDateString()}`);
+      console.log(`   Modified: ${new Date(dataset.modified).toLocaleDateString()}`);
+      console.log(`   Edit URL: https://studio.mapbox.com/datasets/${dataset.id}`);
+      console.log('');
+    });
+    
+    return datasets;
+  } catch (error) {
+    console.error('❌ Error fetching datasets:', error);
+    return [];
+  }
+};
+
+// Function to test a specific dataset ID
+export const testDatasetId = async (datasetId) => {
+  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+  const USERNAME = 'sama-map';
+  
+  try {
+    console.log(`🧪 Testing dataset ID: ${datasetId}`);
+    const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${datasetId}/features?access_token=${MAPBOX_TOKEN}`);
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`✅ Dataset ${datasetId} is valid! Contains ${data.features.length} features`);
+      return { valid: true, featureCount: data.features.length };
+    } else {
+      console.log(`❌ Dataset ${datasetId} is invalid! Status: ${response.status}`);
+      return { valid: false, status: response.status };
+    }
+  } catch (error) {
+    console.error(`❌ Error testing dataset ${datasetId}:`, error);
+    return { valid: false, error: error.message };
+  }
+};
+
 // Export dataset info for reference
 export const DATASET_INFO = {
   Centrum: {
     id: 'cmcut1t446aqw1lljnelbo105',
     name: 'Amsterdam Street Art - Centrum District',
     editUrl: 'https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105',
-    title: 'sama-map.cmcut1t446aqw1lljnelbo105-2vy9x'
+    tileset: 'sama-map.cmcut1t446aqw1lljnelbo105-2vy9x'
   },
   Centre: {
     id: 'cmcut1t446aqw1lljnelbo105',
     name: 'Amsterdam Street Art - Centre District (alias for Centrum)',
     editUrl: 'https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105',
-    title: 'sama-map.cmcut1t446aqw1lljnelbo105-2vy9x'
+    tileset: 'sama-map.cmcut1t446aqw1lljnelbo105-2vy9x'
+  },
+  'Nieuw-West': {
+    id: 'cmcxrlelg0rjy1mrxtpa0coq1',
+    name: 'Amsterdam Street Art - Nieuw-West District',
+    editUrl: 'https://studio.mapbox.com/datasets/cmcxrlelg0rjy1mrxtpa0coq1',
+    tileset: 'sama-map.cmcxrlelg0rjy1mrxtpa0coq1-722ch'
+  },
+  'New-West': {
+    id: 'cmcxrlelg0rjy1mrxtpa0coq1',
+    name: 'Amsterdam Street Art - New-West District (alias for Nieuw-West)',
+    editUrl: 'https://studio.mapbox.com/datasets/cmcxrlelg0rjy1mrxtpa0coq1',
+    tileset: 'sama-map.cmcxrlelg0rjy1mrxtpa0coq1-722ch'
   },
   default: {
     id: 'cmcqcjc7f0nm71no2kwuyzgdb',

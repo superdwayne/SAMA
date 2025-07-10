@@ -1,3 +1,30 @@
+/* Font definitions for custom styling */
+@font-face {
+  font-family: 'PP Neue Machina Plain Ultrabold';
+  src: url('/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PP Neue Machina Plain Regular';
+  src: url('/fonts/PPNeueMachina-PlainRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.region-description-ultrabold {
+  font-family: 'PP Neue Machina Plain Ultrabold', 'Inter', Arial, sans-serif;
+  font-weight: 800;
+  margin: 0;
+}
+
+.region-description-regular {
+  font-family: 'PP Neue Machina Plain Regular', 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  margin: 0;
+}
+
 /* Payment component styles matching the exact design - Scrollable */
 .payment-container-new {
   position: relative;

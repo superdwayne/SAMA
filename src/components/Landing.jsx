@@ -26,6 +26,15 @@ const regions = [
     image: '/images/center.png'
   },
   { 
+    id: 'south', 
+    title: 'South', 
+    description: 'Upscale galleries meet urban edge.<br /> Where sophistication gets street smart', 
+    latitude: 52.3500, 
+    longitude: 4.8850, 
+    isFree: false,
+    image: '/images/center.png' 
+  },
+  { 
     id: 'east', 
     title: 'East', 
     description: 'East is hip, hungry and covered in color', 
@@ -194,7 +203,8 @@ const Landing = () => {
     const regionVariants = {
       'Centre': ['Centre', 'Center'],
       'Noord': ['Noord', 'North'],
-      'East': ['East', 'Oost'],
+      'South': ['South', 'Zuid'],
+      'East': ['East', 'Oost', 'oost'],
       'Nieuw-West': ['Nieuw-West', 'New-West', 'Nieuw-west', 'New-west']
     };
     
@@ -213,40 +223,7 @@ const Landing = () => {
     return hasAccess;
   };
   
-  // Debug function to manually add Center access (temporary)
-  const addCenterAccess = () => {
-    const accessData = {
-      email: 'superdwayne@gmail.com',
-      region: 'Center',
-      accessToken: 'CEN-DEBUG-' + Date.now(),
-      expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000)
-    };
-    localStorage.setItem('streetArtAccess', JSON.stringify(accessData));
-    setUnlockedRegions(prev => [...new Set([...prev, 'Center'])]);
-    console.log('✅ Added Center access for debugging');
-  };
-  
-  // Debug function to check current state
-  const debugState = () => {
-    console.log('=== DEBUG STATE ===');
-    console.log('unlockedRegions:', unlockedRegions);
-    
-    // Show locked vs unlocked for each region
-    regions.forEach(region => {
-      const isUnlocked = isRegionUnlocked(region.title);
-      console.log(`${region.title}: ${isUnlocked ? '🔓 UNLOCKED' : '🔒 LOCKED'}`);
-    });
-    
-    console.log('localStorage streetArtAccess:', localStorage.getItem('streetArtAccess'));
-    console.log('localStorage amsterdam_map_access:', localStorage.getItem('amsterdam_map_access'));
-    console.log('magicLink.getCurrentAccess():', magicLink.getCurrentAccess());
-    console.log('magicLink.getUnlockedRegions():', magicLink.getUnlockedRegions());
-    console.log('==================');
-  };
-  
-  // Expose for debugging
-  window.addCenterAccess = addCenterAccess;
-  window.debugState = debugState;
+
 
   // Fix scrolling constraints on mount
   useEffect(() => {
@@ -286,6 +263,22 @@ const Landing = () => {
       root.style.overflow = originalRootStyles.overflow || '';
     };
   }, []);
+
+  // Helper function to render region description with custom styling
+  const renderRegionDescription = (region) => {
+    if (region.id === 'centre') {
+      return (
+        <div className="region-description-new">
+          Tourists, tags &amp; tension.
+          <br />
+          <span className="region-description-regular">The city's loudest gallery</span>
+        </div>
+      );
+    }
+    
+    // For other regions, render normally
+    return <p className="region-description-new" dangerouslySetInnerHTML={{ __html: region.description }} />;
+  };
 
   const handleGetItNow = (region) => {
     console.log('💆 handleGetItNow called for region:', region);
@@ -378,10 +371,10 @@ const Landing = () => {
           </div>
         </div>
         
-        <h1 className="main-title">
-          <span className="title-line">STREET</span>
-          <span className="title-line">ART MAP</span>
-          <span className="title-line">AMSTERDAM</span>
+        <h1 className="modal-main-title">
+        STREET<br />
+        ART MAP<br />
+        AMSTERDAM
         </h1>
       </header>
 
@@ -392,7 +385,7 @@ const Landing = () => {
             <div className="region-card-row">
               <div className="region-card-text">
                 <h2 className="region-title-new">{region.title}</h2>
-                <p className="region-description-new">{region.description}</p>
+                {renderRegionDescription(region)}
               </div>
               <div className="region-card-image-action">
                 <div className="region-image-container">

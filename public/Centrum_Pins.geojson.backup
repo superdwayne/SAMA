@@ -1,0 +1,138 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "region": "Centrum",
+        "title": "Various",
+        "artist": "Bogota Collectives",
+        "type": "Artwork",
+        "image_url": "streetartmapamsterdam.com/Centre/5_Various_BogotaCollective.jpg",
+        "description": "Instituto de Corte Bogotá isn't your average art collective — they're razor-sharp, literally. Repping the streets of Bogotá, this crew blends Latin American barbershop culture with street art, fashion, and social commentary. Their work slices through the noise with high-contrast visuals, layered textures, and an unmistakable Colombian edge.\n\nTheir name, "Institute of Cutting", says it all — everything they touch has precision, attitude, and craft. From intricate stencil work to paste-ups and murals, their style is raw but refined, playful but politically aware. Expect bold colors, sharp lines, and faces that stare you down from the wall like they know your story.\n\nWhen they drop into Amsterdam? It's a cultural remix — Bogotá meets the 'Dam. Look out for pieces that celebrate working-class pride, community style, and that universal street hustle energy. Instituto de Corte doesn't just create art — they cut culture open and show you what's inside.\n"
+      },
+      "geometry": {
+        "coordinates": [
+          4.891032,
+          52.375204
+        ],
+        "type": "Point"
+      },
+      "id": "03f7b3ad252d54d67b11ceee69db259f"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region": "Centrum",
+        "title": "Street Art Hunter",
+        "artist": "Anonymous",
+        "type": "Artwork",
+        "image_url": "streetartmapamsterdam.com/Centre/43_Anonymous_StreetArtHunter.jpg",
+        "description": "Street Art Hunters – The City's Sharpest Eyes\n\nYou've seen them — camera in hand, hoodie up, crouched near a mailbox or pointing excitedly at a sticker on a lamppost. Meet the Street Art Hunters: professional hobbyists, art detectives, and low-key urban legends.\n\nThese folks don't just walk through the city — they hunt. They're out there rain or shine, chasing stickers, murals, throw-ups, wheatpastes, tile work, tags, woodies — every tiny treasure the rest of us miss. From hidden stencils behind bike racks to massive murals on warehouse walls, they document it all like it's rare wildlife.\n\nSome do it for the gram. Others for personal collections, zines, or just pure love of the game. They know who's up, who's new, who's back in town, and who just dropped heat last night.\n\nBasically? If street art is the heartbeat of the city, Street Art Hunters are the ones tuning into every beat.\n\nSo next time you spot someone snapping pics of a rusty sticker-covered pole — don't laugh. You just caught a real one in action. And they probably know 10 artists you've never even heard of yet."
+      },
+      "geometry": {
+        "coordinates": [
+          4.887988,
+          52.38322
+        ],
+        "type": "Point"
+      },
+      "id": "0e60e4835f6e6a672961090755e3b6fc"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region": "Centrum",
+        "title": "Paste up",
+        "artist": "Feeld",
+        "type": "Artwork",
+        "image_url": "streetartmapamsterdam.com/Centre/38_Feeld_Pasteup.jpg",
+        "description": "Poster Culture – Street Art That Sticks \n\nBefore Instagram feeds and gallery shows, artists had another fast, bold way to drop a message: posters. And guess what? They still do. In the world of graffiti and street art, poster culture is all about speed, impact, and low-key rebellion. Think wheatpaste. Think glue-soaked corners. Think overnight visuals that hit hard in broad daylight.\n\nPosters are the DIY billboards of the streets — cheaper and faster than murals, but just as powerful. Whether it's a political statement, a pop-culture twist, or a mysterious face staring at you from a back alley, posters let artists throw up art anywhere with minimum fuss and maximum vibe.\n\nIn Amsterdam, poster culture is thriving. You'll spot them layered deep on doors, street poles, and blank walls — sometimes solo, sometimes part of chaotic, collage-style sticker-bomb zones. Artists use them to test ideas, push messages, or simply get seen. Some go big and bold; others keep it cryptic.\n\nAnd the beauty? They don't last forever. They peel, fade, rip, and get covered up. But that's the point — poster art is alive, constantly evolving with the street. Blink and it's gone."
+      },
+      "geometry": {
+        "coordinates": [
+          4.878322,
+          52.373117
+        ],
+        "type": "Point"
+      },
+      "id": "0f7d4708a7c3e5bb6b2bf6dc62fca805"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region": "Centrum",
+        "title": "",
+        "artist": "Designer Jewellery",
+        "type": "Souvenirs",
+        "image_url": "streetartmapamsterdam.com/Centre/54_DesignerJewellery.jpg",
+        "description": "Street art's not the only thing turning heads in this neighborhood. Just a few steps off your route, there's a gem of a designer jewellery store where edgy meets elegant. Think handmade pieces, local flair, and just the right amount of sparkle.\n\nWhether you're hunting for a statement ring, a sleek necklace, or that one-of-a-kind souvenir, this spot's got you covered. It's the perfect place to treat yourself (you are on holiday, after all) or grab a gift that doesn't scream "airport shop."\n\n So take a break from the walls, dip into something shiny, and walk out with a little wearable art — no spray paint required."
+      },
+      "geometry": {
+        "coordinates": [
+          4.885673,
+          52.377916
+        ],
+        "type": "Point"
+      },
+      "id": "16b7dd7a2d724bb2393998477f1234c8"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region": "Centrum",
+        "title": "Sticker Combo",
+        "artist": "Anonymous",
+        "type": "Artwork",
+        "image_url": "streetartmapamsterdam.com/Centre/35_Various_StickerCombo.jpg",
+        "description": "Sticker Combos – The Street's Secret Language\n Sticker combos are where the underground really talks. Walk around Amsterdam and start looking closely — you'll see layers of stickers stacked, mashed, and mixed together like a visual cipher. It's the wild west of street art: no rules, just flow.\n Every combo is a street-level collab, accidental or intentional. Tags, logos, hand-drawn characters, QR codes, cryptic slogans — they all fight for space on signs, bins, poles, and mailboxes. Artists from around the world leave their mark, and locals jump in, adding their voice to the mix. It's fast, raw, and full of attitude.\n Some combos stay up for months, others get covered in days. It's always changing, always alive — like a group chat you can only read on the street.\n This is where sticker heads, graffiti writers, illustrators, and weirdos unite. A layered, chaotic, beautiful mess — pure street energy, one slap at a time."
+      },
+      "geometry": {
+        "coordinates": [
+          4.885465,
+          52.377815
+        ],
+        "type": "Point"
+      },
+      "id": "1756ca9d0daa7b1d715cf53e93f475d9"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region": "Centrum",
+        "title": "Sticker Combo",
+        "artist": "Various Artists",
+        "type": "Artwork",
+        "image_url": "streetartmapamsterdam.com/Centre/10_Various_StickerCombo.jpg",
+        "description": "In the wild world of sticker culture, not all sticker-covered spots are created equal. Let's break it down:\n\nSticker Combo. This is street art speed dating. A combo happens when a bunch of artists (sometimes strangers, sometimes crews) bomb the same surface — think traffic signs, mailboxes, lampposts, bike racks — layering up their tags, characters, slaps, QR codes, even memes. It's chaotic, unplanned, and always evolving. A good combo feels alive — by the time you come back next week, it might be totally different.\n\nIt's the jam session of the sticker world. Quick hits. DIY energy. No permission. Just vibes.\n\nWall of Fame. Now this is a dedicated space — usually curated, sometimes legendary. A Wall of Fame is where sticker heads and street art crews know to bring their A-game. It's a semi-sacred surface, often filled with years' worth of sticker history — layers on layers from artists all over the world. People travel just to slap their sticker here.\n\nThink of it like the hall of records for sticker culture. It's where artists flex, rep their crews, and leave a little piece of themselves behind.\n\nSo next time you're out exploring and see a pole covered in fresh stickies? That's a combo. But that electrical box in Spuistraat covered in hundreds of layered legends? That's a Wall of Fame, baby. Respect the difference. "
+      },
+      "geometry": {
+        "coordinates": [
+          4.888801,
+          52.374776
+        ],
+        "type": "Point"
+      },
+      "id": "186f5461fd5b280cfbd9f425ba58a4f5"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "region": "Centrum",
+        "title": "Dudes",
+        "artist": "London Police",
+        "type": "Artwork",
+        "image_url": "streetartmapamsterdam.com/Centre/30_LondonPolice_Lads.jpg",
+        "description": "The London Police – Big Walls, Bigger Vibes\n The London Police bring serious style to the streets — and their murals are pure fire. You've seen the stickers, but when these guys go big, they go huge. Their iconic "LADS" characters roll deep across entire walls, mixing bold black lines with clean graphic shapes, punchy patterns, and just the right dose of retro cool.\n These murals feel like comic books come to life — playful, polished, and packed with personality. The LADS are always vibing: cruising in cars, chilling with shades, or just grinning at the madness of modern life. But look closer, and you'll spot slick details, nods to local culture, and that signature TLP humor.\n Born in London but raised by the world, The London Police have been blessing Amsterdam with their art since the late '90s. Their walls aren't just street art — they're urban landmarks. So when you spot those wide-eyed characters staring back at you, you know you've found a classic."
+      },
+      "geometry": {
+        "coordinates": [
+          4.885705,
+          52.377949
+        ],
+        "type": "Point"
+      },
+      "id": "1a608ff7e74d114619e3c4cc242835b1"
+    }
+  ],
+  "type": "FeatureCollection"
+}

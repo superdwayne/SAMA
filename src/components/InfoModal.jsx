@@ -17,9 +17,11 @@ const InfoModal = ({ isOpen, onClose }) => {
               <span className="modal-subtitle">Amsterdam</span>
             </div>
           </div>
-          <button className="close-button" onClick={onClose}>
-            <span className="close-icon">×</span>
-          </button>
+          <div className="header-right">
+            <button className="close-button" onClick={onClose}>
+              <span className="close-icon">×</span>
+            </button>
+          </div>
         </div>
 
         {/* Main Title */}
@@ -31,14 +33,14 @@ const InfoModal = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <div className="modal-body">
-          <p className="legal-text">
-            The digital map and all associated content are the intellectual property of Stichting Street Art Museum Amsterdam and are protected under applicable copyright laws. All rights are reserved.
+          <p className="description-text">
+            Curated by Street Art Museum Amsterdam, a contemporary museum showcasing murals and community projects that connect street art with the city and its people.
           </p>
-          <p className="legal-text">
-            While the content of this map is reviewed and updated on a monthly basis, users are advised that, due to the inherently ephemeral and dynamic nature of street art, certain works represented on the map may have been altered, relocated, or removed since the time of the most recent update. Stichting Street Art Museum Amsterdam makes no representations or warranties as to the continued existence, condition, or public accessibility of any artwork depicted.
+          <p className="description-text">
+            Try out one of our street art routes and cruise through bold murals, hidden gems and rebellious tags most folks totally miss. It's all tucked away in alleys, corners and walls that have something to say.
           </p>
-          <p className="legal-text">
-            Unauthorised reproduction, distribution, or commercial use of the map or its contents, in whole or in part, is strictly prohibited without the prior written consent of Stichting Street Art Museum Amsterdam.
+          <p className="description-text">
+            Walk, vibe and see the city like you've never seen it before. All at your own pace.
           </p>
 
           <div className="divider"></div>
@@ -55,6 +57,16 @@ const InfoModal = ({ isOpen, onClose }) => {
           </div>
 
           <div className="divider"></div>
+
+          <p className="legal-text">
+            The digital map and all associated content are the intellectual property of Stichting Street Art Museum Amsterdam and are protected under applicable copyright laws. All rights are reserved.
+          </p>
+          <p className="legal-text">
+            While the content of this map is reviewed and updated on a monthly basis, users are advised that, due to the inherently ephemeral and dynamic nature of street art, certain works represented on the map may have been altered, relocated, or removed since the time of the most recent update. Stichting Street Art Museum Amsterdam makes no representations or warranties as to the continued existence, condition, or public accessibility of any artwork depicted.
+          </p>
+          <p className="legal-text">
+            Unauthorised reproduction, distribution, or commercial use of the map or its contents, in whole or in part, is strictly prohibited without the prior written consent of Stichting Street Art Museum Amsterdam.
+          </p>
 
           {/* Logos */}
           <div className="footer-logos">

@@ -5,10 +5,39 @@ const ArtworkPopup = ({ artwork, onClose, onNavigate }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
-  // Use image_url from Mapbox dataset, fallback to placeholder
-  const imageSource = artwork.image_url && !imageError 
-    ? artwork.image_url 
+  // Helper function to fix incomplete URLs
+  const normalizeImageUrl = (url) => {
+    if (!url) return null;
+    
+    // If URL already has protocol, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // If URL starts with //, add https:
+    if (url.startsWith('//')) {
+      return `https:${url}`;
+    }
+    
+    // Otherwise, add https:// prefix
+    return `https://${url}`;
+  };
+
+  // Use image_url from Mapbox dataset, normalize URL, fallback to placeholder
+  const normalizedImageUrl = normalizeImageUrl(artwork.image_url);
+  const imageSource = normalizedImageUrl && !imageError 
+    ? normalizedImageUrl 
     : '/images/street-art-placeholder.jpg';
+
+  // Debug: Log image URL to help troubleshoot
+  console.log('🖼️ Artwork image debug:', {
+    title: artwork.title,
+    original_image_url: artwork.image_url,
+    normalized_image_url: normalizedImageUrl,
+    imageSource,
+    imageError,
+    imageLoading
+  });
 
   const handleImageLoad = () => {
     setImageLoading(false);

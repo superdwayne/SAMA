@@ -16,14 +16,14 @@ const regionStats = {
     galleries: 2,
     legalWalls: 1,
     featuredArtists: 12,
-    image: '/north-street-art.jpg'
+    image: '/images/collage.png'
   },
   'East': {
     artworks: 22,
     galleries: 1,
     legalWalls: 3,
     featuredArtists: 18,
-    image: '/east-street-art.jpg'
+    image: '/images/collage.png'
   }
 };
 
@@ -108,10 +108,12 @@ const RegionPreview = ({ region, onClose }) => {
             />
           </div>
         </div>
+
+        
         
         {/* Action Button */}
         <button className="get-it-now-btn" onClick={handleGetItNow}>
-          Get it now
+        Unlock District
         </button>
       </div>
     </div>

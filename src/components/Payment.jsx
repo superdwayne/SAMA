@@ -46,6 +46,8 @@ const Payment = ({ setUnlockedRegions }) => {
     'center': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
     'noord': { artworks: 40, galleries: 5, walls: 4, artists: 25, description: 'From shipyards to street art.\nNoord is culture unleashed' },
     'north': { artworks: 40, galleries: 5, walls: 4, artists: 25, description: 'From shipyards to street art.\nNorth is culture unleashed' },
+    'south': { artworks: 28, galleries: 4, walls: 2, artists: 20, description: 'Upscale galleries meet urban edge.\nWhere sophistication gets street smart' },
+    'zuid': { artworks: 28, galleries: 4, walls: 2, artists: 20, description: 'Upscale galleries meet urban edge.\nWhere sophistication gets street smart' },
     'east': { artworks: 30, galleries: 2, walls: 3, artists: 18, description: 'East is hip, hungry and\ncovered in color' },
     'nieuw-west': { artworks: 15, galleries: 1, walls: 3, artists: 8, description: 'Emerging street art destination\nwith fresh perspectives' }
   };
@@ -59,6 +61,7 @@ const Payment = ({ setUnlockedRegions }) => {
     if (lower === 'nieuw-west' || lower === 'new-west') return 'Nieuw-West';
     if (lower === 'centre' || lower === 'center') return 'Centre';
     if (lower === 'noord' || lower === 'north') return 'Noord';
+    if (lower === 'south' || lower === 'zuid') return 'South';
     if (lower === 'east' || lower === 'oost') return 'East';
     return regionStr.charAt(0).toUpperCase() + regionStr.slice(1);
   };
@@ -70,6 +73,27 @@ const Payment = ({ setUnlockedRegions }) => {
     trackRegionInteraction(displayRegion, 'payment_page_viewed');
     trackUserJourney('payment_page_view', { region: displayRegion });
   }, [displayRegion]);
+
+  // Helper function to render region description with custom styling
+  const renderRegionDescription = (description, regionKey) => {
+    if (regionKey === 'centre' || regionKey === 'center') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">Tourists, tags & tension.</span>
+          <br />
+          <span className="region-description-regular">The city's loudest gallery</span>
+        </div>
+      );
+    }
+    
+    // For other regions, render with line breaks
+    return description.split('\n').map((line, index) => (
+      <span key={index}>
+        {line}
+        {index < description.split('\n').length - 1 && <br />}
+      </span>
+    ));
+  };
 
   const handlePayment = async () => {
     setProcessing(true);
@@ -120,7 +144,7 @@ const Payment = ({ setUnlockedRegions }) => {
         {/* Featured Highlight Section */}
         <div className="featured-highlight">
           <h2 className="highlight-title">Featured Highlight</h2>
-          <p className="highlight-description">{info.description}</p>
+          <p className="highlight-description">{renderRegionDescription(info.description, region?.toLowerCase())}</p>
         </div>
         
         {/* What is included Section */}

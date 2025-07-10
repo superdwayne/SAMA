@@ -55,21 +55,21 @@ const regionStats = {
     galleries: 2,
     legalWalls: 1,
     featuredArtists: 12,
-    image: '/north-street-art.jpg'
+    image: '/images/collage.png'
   },
   'East': {
     artworks: 22,
     galleries: 1,
     legalWalls: 3,
     featuredArtists: 18,
-    image: '/east-street-art.jpg'
+   image: '/images/collage.png'
   },
   'Nieuw-West': {
     artworks: 15,
     galleries: 1,
     legalWalls: 3,
     featuredArtists: 8,
-    image: '/nieuw-west-street-art.jpg'
+   image: '/images/collage.png'
   }
 };
 
@@ -79,6 +79,22 @@ const RegionDetailPage = () => {
   
   // Find the region by ID
   const region = regions.find(r => r.id === id);
+  
+  // Helper function to render region description with custom styling
+  const renderRegionDescription = (region) => {
+    if (region.id === 'centre') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">Tourists, tags & tension.</span>
+          <br />
+          <span className="region-description-regular">The city's loudest gallery</span>
+        </div>
+      );
+    }
+    
+    // For other regions, render with HTML
+    return <span dangerouslySetInnerHTML={{ __html: region.description }} />;
+  };
   
   // Enable scrolling for this page - Minimal Safe Version
   useEffect(() => {
@@ -136,8 +152,24 @@ const RegionDetailPage = () => {
   const stats = regionStats[regionName] || regionStats['Centre'];
   
   const handleGetItNow = async () => {
-    // For paid regions, go to payment page
-    navigate(`/payment/${region.id}`);
+    // Direct Stripe links for each region
+    const stripeLinks = {
+      'centre': 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01',
+      'noord': 'https://buy.stripe.com/00w00k4nF8KQgdlgZx1oI03',
+      'east': 'https://buy.stripe.com/cNi8wQbQ70ekgdl38H1oI04',
+      'nieuw-west': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06'
+    };
+
+    const stripeUrl = stripeLinks[region.id];
+    
+    if (stripeUrl) {
+      console.log('🔗 Redirecting directly to Stripe for', region.title, '→', stripeUrl);
+      window.location.href = stripeUrl;
+    } else {
+      console.error('❌ No Stripe link found for region:', region.id);
+      // Fallback to payment page if no direct link
+      navigate(`/payment/${region.id}`);
+    }
   };
 
   const handleBack = () => {
@@ -177,7 +209,7 @@ const RegionDetailPage = () => {
         <h1 className="region-name">{regionName}</h1>
         
         <div className="region-description-box">
-          <p className="region-description" dangerouslySetInnerHTML={{ __html: region.description }} />
+          <p className="region-description">{renderRegionDescription(region)}</p>
         </div>
         
         {/* Stats and Map Container - Horizontal Layout */}
@@ -209,11 +241,27 @@ const RegionDetailPage = () => {
             />
           </div>
         </div>
+
+        <div className="payment-section">
+          <div className="price-section">
+            <div className="lock-icon">
+              <img src="/images/unlockdis.png" alt="Locked" className="unlock-icon-img" />
+            </div>
+            <div className="price-large">€4,99</div>
+            <div className="price-subtitle">One-time payment</div>
+            <div className="price-description">
+              Lifetime access to all<br/>
+              content in this district
+            </div>
+            <button className="get-it-now-btn" onClick={handleGetItNow}>
+        Unlock District
+        </button>
+          </div>
+          
+        </div>
         
         {/* Action Button */}
-        <button className="get-it-now-btn" onClick={handleGetItNow}>
-          Get it now
-        </button>
+       
       </div>
     </div>
   );

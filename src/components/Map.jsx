@@ -18,7 +18,7 @@ import ActiveRoute from './ActiveRoute';
 import MobileHeader from './MobileHeader';
 import { amsterdamRegions } from '../data/regions';
 import { streetArtLocations } from '../data/locations';
-import { fetchMapboxDataset } from '../utils/mapboxData';
+import { fetchMapboxDataset, listAvailableDatasets, testDatasetId } from '../utils/mapboxData';
 import { neighborhoodDescriptions, getNeighborhoodQRUrl } from '../data/neighborhoods';
 import { artRoutes, getRouteLocations } from '../data/routes';
 import { getTokenData, getRemainingDays } from '../utils/auth';
@@ -76,8 +76,31 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
   const [userAccess, setUserAccess] = useState(null);
   const [magicLinkStatus, setMagicLinkStatus] = useState('idle'); // idle, verifying, success, error
+  const [regionPinsData, setRegionPinsData] = useState(null); // Store GeoJSON data from dataset
   const mapRef = useRef();
   const remainingDays = getRemainingDays();
+
+  // Helper function to get all variants of a region name
+  const getRegionVariants = (region) => {
+    const variants = {
+      'Centre': ['Centre', 'Center', 'Centrum', 'centre', 'center', 'centrum'],
+      'Center': ['Centre', 'Center', 'Centrum', 'centre', 'center', 'centrum'], 
+      'Centrum': ['Centre', 'Center', 'Centrum', 'centre', 'center', 'centrum'],
+      'Noord': ['Noord', 'North', 'noord', 'north'],
+      'North': ['Noord', 'North', 'noord', 'north'],
+      'South': ['South', 'Zuid', 'south', 'zuid'],
+      'Zuid': ['South', 'Zuid', 'south', 'zuid'],
+      'East': ['East', 'Oost', 'east', 'oost'],
+      'Oost': ['East', 'Oost', 'east', 'oost'],
+      'West': ['West', 'Westerpark', 'west', 'westerpark'],
+      'Westerpark': ['West', 'Westerpark', 'west', 'westerpark'],
+      'South-East': ['South-East', 'Zuidoost', 'south-east', 'zuidoost'],
+      'Zuidoost': ['South-East', 'Zuidoost', 'south-east', 'zuidoost'],
+      'Nieuw-West': ['Nieuw-West', 'New-West', 'nieuw-west', 'new-west'],
+      'New-West': ['Nieuw-West', 'New-West', 'nieuw-west', 'new-west']
+    };
+    return variants[region] || [region.toLowerCase()];
+  };
 
   // Debug: Log current unlocked regions
   useEffect(() => {
@@ -172,6 +195,348 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
 
     loadMapboxData();
   }, [requestedRegion]); // Re-fetch when requested region changes
+
+  // Load Region Pins GeoJSON from existing Mapbox data
+  useEffect(() => {
+    console.log('🚀 STARTING: Icon layer creation effect triggered');
+    
+    const loadRegionPinsData = async () => {
+      try {
+        console.log('🔄 Creating icon layer from existing Mapbox data...');
+        console.log('📊 Current state:', {
+          requestedRegion,
+          mapboxLocationsCount: mapboxLocations.length,
+          allLocationsCount: allLocations.length
+        });
+        
+        // Determine which region dataset to load
+        let targetRegion = 'Centrum'; // Default to Centrum
+        if (requestedRegion) {
+          // Handle region name variations for all regions
+          const regionMapping = {
+            // Centre variations
+            'Centre': 'Centrum',
+            'Center': 'Centrum', 
+            'Centrum': 'Centrum',
+            
+            // Noord variations
+            'Noord': 'Noord',
+            'North': 'Noord',
+            
+            // South variations  
+            'South': 'South',
+            'Zuid': 'South',
+            
+            // East variations
+            'East': 'East', 
+            'Oost': 'East',
+            
+            // West variations
+            'West': 'West',
+            'Westerpark': 'West',
+            
+            // South-East variations
+            'South-East': 'South-East',
+            'Zuidoost': 'South-East',
+            
+            // Nieuw-West variations
+            'Nieuw-West': 'Nieuw-West',
+            'New-West': 'Nieuw-West',
+            'Nieuw-west': 'Nieuw-West',
+            'New-west': 'Nieuw-West'
+          };
+          
+          targetRegion = regionMapping[requestedRegion] || requestedRegion;
+        }
+        
+        // Use your existing fetchMapboxDataset function 
+        console.log(`📞 Calling fetchMapboxDataset('${targetRegion}')...`);
+        const mapboxData = await fetchMapboxDataset(targetRegion);
+        console.log('📦 fetchMapboxDataset result:', mapboxData);
+        
+        if (mapboxData && mapboxData.length > 0) {
+          console.log('✨ Converting', mapboxData.length, 'items to GeoJSON...');
+          
+          // First, let's see what types we actually have in the data
+          const uniqueTypes = [...new Set(mapboxData.map(item => item.type))].filter(Boolean);
+          console.log('🔍 Unique types found in data:', uniqueTypes);
+          
+          // Check a few sample items to see their structure
+          console.log('📋 Sample data items:', mapboxData.slice(0, 3).map(item => ({
+            id: item.id,
+            title: item.title,
+            type: item.type,
+            artist: item.artist,
+            allProperties: Object.keys(item)
+          })));
+          
+          // Convert to GeoJSON format for icon mapping
+          const geojsonData = {
+            type: 'FeatureCollection',
+            features: mapboxData.map((item, index) => {
+              const actualType = item.type || item.category || item.kind || 'Artwork';
+              
+              console.log(`🎯 Processing item ${index + 1}:`, {
+                id: item.id,
+                title: item.title,
+                originalType: item.type,
+                actualType: actualType,
+                coordinates: [item.longitude, item.latitude]
+              });
+              
+              return {
+                type: 'Feature',
+                id: item.id,
+                properties: {
+                  id: item.id,
+                  title: item.title || 'Untitled',
+                  artist: item.artist || 'Anonymous',
+                  type: actualType,
+                  description: item.description || '',
+                  image_url: item.image_url || '',
+                  region: item.district || 'Centrum'
+                },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [item.longitude, item.latitude]
+                }
+              };
+            })
+          };
+          
+          console.log('🎨 Final GeoJSON data:', geojsonData);
+          setRegionPinsData(geojsonData);
+          console.log('✅ SUCCESS! Created icon layer with', geojsonData.features.length, 'features from existing data!');
+          console.log('🎨 Icon mapping will show:', {
+            'Artwork': 'art-gallery-15 🎨',
+            'Souvenirs': 'shop-15 🏪', 
+            'Food & Drink': 'restaurant-15 🍽️',
+            'Culture Place': 'museum-15 🏛️'
+          });
+        } else {
+          console.log('⚠️ No data found for Centrum region');
+          console.log('📊 mapboxData details:', {
+            data: mapboxData,
+            type: typeof mapboxData,
+            isArray: Array.isArray(mapboxData),
+            length: mapboxData?.length
+          });
+        }
+        
+      } catch (error) {
+        console.error('❌ Failed to create icon layer:', error);
+        console.error('🔍 Error details:', {
+          message: error.message,
+          stack: error.stack
+        });
+        console.log('💡 No worries - your existing pins are still working perfectly!');
+      }
+    };
+
+    // Check if fetchMapboxDataset function exists
+    console.log('🔍 Checking fetchMapboxDataset availability:', typeof fetchMapboxDataset);
+    
+    if (typeof fetchMapboxDataset === 'function') {
+      console.log('✅ fetchMapboxDataset is available, proceeding...');
+      loadRegionPinsData();
+    } else {
+      console.log('❌ fetchMapboxDataset not available, skipping icon layer');
+      console.log('🔍 Available functions:', Object.getOwnPropertyNames(window).filter(name => name.includes('fetch')));
+    }
+  }, [requestedRegion]); // Re-fetch when region changes
+
+  // Debug function to list available datasets (you can call this in browser console)
+  window.debugMapboxDatasets = async () => {
+    try {
+      console.log('🔍 Using enhanced dataset listing...');
+      const datasets = await listAvailableDatasets();
+      return datasets;
+    } catch (error) {
+      console.error('❌ Failed to list datasets:', error);
+    }
+  };
+
+  // Test specific dataset ID
+  window.testDataset = async (datasetId) => {
+    try {
+      const result = await testDatasetId(datasetId);
+      return result;
+    } catch (error) {
+      console.error('❌ Failed to test dataset:', error);
+    }
+  };
+
+  // Test all configured dataset IDs
+  window.testAllDatasets = async () => {
+    const datasets = {
+      'Centre': 'cmcut1t446aqw1lljnelbo105',
+      'Noord': 'cmcqcjc7f0nm71no2kwuyzgdb',
+      'East': 'cmcqcjc7f0nm71no2kwuyzgdb', 
+      'West': 'cmcqcjc7f0nm71no2kwuyzgdb',
+      'South': 'cmcqcjc7f0nm71no2kwuyzgdb',
+      'South-East': 'cmcqcjc7f0nm71no2kwuyzgdb',
+      'Nieuw-West': 'cmcxrlelg0rjy1mrxtpa0coq1'
+    };
+
+    console.log('🧪 Testing all configured dataset IDs...');
+    const results = {};
+    
+    for (const [region, datasetId] of Object.entries(datasets)) {
+      console.log(`\n🔍 Testing ${region} (${datasetId}):`);
+      const result = await testDatasetId(datasetId);
+      results[region] = result;
+    }
+    
+    console.log('\n📊 Summary of all dataset tests:', results);
+    return results;
+  };
+
+  // Debug function to unlock all regions (you can call this in browser console)
+  window.unlockAllRegions = () => {
+    const allRegions = ['Centre', 'Noord', 'South', 'East', 'West', 'South-East', 'Nieuw-West'];
+    console.log('🔓 Unlocking all regions:', allRegions);
+    
+    // Update localStorage
+    localStorage.setItem('unlockedRegions', JSON.stringify(allRegions));
+    
+    // Update React state if available
+    if (setUnlockedRegions) {
+      setUnlockedRegions(allRegions);
+      console.log('✅ React state updated with all regions unlocked!');
+    }
+    
+    console.log('🎨 All regions are now unlocked:', allRegions);
+    return allRegions;
+  };
+
+  // Debug function to lock all regions (you can call this in browser console)
+  window.lockAllRegions = () => {
+    console.log('🔒 Locking all regions...');
+    
+    // Clear localStorage
+    localStorage.setItem('unlockedRegions', JSON.stringify([]));
+    
+    // Update React state if available
+    if (setUnlockedRegions) {
+      setUnlockedRegions([]);
+      console.log('✅ React state updated - all regions locked!');
+    }
+    
+    console.log('🔒 All regions are now locked');
+    return [];
+  };
+
+  // Debug function to show all pin districts (you can call this in browser console)
+  window.debugPinDistricts = () => {
+    console.log('🗺️ === REGION FILTERING DEBUG ===');
+    console.log('Current requested region:', requestedRegion);
+    console.log('Current unlocked regions:', unlockedRegions);
+    
+    // Check Mapbox locations
+    console.log('\n📍 Mapbox Locations:');
+    mapboxLocations.forEach(loc => {
+      if (requestedRegion) {
+        const requestedVariants = getRegionVariants(requestedRegion);
+        const locationVariants = getRegionVariants(loc.district);
+        const matches = requestedVariants.some(reqVariant => 
+          locationVariants.some(locVariant => 
+            reqVariant.toLowerCase() === locVariant.toLowerCase()
+          )
+        );
+        console.log(`  "${loc.title}" in "${loc.district}" → ${matches ? '✅ SHOW' : '❌ HIDE'}`);
+      } else {
+        console.log(`  "${loc.title}" in "${loc.district}"`);
+      }
+    });
+    
+    // Check GeoJSON data
+    if (regionPinsData) {
+      console.log('\n🎨 GeoJSON Pins:');
+      regionPinsData.features.forEach(feature => {
+        if (requestedRegion) {
+          const requestedVariants = getRegionVariants(requestedRegion);
+          const locationVariants = getRegionVariants(feature.properties.region);
+          const matches = requestedVariants.some(reqVariant => 
+            locationVariants.some(locVariant => 
+              reqVariant.toLowerCase() === locVariant.toLowerCase()
+            )
+          );
+          console.log(`  "${feature.properties.title}" in "${feature.properties.region}" → ${matches ? '✅ SHOW' : '❌ HIDE'}`);
+        } else {
+          console.log(`  "${feature.properties.title}" in "${feature.properties.region}"`);
+        }
+      });
+    }
+    
+    // Show unique districts
+    const mapboxDistricts = [...new Set(mapboxLocations.map(loc => loc.district))].filter(Boolean);
+    const geojsonDistricts = regionPinsData ? [...new Set(regionPinsData.features.map(f => f.properties.region))].filter(Boolean) : [];
+    const allDistricts = [...new Set([...mapboxDistricts, ...geojsonDistricts])];
+    
+    console.log('\n🎯 All Unique Districts Found:', allDistricts);
+    
+    // Show region variants mapping
+    if (requestedRegion) {
+      console.log('\n🔄 Region Variants for', requestedRegion + ':', getRegionVariants(requestedRegion));
+    }
+    
+    console.log('\n💡 Tip: Use window.filterTestPin("pinTitle") to test filtering for a specific pin');
+    
+    return { mapboxLocations, regionPinsData, allDistricts };
+  };
+
+  // Test filtering for a specific pin
+  window.filterTestPin = (pinTitle) => {
+    console.log(`🔍 Testing pin filtering for: "${pinTitle}"`);
+    
+    const mapboxPin = mapboxLocations.find(loc => loc.title.toLowerCase().includes(pinTitle.toLowerCase()));
+    const geojsonPin = regionPinsData?.features.find(f => f.properties.title.toLowerCase().includes(pinTitle.toLowerCase()));
+    
+    if (mapboxPin) {
+      console.log(`📍 Found Mapbox pin: "${mapboxPin.title}"`);
+      console.log(`  District: "${mapboxPin.district}"`);
+      
+      if (requestedRegion) {
+        const requestedVariants = getRegionVariants(requestedRegion);
+        const locationVariants = getRegionVariants(mapboxPin.district);
+        const matches = requestedVariants.some(reqVariant => 
+          locationVariants.some(locVariant => 
+            reqVariant.toLowerCase() === locVariant.toLowerCase()
+          )
+        );
+        console.log(`  Requested region: "${requestedRegion}"`);
+        console.log(`  Should show: ${matches ? '✅ YES' : '❌ NO'}`);
+        console.log(`  Requested variants: [${requestedVariants.join(', ')}]`);
+        console.log(`  Location variants: [${locationVariants.join(', ')}]`);
+      } else {
+        console.log('  No specific region requested - checking unlocked regions');
+        const isUnlocked = unlockedRegions.some(unlockedRegion => {
+          const unlockedVariants = getRegionVariants(unlockedRegion);
+          const locationVariants = getRegionVariants(mapboxPin.district);
+          return unlockedVariants.some(unlockedVariant => 
+            locationVariants.some(locVariant => 
+              unlockedVariant.toLowerCase() === locVariant.toLowerCase()
+            )
+          );
+        });
+        console.log(`  Is unlocked: ${isUnlocked ? '✅ YES' : '❌ NO'}`);
+      }
+    }
+    
+    if (geojsonPin) {
+      console.log(`🎨 Found GeoJSON pin: "${geojsonPin.properties.title}"`);
+      console.log(`  Region: "${geojsonPin.properties.region}"`);
+    }
+    
+    if (!mapboxPin && !geojsonPin) {
+      console.log(`❌ No pin found with title containing: "${pinTitle}"`);
+      console.log('Available pins:');
+      mapboxLocations.forEach(loc => console.log(`  - ${loc.title}`));
+      if (regionPinsData) {
+        regionPinsData.features.forEach(f => console.log(`  - ${f.properties.title}`));
+      }
+    }
+  };
 
   // Remove auto-unlock - only unlock purchased regions
   // useEffect(() => {
@@ -940,7 +1305,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           mapboxAccessToken={mapboxToken}
           onMove={evt => setViewport(evt.viewState)}
           mapStyle="mapbox://styles/mapbox/light-v11"
-          interactiveLayerIds={['sama-map-regions-fill', 'sama-map-regions-outline']}
+          interactiveLayerIds={['sama-map-regions-fill', 'sama-map-regions-outline', 'region-pins-layer']}
           onClick={(event) => {
             const features = event.features;
             if (features && features.length > 0) {
@@ -949,6 +1314,24 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
               );
               if (regionFeature) {
                 setSelectedRegion(regionFeature.properties);
+                return;
+              }
+
+              // Handle GeoJSON layer clicks
+              const geojsonFeature = features.find(f => f.layer.id === 'region-pins-layer');
+              if (geojsonFeature) {
+                const location = {
+                  id: geojsonFeature.properties.id || geojsonFeature.id,
+                  title: geojsonFeature.properties.title,
+                  artist: geojsonFeature.properties.artist,
+                  type: geojsonFeature.properties.type,
+                  description: geojsonFeature.properties.description,
+                  image_url: geojsonFeature.properties.image_url,
+                  latitude: geojsonFeature.geometry.coordinates[1],
+                  longitude: geojsonFeature.geometry.coordinates[0],
+                  district: geojsonFeature.properties.region
+                };
+                handleArtworkClick(location);
                 return;
               }
 
@@ -976,89 +1359,153 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             showUserHeading
           />
           
-          {/* Remove purple overlays (region highlights/fills) */}
-          {/*
-          <Source id="regions-unlocked" type="geojson" data={{
-            type: 'FeatureCollection',
-            features: amsterdamRegions.features.filter(f => 
-              unlockedRegions.includes(f.properties.name)
-            )
-          }}>
-          </Source>
-          <Source id="regions-locked" type="geojson" data={{
-            type: 'FeatureCollection',
-            features: amsterdamRegions.features.filter(f => 
-              !unlockedRegions.includes(f.properties.name)
-            )
-          }}>
-          </Source>
-          {requestedRegion && (
-            <Source id="requested-region" type="geojson" data={{
-              type: 'FeatureCollection',
-              features: amsterdamRegions.features.filter(f => 
-                f.properties.name === requestedRegion
-              )
-            }}>
-              <Layer
-                id="requested-region-fill"
-                type="fill"
-                paint={{
-                  'fill-color': '#8e44ad',
-                  'fill-opacity': 0.3
-                }}
-              />
-              <Layer
-                id="requested-region-outline"
-                type="line"
-                paint={{
-                  'line-color': '#8e44ad',
-                  'line-width': 3
-                }}
-              />
-            </Source>
-          )}
-          */}
+         
 
           {/* 3D buildings layer */}
           <Layer {...buildingLayer} />
 
-          {/* Show only Mapbox dataset locations, filtered by unlocked regions */}
+          {/* GeoJSON layer with icon mapping - Load from Mapbox dataset */}
+          {regionPinsData && (
+            <Source 
+              id="region-pins" 
+              type="geojson" 
+              data={{
+                ...regionPinsData,
+                features: regionPinsData.features.filter(feature => {
+                  // If a specific region is requested, only show pins from that region
+                  if (requestedRegion) {
+                    const locationRegion = feature.properties.region;
+                    const requestedVariants = getRegionVariants(requestedRegion);
+                    const locationVariants = getRegionVariants(locationRegion);
+                    
+                    const regionMatches = requestedVariants.some(reqVariant => 
+                      locationVariants.some(locVariant => 
+                        reqVariant.toLowerCase() === locVariant.toLowerCase()
+                      )
+                    );
+                    
+                    // console.log(`🎨 GeoJSON pin: "${feature.properties.title}" in "${locationRegion}" ${regionMatches ? 'SHOW' : 'HIDE'} for requested region "${requestedRegion}"`);
+                    return regionMatches;
+                  }
+                  
+                  // Otherwise, only show pins from unlocked regions
+                  const isUnlocked = unlockedRegions.some(unlockedRegion => {
+                    const unlockedVariants = getRegionVariants(unlockedRegion);
+                    const locationVariants = getRegionVariants(feature.properties.region);
+                    
+                    return unlockedVariants.some(unlockedVariant => 
+                      locationVariants.some(locVariant => 
+                        unlockedVariant.toLowerCase() === locVariant.toLowerCase()
+                      )
+                    );
+                  });
+                  
+                  console.log(`🎨 GeoJSON pin: "${feature.properties.title}" in "${feature.properties.region}": ${isUnlocked ? 'SHOW' : 'HIDE'}`);
+                  return isUnlocked;
+                })
+              }}
+            >
+              <Layer
+                id="region-pins-layer"
+                type="symbol"
+                layout={{
+                  'icon-image': 'marker',           // Base marker for all
+                  'icon-size': 1.0,
+                  'icon-allow-overlap': true,
+                  'text-field': [
+                    'match',
+                    ['get', 'type'],
+                    // Mapbox dataset types (capitalized)
+                    'Artwork', '🎨',              // Art palette emoji for artwork
+                    'Souvenirs', '🏪',           // Shop emoji for souvenirs
+                    'Food & Drink', '🍽️',        // Plate emoji for food & drink
+                    'Culture Place', '🏛️',       // Classical building for culture
+                    
+                    // Local data types (lowercase)
+                    'museum', '🏛️',              // Museum building
+                    'artwork', '🎨',             // Art palette for artwork
+                    'legal-wall', '📍',          // Pin for legal walls
+                    'gallery', '🖼️',            // Picture frame for gallery
+                    
+                    // Legacy/additional types
+                    'mural', '🎨',               // Art palette for mural
+                    'shop', '🏪',                // Shop for shop
+                    'restaurant', '🍽️',          // Plate for restaurant
+                    'sculpture', '🗿',           // Statue for sculpture
+                    'graffiti', '✨',            // Sparkle for graffiti
+                    
+                    '🎨'                         // Default art icon
+                  ],
+                  'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                  'text-offset': [0, 0],        // Center the emoji on the marker
+                  'text-anchor': 'center',
+                  'text-size': 24               // Larger size for emojis
+                }}
+                paint={{
+                  'icon-color': '#ffffff',      // White background marker
+                  'text-color': '#000000',      // Black emoji for visibility
+                  'text-halo-color': '#ffffff',
+                  'text-halo-width': 2
+                }}
+              />
+            </Source>
+          )}
+
+          {/* Show only Mapbox dataset locations, filtered by requested region or unlocked regions */}
+          {/* Debug: Log all mapbox locations and their districts */}
+          {/* {requestedRegion && console.log(`🗺️ All available locations for filtering:`, mapboxLocations.map(loc => ({ title: loc.title, district: loc.district })))} */}
+          {/* Deduplicate locations to prevent duplicate keys */}
           {mapboxLocations
+            .filter((location, index, self) => 
+              // Keep only the first occurrence of each unique location (by id, lat, lng)
+              index === self.findIndex(l => 
+                l.id === location.id && 
+                l.latitude === location.latitude && 
+                l.longitude === location.longitude
+              )
+            )
             .filter(location => {
-              // Debug: Log location details
-             // console.log(`🔍 Checking location: "${location.title}" - district: "${location.district}" - requestedRegion: "${requestedRegion}"`);
-              
-              // If a specific region is requested, only show pins from that region
+              // If a specific region is requested, only show pins from that region (regardless of unlock status)
               if (requestedRegion) {
-                // More flexible region matching
                 const locationRegion = location.district;
-                const regionMatches = 
-                  locationRegion === requestedRegion ||
-                  locationRegion.toLowerCase() === requestedRegion.toLowerCase() ||
-                  // Handle Center/Centre/Centrum variations
-                  (requestedRegion === 'Centre' && (locationRegion === 'Center' || locationRegion === 'centre' || locationRegion === 'Centrum')) ||
-                  (requestedRegion === 'Center' && (locationRegion === 'Centre' || locationRegion === 'center' || locationRegion === 'Centrum')) ||
-                  (requestedRegion === 'Centrum' && (locationRegion === 'Centre' || locationRegion === 'Center' || locationRegion === 'center' || locationRegion === 'centre'));
                 
-               // console.log(`📍 Region match check: "${locationRegion}" vs "${requestedRegion}" = ${regionMatches}`);
+                const requestedVariants = getRegionVariants(requestedRegion);
+                const locationVariants = getRegionVariants(locationRegion);
+                
+                // Check if any variant of the requested region matches any variant of the location region
+                const regionMatches = requestedVariants.some(reqVariant => 
+                  locationVariants.some(locVariant => 
+                    reqVariant.toLowerCase() === locVariant.toLowerCase()
+                  )
+                );
+                
+                // console.log(`📍 Region-specific view: "${location.title}" in "${locationRegion}" ${regionMatches ? 'SHOW' : 'HIDE'} for requested region "${requestedRegion}"`);
+                // console.log(`🔍 Debug - Requested variants: [${requestedVariants.join(', ')}], Location variants: [${locationVariants.join(', ')}]`);
                 return regionMatches;
               }
               
               // Otherwise, only show pins from unlocked regions
               const isUnlocked = unlockedRegions.some(unlockedRegion => {
-                // Case-insensitive matching for region names
-                const normalizedUnlocked = unlockedRegion.toLowerCase().replace(/[^a-z]/g, '');
-                const normalizedDistrict = location.district.toLowerCase().replace(/[^a-z]/g, '');
-                return normalizedUnlocked === normalizedDistrict || 
-                       // Handle Center/Centre/Centrum variations
-                       (normalizedUnlocked === 'center' && (normalizedDistrict === 'centre' || normalizedDistrict === 'centrum')) ||
-                       (normalizedUnlocked === 'centre' && (normalizedDistrict === 'center' || normalizedDistrict === 'centrum')) ||
-                       (normalizedUnlocked === 'centrum' && (normalizedDistrict === 'center' || normalizedDistrict === 'centre'));
+                
+                const unlockedVariants = getRegionVariants(unlockedRegion);
+                const locationVariants = getRegionVariants(location.district);
+                
+                // Check if any variant of the unlocked region matches any variant of the location district
+                return unlockedVariants.some(unlockedVariant => 
+                  locationVariants.some(locVariant => 
+                    unlockedVariant.toLowerCase() === locVariant.toLowerCase()
+                  )
+                );
               });
-              console.log(`📍 Pin "${location.title}" in district "${location.district}": ${isUnlocked ? 'SHOW' : 'HIDE'} (unlocked: ${unlockedRegions.join(', ')})`);
+              console.log(`📍 General view: "${location.title}" in district "${location.district}": ${isUnlocked ? 'SHOW' : 'HIDE'} (unlocked: ${unlockedRegions.join(', ')})`);
               return isUnlocked;
             })
-            .map(location => {
+            .map((location, index) => {
+            // Debug: Log which pins made it through the filter
+            // if (requestedRegion) {
+            //   console.log(`✅ Pin passed filter: "${location.title}" in district "${location.district}"`);
+            // }
+            
             const isUnlocked = unlockedRegions.includes(location.district);
             const isDestination = navigationTarget?.id === location.id;
             const isRouteStop = activeRoute && routeStops.some(stop => stop.id === location.id);
@@ -1067,33 +1514,57 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             // Determine marker icon based on type
             const getMarkerIcon = (type) => {
               switch(type?.toLowerCase()) {
+                // Local data types
+                case 'museum': return '🏛️';
+                case 'artwork': return '🎨';
+                case 'legal-wall': return '📍';
+                case 'gallery': return '🖼️';
+                
+                // Mapbox dataset types (capitalized)
+                case 'souvenirs': return '🏪';
+                case 'food & drink': return '🍽️';
+                case 'culture place': return '🏛️';
+                
+                // Legacy/additional types
                 case 'mural': return '🎨';
                 case 'sculpture': return '🗿';
                 case 'graffiti': return '✨';
-                case 'gallery': return '🏛️';
                 case 'shop': return '🏪';
                 case 'studio': return '🏠';
                 case 'wall': return '🧱';
-                case 'artwork': default: return '🎯';
+                
+                default: return '🎨'; // Default to art icon
               }
             };
             
             const getMarkerColor = (type) => {
               switch(type?.toLowerCase()) {
-                case 'mural': return '#e74c3c';      // Red
-                case 'sculpture': return '#8e44ad';  // Purple
-                case 'graffiti': return '#f39c12';   // Orange
-                case 'gallery': return '#2980b9';    // Blue
-                case 'shop': return '#27ae60';       // Green
-                case 'studio': return '#e67e22';     // Dark orange
-                case 'wall': return '#95a5a6';       // Gray
-                case 'artwork': default: return '#FFD700'; // Gold
+                // Local data types
+                case 'museum': return '#2980b9';        // Blue
+                case 'artwork': return '#e74c3c';       // Red  
+                case 'legal-wall': return '#27ae60';    // Green
+                case 'gallery': return '#8e44ad';       // Purple
+                
+                // Mapbox dataset types
+                case 'souvenirs': return '#f39c12';     // Orange
+                case 'food & drink': return '#e67e22';  // Dark orange
+                case 'culture place': return '#2980b9'; // Blue
+                
+                // Legacy/additional types
+                case 'mural': return '#e74c3c';         // Red
+                case 'sculpture': return '#8e44ad';     // Purple
+                case 'graffiti': return '#f39c12';      // Orange
+                case 'shop': return '#27ae60';          // Green
+                case 'studio': return '#e67e22';        // Dark orange
+                case 'wall': return '#95a5a6';          // Gray
+                
+                default: return '#FFD700';              // Gold default
               }
             };
             
             return (
               <Marker
-                key={`marker-${location.id}-${location.latitude}-${location.longitude}`}
+                key={`mapbox-marker-${index}-${location.id || 'no-id'}-${location.latitude}-${location.longitude}`}
                 longitude={location.longitude}
                 latitude={location.latitude}
                 onClick={(e) => {
@@ -1151,6 +1622,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
           {/* User location marker */}
           {userLocation && (
             <Marker
+              key="user-location-marker"
               longitude={userLocation.longitude}
               latitude={userLocation.latitude}
             >
