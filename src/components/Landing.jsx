@@ -7,51 +7,82 @@ import './Landing.css';
 
 // Updated region data - all regions now require purchase
 const regions = [
-  { 
-    id: 'centre', 
-    title: 'Centre', 
-    description: 'Tourists, tags & tension.<br /> The city\'s loudest gallery', 
-    latitude: 52.3728, 
-    longitude: 4.8936, 
+  // 1. Centre
+  {
+    id: 'centre',
+    title: 'Centre',
+    description: 'Tourists, tags & tension.<br /> The city\'s loudest gallery',
+    latitude: 52.3728,
+    longitude: 4.8936,
     isFree: false,
     image: '/images/CENTRE.jpg'
   },
-  { 
-    id: 'noord', 
-    title: 'Noord', 
-    description: 'From shipyards to street art. Noord is culture unleashed', 
-    latitude: 52.4000, 
-    longitude: 4.9000, 
+
+  // 2. Nieuw-West ("New-West")
+  {
+    id: 'nieuw-west',
+    title: 'Nieuw-West',
+    description: 'Emerging street art destination with fresh perspectives',
+    latitude: 52.3700,
+    longitude: 4.8100,
+    isFree: false,
+    image: '/images/NEW-WEST.JPG'
+  },
+
+  // 3. Zuid ("South")
+  {
+    id: 'Zuid',
+    title: 'Zuid',
+    description: 'Upscale galleries meet urban edge.<br /> Where sophistication gets street smart',
+    latitude: 52.3500,
+    longitude: 4.8850,
+    isFree: false,
+    image: '/images/SOUTH.jpg'
+  },
+
+  // 4. West
+  {
+    id: 'west',
+    title: 'West',
+    description: 'West Amsterdam combines industrial heritage with contemporary urban art',
+    latitude: 52.3720,
+    longitude: 4.8500,
+    isFree: false,
+    image: '/images/WEST.jpg'
+  },
+
+  // 5. East
+  {
+    id: 'east',
+    title: 'East',
+    description: 'East is hip, hungry and covered in color',
+    latitude: 52.3600,
+    longitude: 4.9400,
+    isFree: false,
+    image: '/images/EAST.jpeg'
+  },
+
+  // 6. Noord ("North")
+  {
+    id: 'noord',
+    title: 'Noord',
+    description: 'From shipyards to street art. Noord is culture unleashed',
+    latitude: 52.4000,
+    longitude: 4.9000,
     isFree: false,
     image: '/images/NORTH.jpg'
   },
-  { 
-    id: 'south', 
-    title: 'South', 
-    description: 'Upscale galleries meet urban edge.<br /> Where sophistication gets street smart', 
-    latitude: 52.3500, 
-    longitude: 4.8850, 
+
+  // 7. South-East ("Zuidoost")
+  {
+    id: 'south-east',
+    title: 'South-East',
+    description: 'South-East showcases vibrant murals celebrating cultural diversity',
+    latitude: 52.3150,
+    longitude: 4.9550,
     isFree: false,
-    image: '/images/SOUTH.jpg' 
-  },
-  { 
-    id: 'east', 
-    title: 'East', 
-    description: 'East is hip, hungry and covered in color', 
-    latitude: 52.3600, 
-    longitude: 4.9400, 
-    isFree: false,  // No longer free
-    image: '/images/EAST.jpeg' 
-  },
-  { 
-    id: 'nieuw-west', 
-    title: 'Nieuw-West', 
-    description: 'Emerging street art destination with fresh perspectives', 
-    latitude: 52.3700, 
-    longitude: 4.8100, 
-    isFree: false,  // Now requires purchase like all others
-    image: '/images/NEW-WEST.JPG' 
-  },
+    image: '/images/SOUTH-EAST.jpg'
+  }
 ];
 
 // Removed getRegionFeature - no longer needed for modal

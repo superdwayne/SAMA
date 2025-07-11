@@ -27,6 +27,13 @@ const regionStats = {
     legalWalls: 3,
     featuredArtists: 18,
     image: '/images/collage.png'
+  },
+  'South': {
+    artworks: 28,
+    galleries: 4,
+    legalWalls: 2,
+    featuredArtists: 20,
+    image: '/images/collage.png'
   }
 };
 

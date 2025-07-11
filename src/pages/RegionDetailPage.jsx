@@ -42,6 +42,15 @@ const regions = [
     isFree: false,
     image: '/images/center.png' 
   },
+  { 
+    id: 'south', 
+    title: 'South', 
+    description: 'Upscale galleries meet urban edge.<br /> Where sophistication gets street smart', 
+    latitude: 52.3500, 
+    longitude: 4.8850, 
+    isFree: false,
+    image: '/images/SOUTH.jpg' 
+  },
 ];
 
 const regionStats = {
@@ -72,7 +81,14 @@ const regionStats = {
     legalWalls: 3,
     featuredArtists: 8,
    image: '/images/collage.png'
-  }
+  },
+  'South': {
+    artworks: 28,
+    galleries: 4,
+    legalWalls: 2,
+    featuredArtists: 20,
+    image: '/images/collage.png'
+  },
 };
 
 const RegionDetailPage = () => {
@@ -199,7 +215,8 @@ const RegionDetailPage = () => {
       'centre': 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01',
       'noord': 'https://buy.stripe.com/00w00k4nF8KQgdlgZx1oI03',
       'east': 'https://buy.stripe.com/cNi8wQbQ70ekgdl38H1oI04',
-      'nieuw-west': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06'
+      'nieuw-west': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06',
+      'south': 'https://buy.stripe.com/5lObJq5YB8KQgdl16z1oI07',
     };
 
     const stripeUrl = stripeLinks[region.id];

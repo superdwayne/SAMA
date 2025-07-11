@@ -188,128 +188,123 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
     `the ${regions[0]} region` : 
     `${regions.length} regions: ${regions.join(', ')}`;
 
-  const html = `
-<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amsterdam Street Art Map – Access Link</title>
-    <style>
-      /* Load custom PP Neue Machina font – use web-hosted URLs so email clients that support
-         @font-face (Apple Mail, Outlook iOS, etc.) will render correctly. Gmail and others
-         will safely fall back to the next fonts in the stack. */
-      @font-face {
-        font-family: 'PPNeueMachina';
-        font-style: normal;
-        font-weight: 400;
-        src: url('https://www.streetartmapamsterdam.nl/fonts/PPNeueMachina-PlainRegular.otf') format('opentype');
-      }
-      @font-face {
-        font-family: 'PPNeueMachina';
-        font-style: normal;
-        font-weight: 700;
-        src: url('https://www.streetartmapamsterdam.nl/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
-      }
-      body {
-        margin: 0;
-        padding: 40px 20px;
-        font-family: 'PPNeueMachina', Arial, Helvetica, sans-serif;
-        background-color: #d9f33b;
-        color: #000000;
-      }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amsterdam Street Art Map – Access Link</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #FFFF00;
+      color: #000000;
+    }
 
-      /* Header / Logo */
-      .logo {
-        font-size: 32px;
-        font-weight: 900;
-        line-height: 0.95;
-        color: #4e36ff;
-        text-transform: uppercase;
-        font-family: 'PPNeueMachina', Arial, Helvetica, sans-serif;
-      }
-      .logo span {
-        display: block;
-      }
+    /* Header / Logo */
+    .logo {
+      font-size: 32px;
+      font-weight: 900;
+      line-height: 0.95;
+      color: #4e36ff;
+      text-transform: uppercase;
+    }
+    .logo span {
+      display: block;
+    }
 
-      /* Divider */
-      .divider {
-        width: 100%;
-        height: 1px;
-        background-color: #000;
-        margin: 24px 0;
-      }
+    /* Divider */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background-color: #000;
+      margin: 24px 0;
+    }
 
-      /* Headings */
-      h2, h3 {
-        margin: 0 0 8px 0;
-        padding: 0;
-      }
+    /* Headings */
+    h2, h3 {
+      margin: 0 0 8px 0;
+      padding: 0;
+      font-weight: bold;
+    }
 
-      /* CTA Button */
-      .button {
-        display: inline-block;
-        background-color: #4e36ff;
-        color: #ffffff !important;
-        text-decoration: none;
-        padding: 14px 28px;
-        font-weight: bold;
-        border-radius: 4px;
-        margin: 12px 0;
-      }
+    /* CTA Button */
+    .button {
+      display: inline-block;
+      background-color: #4e36ff;
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 14px 28px;
+      font-weight: bold;
+      border-radius: 4px;
+      margin: 12px 0;
+    }
 
-      /* Footer */
-      .footer {
-        margin-top: 48px;
-        font-size: 12px;
-        line-height: 1.4;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="logo">
-      <span>Amsterdam</span>
-      <span>Street</span>
-      <span>Art Map</span>
+    /* Footer */
+    .footer {
+      margin-top: 48px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .footer .sama-logo {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <span>Amsterdam</span>
+    <span>Street</span>
+    <span>Art Map</span>
+  </div>
+
+  <p style="margin-top: 24px; font-weight: bold;">Your access link is ready!</p>
+
+  <div class="divider"></div>
+
+  <h2>Welcome Back!</h2>
+  <p>We found your purchase history!</p>
+  <p>You have access to ${regions.length} regions: ${regions.join(', ')}.</p>
+
+  <h3>Your Accessible Regions:</h3>
+  <p>${regions.join('<br>')}</p>
+  <p>You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.</p>
+
+  <h3 style="margin-top: 32px;">Ready to explore Amsterdam's street art?</h3>
+  <p>Click the button below to access your interactive map:</p>
+
+  <p><a href="${magicLinkUrl}" class="button">Access My Map Now</a></p>
+
+  <h3>Important:</h3>
+  <p>This magic link expires in <strong>30 minutes</strong></p>
+  <ul>
+    <li>Can only be used once</li>
+    <li>Your access will be permanent after activation</li>
+    <li>You can always request a new magic link with this email</li>
+  </ul>
+
+  <p style="margin-top: 24px;">Can't click the button? Copy and paste this link:<br>
+    <a href="${magicLinkUrl}" style="color: #4e36ff; word-break: break-all;">${magicLinkUrl}</a>
+  </p>
+
+  <div class="footer">
+    <p>© 2024 Amsterdam Street Art Map</p>
+    <p>Need help? Reply to this email or contact us<br>
+    at info@streetartmapamsterdam.com</p>
+    
+    <div class="sama-logo">
+      Street Art<br>
+      Museum<br>
+      Amsterdam
     </div>
-
-    <p style="margin-top: 24px; font-weight: bold;">Your access link is ready!</p>
-
-    <div class="divider"></div>
-
-    <h2>Welcome Back!</h2>
-    <p>We found your purchase history! You have access to ${regionText}.</p>
-
-    <h3>Your Accessible Regions:</h3>
-    <p>${regions.join('<br>')}</p>
-    <p>You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.</p>
-
-    <h3 style="margin-top: 32px;">Ready to explore Amsterdam's street art?</h3>
-    <p>Click the button below to access your interactive map:</p>
-
-    <p><a href="${magicLinkUrl}" class="button">Access My Map Now</a></p>
-
-    <h3>Important:</h3>
-    <ul>
-      <li>This magic link expires in 30 minutes</li>
-      <li>Can only be used once</li>
-      <li>Your access will be permanent after activation</li>
-      <li>You can always request a new magic link with this email</li>
-    </ul>
-
-    <p style="margin-top: 24px;">Can't click the button? Copy and paste this link:<br>
-      <a href="${magicLinkUrl}" style="color: #4e36ff; word-break: break-all;">${magicLinkUrl}</a>
-    </p>
-
-    <div class="footer">
-      <p>© 2024 Amsterdam Street Art Map</p>
-      <p>Need help? Reply to this email or contact us at info@streetartmapamsterdam.com</p>
-      <br>
-      <strong>Street Art<br/>Museum<br/>Amsterdam</strong>
-    </div>
-  </body>
-</html>
-`;
+  </div>
+</body>
+</html>`;
 
   const msg = {
     to: email,

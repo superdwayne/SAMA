@@ -154,74 +154,136 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
       to: email,
       from: process.env.SENDER_EMAIL || 'admin@creativetechnologists.nl',
       subject: `🎉 Welcome to Amsterdam Street Art Map - ${region} District Access`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 12px 12px 0 0; }
-            .content { padding: 40px 20px; background: white; border: 1px solid #ddd; border-radius: 0 0 12px 12px; }
-            .access-button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; font-size: 18px; }
-            .access-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-            .success-box { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .region-info { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .security-note { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 15px; border-radius: 6px; margin: 20px 0; }
-            .button-container { text-align: center; margin: 30px 0; }
-            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>🎨 Amsterdam Street Art Map</h1>
-            <p>Thank you for your purchase!</p>
-          </div>
-          
-          <div class="content">
-            <div class="success-box">
-              <h2>🎉 Payment Successful!</h2>
-              <p>Your purchase has been confirmed. You now have access to the <strong>${region}</strong> district.</p>
-            </div>
-            
-            <div class="region-info">
-              <h3>What's included in your ${region} access:</h3>
-              <ul>
-                <li>✅ Interactive map with precise locations</li>
-                <li>✅ Artist information and artwork details</li>
-                <li>✅ Navigation and route planning</li>
-                <li>✅ Hidden gems only locals know about</li>
-                <li>✅ <strong>30 days of unlimited access</strong></li>
-              </ul>
-              <p><strong>📅 Your access expires on: ${formattedExpiration}</strong></p>
-            </div>
-            
-            <div class="button-container">
-              <a href="${magicLink}" class="access-button">🚀 Access Your Map Now</a>
-            </div>
-            
-            <div class="security-note">
-              <p><strong>🔒 Security Notice:</strong></p>
-              <ul>
-                <li>This magic link expires in <strong>30 minutes</strong></li>
-                <li>Can only be used <strong>once</strong></li>
-                <li>Your access will be permanent after activation</li>
-                <li>You can always request a new magic link using your email</li>
-              </ul>
-            </div>
-            
-            <p><strong>Need help?</strong> Reply to this email or contact us at info@streetartmapamsterdam.com</p>
-            
-            <p>Can't click the button? Copy and paste this link:<br>
-            <code style="background: #f8f9fa; padding: 8px; border-radius: 4px; font-size: 12px; word-break: break-all;">${magicLink}</code></p>
-          </div>
-          
-          <div class="footer">
-            <p>© 2024 Amsterdam Street Art Map</p>
-            <p>You're receiving this email because you purchased access to our street art map.</p>
-          </div>
-        </body>
-        </html>
-      `
+      html: `<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Amsterdam Street Art Map – Purchase Confirmation</title>
+      <style>
+        /* Custom font (only supported in some clients) */
+        @font-face {
+          font-family: 'PPNeueMachina';
+          src: url('https://www.streetartmapamsterdam.nl/fonts/PPNeueMachina-PlainRegular.otf') format('opentype');
+          font-weight: 400;
+        }
+        @font-face {
+          font-family: 'PPNeueMachina';
+          src: url('https://www.streetartmapamsterdam.nl/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
+          font-weight: 700;
+        }
+
+        body {
+          margin: 0;
+          padding: 40px 20px;
+          background-color: #d9f33b;
+          color: #000;
+          font-family: 'PPNeueMachina', Arial, Helvetica, sans-serif;
+        }
+
+        /* Stacked purple logo */
+        .logo {
+          font-size: 32px;
+          font-weight: 900;
+          line-height: 0.95;
+          color: #4e36ff;
+          text-transform: uppercase;
+        }
+        .logo span {
+          display: block;
+        }
+
+        .divider {
+          width: 100%;
+          height: 1px;
+          background: #000;
+          margin: 24px 0;
+        }
+
+        h2 {
+          margin: 0 0 10px 0;
+        }
+
+        .button {
+          display: inline-block;
+          background: #4e36ff;
+          color: #fff !important;
+          text-decoration: none;
+          padding: 14px 28px;
+          font-weight: bold;
+          border-radius: 4px;
+          margin: 20px 0;
+        }
+
+        .success-box {
+          background: #d4edda;
+          border: 1px solid #c3e6cb;
+          color: #155724;
+          padding: 20px;
+          border-radius: 8px;
+          margin: 20px 0;
+        }
+
+        .footer {
+          margin-top: 48px;
+          font-size: 12px;
+          line-height: 1.4;
+        }
+      </style>
+    </head>
+    <body>
+      <!-- Logo / Header -->
+      <div class="logo">
+        <span>Amsterdam</span>
+        <span>Street</span>
+        <span>Art Map</span>
+      </div>
+
+      <p style="margin-top: 24px; font-weight: bold;">Thank you for your purchase!</p>
+      <div class="divider"></div>
+
+      <!-- Success notice -->
+      <div class="success-box">
+        <h2>🎉 Payment Successful!</h2>
+        <p>Your purchase has been confirmed. You now have access to the <strong>${region}</strong> district.</p>
+      </div>
+
+      <!-- What's included list -->
+      <h3>What's included in your ${region} access:</h3>
+      <ul>
+        <li>✅ Interactive map with precise locations</li>
+        <li>✅ Artist information and artwork details</li>
+        <li>✅ Navigation and route planning</li>
+        <li>✅ Hidden gems only locals know about</li>
+        <li>✅ <strong>30 days of unlimited access</strong></li>
+      </ul>
+      <p><strong>📅 Your access expires on: ${formattedExpiration}</strong></p>
+
+      <!-- CTA -->
+      <p><a href="${magicLink}" class="button">Access Your Map Now</a></p>
+
+      <!-- Security notes -->
+      <h3>Important:</h3>
+      <ul>
+        <li>This magic link expires in 30 minutes</li>
+        <li>Can only be used once</li>
+        <li>Your access will be permanent after activation</li>
+        <li>You can always request a new magic link with this email</li>
+      </ul>
+
+      <p style="margin-top: 24px;">Can't click the button? Copy and paste this link:<br />
+        <a href="${magicLink}" style="color:#4e36ff; word-break: break-all;">${magicLink}</a>
+      </p>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>© 2024 Amsterdam Street Art Map</p>
+        <p>Need help? Reply to this email or contact us at info@streetartmapamsterdam.com</p>
+        <br />
+        <strong>Street Art<br />Museum<br />Amsterdam</strong>
+      </div>
+    </body>
+  </html>`
     };
 
     await sgMail.send(msg);

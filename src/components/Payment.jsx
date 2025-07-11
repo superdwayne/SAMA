@@ -107,7 +107,9 @@ const Payment = ({ setUnlockedRegions }) => {
       'North': 'https://buy.stripe.com/00w00k4nF8KQgdlgZx1oI03', // Alternative spelling
       'East': 'https://buy.stripe.com/cNi8wQbQ70ekgdl38H1oI04',
       'Nieuw-West': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06',
-      'New-West': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06' // Alternative spelling
+      'New-West': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06', // Alternative spelling
+      'South': 'https://buy.stripe.com/5lObJq5YB8KQgdl16z1oI07',
+      'Zuid': 'https://buy.stripe.com/5lObJq5YB8KQgdl16z1oI07' // Alternative Dutch spelling
     };
 
     const stripeUrl = stripeLinks[displayRegion];
