@@ -25,7 +25,7 @@ const InfoModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Main Title */}
-        <h1 className="modal-main-title">
+        <h1 className="modal-main-title modal-main-title-info">
           UNLOCK<br />
           AMSTERDAM'S<br />
           STREET SECRETS!

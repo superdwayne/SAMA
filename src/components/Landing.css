@@ -678,20 +678,7 @@
   line-height: 1.4;
 }
 
-.region-image-container {
-  width: 120px;
-  height: 120px;
-  background: #f5f5f5;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: box-shadow 0.2s;
-  border-radius: 0;
-  position: relative;
-}
+
 
 .region-image-container:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,0.13);
@@ -1022,7 +1009,7 @@
 
 .region-image-container {
   width: 100%;
-  height: 100%;
+  height: 300px;
   background: #f5f5f5;
   overflow: hidden;
   display: flex;

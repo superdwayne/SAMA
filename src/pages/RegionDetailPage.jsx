@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './RegionDetailPage.css';
+import { fetchMapboxDataset } from '../utils/mapboxData';
+import { toOptimizedThumb, getRegionThumb, registerRegionThumb } from '../utils/image';
 
 // Region data with stats matching the design
 const regions = [
@@ -150,6 +152,46 @@ const RegionDetailPage = () => {
   
   const regionName = region.title;
   const stats = regionStats[regionName] || regionStats['Centre'];
+
+  // State for dynamic background image, defaulting to the placeholder in stats
+  const initialThumb = getRegionThumb(regionName) || stats.image;
+  const [backgroundImage, setBackgroundImage] = useState(initialThumb);
+
+  // Fetch a random image for this region from the Mapbox dataset
+  useEffect(() => {
+    let mounted = true;
+
+    const loadRandomImage = async () => {
+      try {
+        const locations = await fetchMapboxDataset(regionName);
+
+        const urlPool = locations
+          .map(loc => loc.image_url || loc.image)
+          .filter(url => typeof url === 'string' && url.trim().length > 0)
+          .map(raw => {
+            const url = raw.trim();
+            return /^https?:\/\//i.test(url) ? url : `https://${url.replace(/^\/+/, '')}`;
+          });
+
+        console.log(`[RegionDetailPage] Candidate background images for ${regionName}:`, urlPool.length);
+
+        if (mounted && urlPool.length > 0) {
+          const randomUrl = urlPool[Math.floor(Math.random() * urlPool.length)];
+          const thumb = toOptimizedThumb(randomUrl);
+          registerRegionThumb(regionName, thumb);
+          setBackgroundImage(thumb);
+        }
+      } catch (error) {
+        console.error('Failed to fetch random region image:', error);
+      }
+    };
+
+    loadRandomImage();
+
+    return () => {
+      mounted = false;
+    };
+  }, [regionName]);
   
   const handleGetItNow = async () => {
     // Direct Stripe links for each region
@@ -184,9 +226,9 @@ const RegionDetailPage = () => {
         <div className="background-placeholder">
           <div className="placeholder-pattern"></div>
         </div>
-        {stats.image ? (
+        {backgroundImage ? (
           <img 
-            src={stats.image} 
+            src={backgroundImage} 
             alt={`${regionName} street art`}
             className="background-img"
             onError={(e) => {

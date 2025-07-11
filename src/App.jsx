@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { trackPageView, trackUserJourney, trackMagicLinkEvent } from './utils/analytics';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import Map from './components/Map';
+import { fetchMapboxDataset } from './utils/mapboxData';
+import { toOptimizedThumb, registerRegionThumb } from './utils/image';
 import Payment from './components/Payment';
 import TokenEntry from './components/TokenEntry';
 import EmailTest from './components/EmailTest';
@@ -30,6 +32,30 @@ function App() {
   useEffect(() => {
     // Track app initialization
     trackUserJourney('app_initialized');
+
+    // Prefetch Mapbox datasets for main regions to speed up image loading
+    const prefetchDatasets = async () => {
+      const regionsToPrefetch = ['Centre', 'Noord', 'East', 'Nieuw-West'];
+      try {
+        const datasets = await Promise.all(regionsToPrefetch.map(r => fetchMapboxDataset(r)));
+        // Preload one optimized image per region for faster swap
+        regionsToPrefetch.forEach((regionName, idx) => {
+          const locations = datasets[idx] || [];
+          const candidate = locations.find(loc => (loc.image_url || loc.image));
+          if (candidate) {
+            const raw = candidate.image_url || candidate.image;
+            const optimized = toOptimizedThumb(raw);
+            registerRegionThumb(regionName, optimized);
+            const img = new Image();
+            img.src = optimized;
+          }
+        });
+        console.log('📥 Prefetched datasets & preloaded region thumbnails');
+      } catch (err) {
+        console.warn('⚠️ Prefetching Mapbox datasets failed:', err);
+      }
+    };
+    prefetchDatasets();
     
     // Check which regions user has access to
     const checkAccess = async () => {

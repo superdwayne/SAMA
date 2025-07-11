@@ -2,6 +2,8 @@
 // Updated with new Center dataset: cmcut1t446aqw1lljnelbo105
 // Manage Center locations at: https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105
 
+import { getMapboxToken } from './mapboxAuth';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 // Region-specific dataset IDs
@@ -19,9 +21,16 @@ const REGION_DATASETS = {
   'South-East': 'cmcut1t446aqw1lljnelbo105' // TEMP: Using Centre dataset until proper dataset is created
 };
 
+// In-memory cache for already-fetched datasets (per region)
+const datasetCache = {};
+
 // Fetch all street art locations from your Mapbox dataset directly from Mapbox API
 export const fetchMapboxDataset = async (specificRegion = null) => {
-  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+  const MAPBOX_TOKEN = getMapboxToken();
+  // Return cached data if we already fetched it for this region
+  if (specificRegion && datasetCache[specificRegion]) {
+    return datasetCache[specificRegion];
+  }
   const USERNAME = 'sama-map';
   
   try {
@@ -121,6 +130,10 @@ export const fetchMapboxDataset = async (specificRegion = null) => {
       });
     
     console.log('✅ Mapbox locations loaded successfully');
+    // Store in cache
+    if (specificRegion) {
+      datasetCache[specificRegion] = locations;
+    }
     return locations;
   } catch (error) {
     console.error('❌ Error fetching Mapbox dataset:', error);
@@ -179,7 +192,7 @@ export const addLocationToDataset = async (locationData, targetRegion = 'Centre'
 
 // Debug function to list all available datasets in your Mapbox account
 export const listAvailableDatasets = async () => {
-  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+  const MAPBOX_TOKEN = getMapboxToken();
   const USERNAME = 'sama-map';
   
   try {
@@ -211,7 +224,7 @@ export const listAvailableDatasets = async () => {
 
 // Function to test a specific dataset ID
 export const testDatasetId = async (datasetId) => {
-  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+  const MAPBOX_TOKEN = getMapboxToken();
   const USERNAME = 'sama-map';
   
   try {

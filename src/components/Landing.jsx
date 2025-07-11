@@ -14,7 +14,7 @@ const regions = [
     latitude: 52.3728, 
     longitude: 4.8936, 
     isFree: false,
-    image: '/images/center.png'
+    image: '/images/CENTRE.jpg'
   },
   { 
     id: 'noord', 
@@ -23,7 +23,7 @@ const regions = [
     latitude: 52.4000, 
     longitude: 4.9000, 
     isFree: false,
-    image: '/images/center.png'
+    image: '/images/NORTH.jpg'
   },
   { 
     id: 'south', 
@@ -32,7 +32,7 @@ const regions = [
     latitude: 52.3500, 
     longitude: 4.8850, 
     isFree: false,
-    image: '/images/center.png' 
+    image: '/images/SOUTH.jpg' 
   },
   { 
     id: 'east', 
@@ -41,7 +41,7 @@ const regions = [
     latitude: 52.3600, 
     longitude: 4.9400, 
     isFree: false,  // No longer free
-    image: '/images/center.png' 
+    image: '/images/EAST.jpeg' 
   },
   { 
     id: 'nieuw-west', 
@@ -50,7 +50,7 @@ const regions = [
     latitude: 52.3700, 
     longitude: 4.8100, 
     isFree: false,  // Now requires purchase like all others
-    image: '/images/center.png' 
+    image: '/images/NEW-WEST.JPG' 
   },
 ];
 

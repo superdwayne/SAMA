@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RegionPreview.css';
+// Utils
+import { fetchMapboxDataset } from '../utils/mapboxData';
+import { toOptimizedThumb, getRegionThumb, registerRegionThumb } from '../utils/image';
 
 // Region data with stats matching the design
 const regionStats = {
@@ -34,6 +37,54 @@ const RegionPreview = ({ region, onClose }) => {
   
   const regionName = region.title === 'Center' ? 'Center' : region.title;
   const stats = regionStats[regionName] || regionStats['Center'];
+
+  // State to hold the background image. Defaults to the static placeholder.
+  const initialThumb = getRegionThumb(regionName) || stats.image;
+  const [backgroundImage, setBackgroundImage] = useState(initialThumb);
+
+  // Fetch a random image from the Mapbox dataset whenever the region changes
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRandomImage = async () => {
+      try {
+        const locations = await fetchMapboxDataset(regionName);
+
+        // Pull out any valid image URLs
+        const urlPool = locations
+          .map(loc => loc.image_url || loc.image)
+          .filter(url => typeof url === 'string' && url.trim().length > 0)
+          .map(raw => {
+            const url = raw.trim();
+            // Ensure the URL has a scheme; many dataset entries start with "streetartamsterdam.com/..."
+            if (/^https?:\/\//i.test(url)) {
+              return url;
+            }
+            // Add https:// if missing
+            return `https://${url.replace(/^\/+/, '')}`;
+          });
+
+        console.log(`[RegionPreview] Candidate background images for ${regionName}:`, urlPool.length);
+
+        if (isMounted && urlPool.length > 0) {
+          const randomUrl = urlPool[Math.floor(Math.random() * urlPool.length)];
+          const thumb = toOptimizedThumb(randomUrl);
+          registerRegionThumb(regionName, thumb);
+          setBackgroundImage(thumb);
+        }
+      } catch (error) {
+        console.error('Failed to load random region image:', error);
+      }
+    };
+
+    loadRandomImage();
+
+    return () => {
+      // Clean-up in case the component unmounts before the fetch resolves
+      isMounted = false;
+    };
+  }, [regionName]);
+  
   const isUnlocked = region.isFree || false;
   
   const handleGetItNow = async () => {
@@ -55,9 +106,9 @@ const RegionPreview = ({ region, onClose }) => {
         <div className="background-placeholder">
           <div className="placeholder-pattern"></div>
         </div>
-        {stats.image ? (
+        {backgroundImage ? (
           <img 
-            src={stats.image} 
+            src={backgroundImage} 
             alt={`${regionName} street art`}
             className="background-img"
             onError={(e) => {

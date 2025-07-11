@@ -1416,25 +1416,25 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                     'match',
                     ['get', 'type'],
                     // Mapbox dataset types (capitalized)
-                    'Artwork', '🎨',              // Art palette emoji for artwork
+                    'Artwork', '📍',              // Art palette emoji for artwork
                     'Souvenirs', '🏪',           // Shop emoji for souvenirs
                     'Food & Drink', '🍽️',        // Plate emoji for food & drink
                     'Culture Place', '🏛️',       // Classical building for culture
                     
                     // Local data types (lowercase)
                     'museum', '🏛️',              // Museum building
-                    'artwork', '🎨',             // Art palette for artwork
+                    'artwork', '📍',             // Art palette for artwork
                     'legal-wall', '📍',          // Pin for legal walls
                     'gallery', '🖼️',            // Picture frame for gallery
                     
                     // Legacy/additional types
-                    'mural', '🎨',               // Art palette for mural
+                    'mural', '📍',               // Art palette for mural
                     'shop', '🏪',                // Shop for shop
                     'restaurant', '🍽️',          // Plate for restaurant
                     'sculpture', '🗿',           // Statue for sculpture
                     'graffiti', '✨',            // Sparkle for graffiti
                     
-                    '🎨'                         // Default art icon
+                    '📍'                         // Default art icon
                   ],
                   'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
                   'text-offset': [0, 0],        // Center the emoji on the marker
@@ -1516,7 +1516,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
               switch(type?.toLowerCase()) {
                 // Local data types
                 case 'museum': return '🏛️';
-                case 'artwork': return '🎨';
+                case 'artwork': return '📍';
                 case 'legal-wall': return '📍';
                 case 'gallery': return '🖼️';
                 
@@ -1526,14 +1526,14 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 case 'culture place': return '🏛️';
                 
                 // Legacy/additional types
-                case 'mural': return '🎨';
+                case 'mural': return '📍';
                 case 'sculpture': return '🗿';
                 case 'graffiti': return '✨';
                 case 'shop': return '🏪';
                 case 'studio': return '🏠';
                 case 'wall': return '🧱';
                 
-                default: return '🎨'; // Default to art icon
+                default: return '📍'; // Default to art icon
               }
             };
             
@@ -1581,7 +1581,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                     <div 
                       className="marker-dot marker-with-icon" 
                       style={{ 
-                        backgroundColor: getMarkerColor(location.type),
+                        backgroundColor: 'transparent',
                         position: 'relative'
                       }}
                     >
@@ -1610,10 +1610,31 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             <ArtworkPopup 
               artwork={selectedArtwork} 
               onClose={() => {
+                // Smoothly zoom out from the selected pin rather than resetting the whole map
+                const map = mapRef.current?.getMap?.();
+                if (map && selectedArtwork) {
+                  map.easeTo({
+                    center: [selectedArtwork.longitude, selectedArtwork.latitude],
+                    zoom: 14, // Zoom-out level
+                    duration: 800
+                  });
+                } else {
+                  // Fallback for static preview environments without mapboxgl instance
+                  setViewport(prev => ({
+                    ...prev,
+                    latitude: selectedArtwork?.latitude || prev.latitude,
+                    longitude: selectedArtwork?.longitude || prev.longitude,
+                    zoom: 14,
+                    transitionDuration: 800,
+                    transitionInterpolator: typeof window !== 'undefined' && window['mapboxgl']
+                      ? new window.mapboxgl.FlyToInterpolator()
+                      : undefined
+                  }));
+                }
+
                 setSelectedArtwork(null);
                 setNavigationRoute(null); // Clear route when closing popup
-                setViewport(DEFAULT_VIEWPORT); // Reset map to default view
-                console.log('[Map] Artwork popup closed');
+                console.log('[Map] Artwork popup closed – zoomed out');
               }}
               onNavigate={handleNavigateToArtwork}
             />
