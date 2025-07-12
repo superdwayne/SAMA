@@ -349,7 +349,17 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
               </tr>
             </table>
 
-           
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="padding: 10px 0;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                    <tr>
+                      <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+           </table>
 
             <!-- Footer -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
