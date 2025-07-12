@@ -188,122 +188,188 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
     `the ${regions[0]} region` : 
     `${regions.length} regions: ${regions.join(', ')}`;
 
-  const html = `<!DOCTYPE html>
+  const html = `<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amsterdam Street Art Map – Access Link</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 40px 20px;
-      font-family: Arial, Helvetica, sans-serif;
-      background-color: #FFFF00;
-      color: #000000;
-    }
+  <body style="background-color: #FFFF00; margin: 0; padding: 0; font-family: Verdana, Arial, sans-serif; color: #000000; line-height: 1.4;">
+    <table align="center" width="100%" style="margin: 0 auto; max-width: 600px; background-color: #FFFF00; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" role="presentation" cellspacing="0" cellpadding="0" border="0">
+      <tbody>
+        <tr style="width: 100%;">
+          <td style="background-color: #FFFF00; padding: 40px 20px;">
+            
+            <!-- Logo section -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;">
+                  Amsterdam<br>
+                  Street<br>
+                  Art Map  DOM
+                </td>
+              </tr>
+            </table>
 
-    /* Header / Logo */
-    .logo {
-      font-size: 32px;
-      font-weight: 900;
-      line-height: 0.95;
-      color: #4e36ff;
-      text-transform: uppercase;
-    }
-    .logo span {
-      display: block;
-    }
+            <!-- Intro text -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  Your access link is ready!
+                </td>
+              </tr>
+            </table>
 
-    /* Divider */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background-color: #000;
-      margin: 24px 0;
-    }
+            <!-- Divider -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="padding: 32px 0;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                    <tr>
+                      <td style="height: 2px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-    /* Headings */
-    h2, h3 {
-      margin: 0 0 8px 0;
-      padding: 0;
-      font-weight: bold;
-    }
+            <!-- Welcome Back section -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                  Welcome Back!
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  We found your purchase history!
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  You have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}.
+                </td>
+              </tr>
+            </table>
 
-    /* CTA Button */
-    .button {
-      display: inline-block;
-      background-color: #4e36ff;
-      color: #ffffff !important;
-      text-decoration: none;
-      padding: 14px 28px;
-      font-weight: bold;
-      border-radius: 4px;
-      margin: 12px 0;
-    }
+            <!-- Accessible Regions section -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                  Your Accessible Regions:
+                </td>
+              </tr>
+              <tr>
+                <td style="font-weight: 500; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  ${regions.join('<br>')}
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.
+                </td>
+              </tr>
+            </table>
 
-    /* Footer */
-    .footer {
-      margin-top: 48px;
-      font-size: 12px;
-      line-height: 1.4;
-    }
+            <!-- Ready to explore section -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 32px 0 8px 0;">
+                  Ready to explore Amsterdam's street art?
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  Click the button below to access your interactive map:
+                </td>
+              </tr>
+            </table>
 
-    .footer .sama-logo {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <div class="logo">
-    <span>Amsterdam</span>
-    <span>Street</span>
-    <span>Art Map</span>
-  </div>
+            <!-- CTA Button -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="padding: 20px 0;">
+                  <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                    <tr>
+                      <td style="background-color: #3416D8; border-radius: 8px;">
+                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; font-weight: 900; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-  <p style="margin-top: 24px; font-weight: bold;">Your access link is ready!</p>
+            <!-- Important section -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="padding-top: 32px;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                    <tr>
+                      <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                        Important:
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                        This magic link expires in <strong>30 minutes</strong>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                        • Can only be used once<br>
+                        • Your access will be permanent after activation<br>
+                        • You can always request a new magic link with this email
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-  <div class="divider"></div>
+            <!-- Manual link section -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                  Can't click the button? Copy and paste this link:
+                </td>
+              </tr>
+              <tr>
+                <td style="word-break: break-all; font-size: 12px; color: #3416D8; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  <a href="${magicLinkUrl}" style="color: #3416D8; text-decoration: none; word-break: break-all; font-size: 12px;">${magicLinkUrl}</a>
+                </td>
+              </tr>
+            </table>
 
-  <h2>Welcome Back!</h2>
-  <p>We found your purchase history!</p>
-  <p>You have access to ${regions.length} regions: ${regions.join(', ')}.</p>
+            <!-- Footer -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="padding-top: 48px;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                    <tr>
+                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                        © 2024 Amsterdam Street Art Map
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                        Need help? Reply to this email or contact us<br>
+                        at info@streetartmapamsterdam.com
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: bold; font-size: 16px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 32px 0 0 0;">
+                        Street Art<br>
+                        Museum<br>
+                        Amsterdam
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-  <h3>Your Accessible Regions:</h3>
-  <p>${regions.join('<br>')}</p>
-  <p>You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.</p>
-
-  <h3 style="margin-top: 32px;">Ready to explore Amsterdam's street art?</h3>
-  <p>Click the button below to access your interactive map:</p>
-
-  <p><a href="${magicLinkUrl}" class="button">Access My Map Now</a></p>
-
-  <h3>Important:</h3>
-  <p>This magic link expires in <strong>30 minutes</strong></p>
-  <ul>
-    <li>Can only be used once</li>
-    <li>Your access will be permanent after activation</li>
-    <li>You can always request a new magic link with this email</li>
-  </ul>
-
-  <p style="margin-top: 24px;">Can't click the button? Copy and paste this link:<br>
-    <a href="${magicLinkUrl}" style="color: #4e36ff; word-break: break-all;">${magicLinkUrl}</a>
-  </p>
-
-  <div class="footer">
-    <p>© 2024 Amsterdam Street Art Map</p>
-    <p>Need help? Reply to this email or contact us<br>
-    at info@streetartmapamsterdam.com</p>
-    
-    <div class="sama-logo">
-      Street Art<br>
-      Museum<br>
-      Amsterdam
-    </div>
-  </div>
-</body>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
 </html>`;
 
   const msg = {
