@@ -205,7 +205,8 @@ const EmailMagicLink = ({ onSuccess, onClose }) => {
                 {message}
               </div>
             )}
-
+ </div>
+<div className="info-box-container">
             <div className="info-box">
               <h4>🔍 What happens?</h4>
               <ul>

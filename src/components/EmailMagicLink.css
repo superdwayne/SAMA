@@ -1,5 +1,19 @@
 /* src/components/EmailMagicLink.css */
 
+/* Font faces for PPNeueMachina */
+@font-face {
+  font-family: 'PPNeueMachinaUltrabold';
+  src: url('/public/fonts/PPNeueMachina-PlainUltrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PPNeueMachinaRegular';
+  src: url('/public/fonts/PPNeueMachina-PlainRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 .magic-link-overlay {
   position: fixed;
   top: 0;
@@ -16,11 +30,11 @@
 }
 
 .magic-link-modal {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-  max-width: 480px;
-  width: 100%;
+  font-family: 'PPNeueMachinaRegular', Arial, sans-serif;
+  background: #fff;
+  padding: 32px 24px 24px 24px;
+  max-width: 400px;
+  margin: 0 auto;
   animation: modalSlideIn 0.3s ease-out;
   max-height: 90vh;
   overflow-y: auto;
@@ -42,16 +56,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 24px 0;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 24px;
 }
 
 .modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #2c3e50;
-  padding-bottom: 16px;
+  font-family: 'PPNeueMachinaUltrabold', Arial, sans-serif;
+  font-size: 29px;
+  color: #3416D8;
+  margin-bottom: 18px;
+  letter-spacing: 0.01em;
 }
 
 .close-button {
@@ -78,36 +90,40 @@
 /* Email Step */
 .email-step {
   text-align: center;
+  background-color: #D2E3F2;
+  padding: 20px 20px 0px 20px;
 }
 
 .email-step h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #2c3e50;
+  font-family: 'PPNeueMachinaUltrabold', Arial, sans-serif;
+  font-size: 16px;
+  color: #3416D8;
+  margin-bottom: 8px;
+  padding-top: 30px;
 }
 
 .email-step p {
-  margin: 0 0 24px 0;
-  color: #7f8c8d;
-  font-size: 1rem;
+  font-family: 'PPNeueMachinaRegular', Arial, sans-serif;
+  font-size: 14px;
+  color: #3416D8;
+  margin-bottom: 18px;
 }
 
 .email-form {
   margin-bottom: 20px;
+  padding: 20px;
 }
 
 .input-group {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .email-input {
   flex: 1;
   padding: 14px 16px;
-  border: 2px solid #e9ecef;
-  border-radius: 10px;
+
   font-size: 1rem;
   transition: all 0.2s;
   background: white;
@@ -125,17 +141,17 @@
 }
 
 .send-button {
-  background: linear-gradient(135deg, #3498db, #2980b9);
-  color: white;
+  background: #3416D8;
+  color: #fff;
+  font-family: 'PPNeueMachinaUltrabold', Arial, sans-serif;
+  font-size: 16px;
   border: none;
-  padding: 14px 24px;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
+
+  padding: 12px 0;
+  width: 100%;
+  margin-top: 10px;
   cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  min-width: 160px;
+  transition: background 0.2s;
 }
 
 .send-button:hover:not(:disabled) {
@@ -145,10 +161,9 @@
 }
 
 .send-button:disabled {
-  background: #bdc3c7;
+  background: #bfc6e6;
+  color: #fff;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
 .message {
@@ -172,18 +187,16 @@
 }
 
 .info-box {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
+  background: #FAE0DF;
   padding: 20px;
   text-align: left;
 }
 
 .info-box h4 {
-  margin: 0 0 12px 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #2c3e50;
+  font-family: 'PPNeueMachinaUltrabold', Arial, sans-serif;
+  font-size: 16px;
+  color: #3416D8;
+  margin-bottom: 10px;
 }
 
 .info-box ul {
@@ -191,10 +204,11 @@
   padding-left: 20px;
 }
 
-.info-box li {
+.info-box ul li {
+  font-family: 'PPNeueMachinaRegular', Arial, sans-serif;
+  font-size: 14px;
+  color: #3416D8;
   margin-bottom: 6px;
-  color: #5d6d7e;
-  line-height: 1.4;
 }
 
 /* Sent Step */
@@ -410,7 +424,7 @@
   }
   
   .magic-link-modal {
-    border-radius: 12px;
+   
     max-height: 96vh;
     overflow-y: auto;
   }

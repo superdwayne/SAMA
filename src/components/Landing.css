@@ -306,11 +306,10 @@
 }
 .modal-content {
   background: #fff;
-  border-radius: 18px;
-  padding: 32px 24px 24px 24px;
+
+
   max-width: 90vw;
   width: 350px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   position: relative;
   text-align: center;
 }
@@ -339,8 +338,8 @@
     min-height: 100px;
   }
   .modal-content {
-    width: 95vw;
-    padding: 24px 8px 16px 8px;
+
+    padding: 0px 8px 16px 8px;
   }
 }
 
@@ -568,6 +567,7 @@
 
 /* New Landing Page Design */
 .landing-new-container {
+  position: relative;
   background: #EEFF00; /* Bright yellow background */
   min-height: 100vh;
   padding: 0;
@@ -644,7 +644,7 @@
 .region-cards-container {
   display: flex;
   flex-direction: column;
- 
+  margin: 20px;
   padding: 0 0 40px 0;
 }
 
@@ -1021,7 +1021,7 @@
   position: absolute;
   width: 74vw;
   height: auto;
-  z-index: 3;
+  z-index: 0;
   pointer-events: none;
   right: 0px;
   top: -40px;
@@ -1269,4 +1269,25 @@
 .navigation-back-btn:hover {
   background: #3a1bb3;
   transform: scale(1.05);
+} 
+
+.tag-graffiti {
+  position: absolute;
+  top: 80px;
+  left: 86vw;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  width: 14vw;
+} 
+
+.tag1-graffiti {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 40vh; /* Adjust as needed for bottom placement */
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  width: auto;
 } 

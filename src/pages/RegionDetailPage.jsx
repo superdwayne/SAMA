@@ -92,12 +92,34 @@ const regionStats = {
   },
 };
 
+// Alias map: maps all possible slugs/aliases to canonical region IDs
+const regionAliasMap = {
+  'centre': 'centre',
+  'center': 'centre',
+  'centrum': 'centre',
+  'noord': 'noord',
+  'north': 'noord',
+  'east': 'east',
+  'oost': 'east',
+  'nieuw-west': 'nieuw-west',
+  'new-west': 'nieuw-west',
+  'west': 'nieuw-west', // If you want 'west' to show Nieuw-West, otherwise add a separate region
+  'south': 'south',
+  'zuid': 'south',
+  'south-east': 'south', // If you want South-East to show South, otherwise add a separate region
+  'zuidoost': 'south',
+};
+
 const RegionDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   
-  // Find the region by ID
-  const region = regions.find(r => r.id === id);
+  // Normalize the id from the URL and map aliases to canonical region id
+  const normalizedId = id ? id.toLowerCase() : '';
+  const canonicalId = regionAliasMap[normalizedId] || normalizedId;
+
+  // Find the region by canonical ID
+  const region = regions.find(r => r.id === canonicalId);
   
   // Helper function to render region description with custom styling
   const renderRegionDescription = (region) => {

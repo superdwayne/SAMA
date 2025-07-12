@@ -32,7 +32,7 @@ const regions = [
   // 3. Zuid ("South")
   {
     id: 'Zuid',
-    title: 'Zuid',
+    title: 'South',
     description: 'Upscale galleries meet urban edge.<br /> Where sophistication gets street smart',
     latitude: 52.3500,
     longitude: 4.8850,
@@ -333,6 +333,18 @@ const Landing = () => {
 
   return (
     <div className="landing-new-container">
+      <img
+        src="/images/Tag.png"
+        alt="@Tag graffiti"
+        className="tag-graffiti"
+        draggable="false"
+      />
+      <img
+        src="/images/Tag1.png"
+        alt="@Tag1 graffiti"
+        className="tag1-graffiti"
+        draggable="false"
+      />
       {/* Payment Success Modal */}
       {showPaymentSuccess && (
         <div className="payment-success-overlay">
