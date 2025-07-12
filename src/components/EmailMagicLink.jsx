@@ -133,15 +133,13 @@ const EmailMagicLink = ({ onSuccess, onClose }) => {
             <h2>📧 Check Your Email</h2>
             <button className="close-button" onClick={onClose}>✕</button>
           </div>
-          
           <div className="modal-content">
-            <div className="sent-step">
-              <div className="email-icon">📮</div>
-              <h3>Magic Link Sent!</h3>
-              <p>We've sent a special access link to:</p>
-              <div className="email-display">{email}</div>
-              
-              <div className="instructions">
+            <div className="sent-card">
+              <div className="sent-icon">📮</div>
+              <div className="sent-title">Magic Link Sent!</div>
+              <div className="sent-email-label">We've sent a special access link to:</div>
+              <div className="sent-email-display">{email}</div>
+              <div className="sent-instructions-box">
                 <h4>What to do next:</h4>
                 <ol>
                   <li>Check your email inbox</li>
@@ -150,8 +148,17 @@ const EmailMagicLink = ({ onSuccess, onClose }) => {
                   <li>You'll be automatically logged in!</li>
                 </ol>
               </div>
-
-              <div className="action-buttons">
+              <button
+                className="open-gmail-btn sent-primary-btn"
+                onClick={() => window.open('https://mail.google.com/mail/u/0/#inbox', '_blank')}
+                type="button"
+              >
+                Open Email App
+              </button>
+              <div className="open-gmail-tip sent-tip">
+                If you use another mail app, please open it manually to find your magic link.
+              </div>
+              <div className="sent-action-buttons">
                 <button onClick={handleTryAgain} className="secondary-button">
                   Use Different Email
                 </button>

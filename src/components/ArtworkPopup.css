@@ -148,7 +148,7 @@
 
 .artwork-image-placeholder {
   width: 100%;
-  height: 280px;
+  height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,7 +171,7 @@
 
 @media (max-width: 480px) {
   .artwork-image-placeholder {
-    height: 180px;
+    height: 260px;
   }
 }
 
@@ -384,12 +384,12 @@
 
 .popup-content-scrollable {
   overflow-y: auto;
-  max-height: calc(100vh - 320px); /* 280px image + 40px margin/padding */
+  max-height: calc(100vh - 440px); /* 400px image + 40px margin/padding */
   /* Adjust as needed for your layout */
 }
 
 @media (max-width: 480px) {
   .popup-content-scrollable {
-    max-height: calc(100vh - 200px); /* 180px image + 20px margin/padding */
+    max-height: calc(100vh - 280px); /* 260px image + 20px margin/padding */
   }
 }
