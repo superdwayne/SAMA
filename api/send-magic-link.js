@@ -202,7 +202,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;">
                   Amsterdam<br>
                   Street<br>
-                  Art Map  DOM
+                  Art Map
                 </td>
               </tr>
             </table>
@@ -222,7 +222,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td style="padding: 32px 0;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
-                      <td style="height: 2px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                      <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
                     </tr>
                   </table>
                 </td>
@@ -287,7 +287,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td style="padding: 20px 0;">
                   <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
-                      <td style="background-color: #3416D8; border-radius: 8px;">
+                      <td style="background-color: #3416D8;">
                         <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; font-weight: 900; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
                       </td>
                     </tr>
@@ -295,6 +295,18 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 </td>
               </tr>
             </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="padding: 32px 0;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                    <tr>
+                      <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+           </table>
 
             <!-- Important section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
@@ -354,17 +366,14 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                       </td>
                     </tr>
                     <tr>
-                      <td style="font-weight: bold; font-size: 16px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 32px 0 0 0;">
-                        Street Art<br>
-                        Museum<br>
-                        Amsterdam
+                      <td style="padding: 32px 0 0 0; text-align: left;">
+                        <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
                       </td>
                     </tr>
                   </table>
                 </td>
               </tr>
             </table>
-
           </td>
         </tr>
       </tbody>
