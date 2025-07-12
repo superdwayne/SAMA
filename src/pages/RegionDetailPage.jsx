@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import './RegionDetailPage.css';
 import { fetchMapboxDataset } from '../utils/mapboxData';
 import { toOptimizedThumb, getRegionThumb, registerRegionThumb } from '../utils/image';
+import EmailMagicLink from '../components/EmailMagicLink';
 
 // Region data with stats matching the design
 const regions = [
@@ -172,6 +173,7 @@ const RegionDetailPage = () => {
   // State for dynamic background image, defaulting to the placeholder in stats
   const initialThumb = getRegionThumb(regionName) || stats.image;
   const [backgroundImage, setBackgroundImage] = useState(initialThumb);
+  const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
 
   // Fetch a random image for this region from the Mapbox dataset
   useEffect(() => {
@@ -262,13 +264,22 @@ const RegionDetailPage = () => {
         </span>
       </button>
       
+      {/* Magic Link Button */}
+      <button 
+        className="region-magic-link-btn"
+        onClick={() => setShowMagicLinkModal(true)}
+        title="Already a customer? Get instant access"
+      >
+        🔗 Magic Link
+      </button>
+      
       {/* Main Content Overlay - Yellow Section */}
       <div className="region-content-overlay">
         <div className="tour-label">STREET ART TOUR:</div>
         <h1 className="region-name">{regionName}</h1>
         
         <div className="region-description-box">
-          <p className="region-description">{renderRegionDescription(region)}</p>
+          <div className="region-description">{renderRegionDescription(region)}</div>
         </div>
         
         {/* Stats and Map Container - Horizontal Layout */}
@@ -322,6 +333,17 @@ const RegionDetailPage = () => {
         {/* Action Button */}
        
       </div>
+      
+      {/* Magic Link Modal */}
+      {showMagicLinkModal && (
+        <EmailMagicLink 
+          onSuccess={() => {
+            setShowMagicLinkModal(false);
+            // Could show a success message here
+          }}
+          onClose={() => setShowMagicLinkModal(false)}
+        />
+      )}
     </div>
   );
 };

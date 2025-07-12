@@ -429,11 +429,12 @@ const Landing = () => {
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                       />
-                      {region.id === 'center' && (
+                      {/* Spray overlay only for Centre region */}
+                      {region.id === 'centre' && (
                         <img
                           src="/images/Spray.png"
-                          alt="Yellow spray overlay"
-                          className="yellow-overlay"
+                          alt=""
+                          className="spray-overlay"
                         />
                       )}
                       <button
@@ -448,6 +449,14 @@ const Landing = () => {
                       <div className="image-placeholder">
                         <span className="placeholder-text">Image Coming Soon</span>
                       </div>
+                      {/* Spray overlay only for Centre region placeholders */}
+                      {region.id === 'centre' && (
+                        <img
+                          src="/images/Spray.png"
+                          alt=""
+                          className="spray-overlay"
+                        />
+                      )}
                       <button
                         className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}

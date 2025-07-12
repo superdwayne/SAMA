@@ -120,6 +120,36 @@
   display: block;
 }
 
+/* Magic Link Button - Fixed position */
+.region-magic-link-btn {
+  position: sticky;
+  right: 20px;
+  top: 20px;
+  background: #4f46e5;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+  transition: all 0.2s ease;
+  z-index: 10;
+  font-family: 'Inter', Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  float: right;
+  margin-top: -68px;
+  margin-right: 20px;
+}
+
+.region-magic-link-btn:hover {
+  background: #3730a3;
+  transform: scale(1.05);
+}
+
 /* Main Content Overlay - Scrollable content */
 .region-content-overlay {
   position: relative;

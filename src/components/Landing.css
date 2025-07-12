@@ -650,9 +650,7 @@
 
 .region-card-new {
   background: #fff;
-  
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   margin: 0 0 10px 0;
   width: 100%;
   display: flex;
@@ -687,7 +685,7 @@
 .region-action-btn.region-action-btn-overlay {
   position: absolute;
   left: 50%;
-  top: 93%;
+  top: 88%;
   transform: translate(-50%, -50%);
   width: 80%;
   min-height: 38px;
@@ -1016,6 +1014,17 @@
   align-items: center;
   justify-content: center;
   position: relative;
+}
+
+/* Spray overlay for region cards */
+.spray-overlay {
+  position: absolute;
+  width: 74vw;
+  height: auto;
+  z-index: 3;
+  pointer-events: none;
+  right: 0px;
+  top: -40px;
 }
 
 .region-image {
