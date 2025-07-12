@@ -210,8 +210,8 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Intro text -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                  Your access link is ready! [v2.2-CLEAN] 
+                <td style=" font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  Your access link is ready!
                 </td>
               </tr>
             </table>
@@ -288,7 +288,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                   <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
                       <td style="background-color: #3416D8;">
-                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; font-weight: 900; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
+                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px;  border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
                       </td>
                     </tr>
                   </table>
@@ -298,7 +298,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="padding: 32px 0;">
+                <td style="padding: 10px 0;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
                       <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
@@ -349,18 +349,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
               </tr>
             </table>
 
-             <!-- Divider -->
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-              <tr>
-                <td style="padding: 32px 0;">
-                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                    <tr>
-                      <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
+           
 
             <!-- Footer -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
@@ -368,18 +357,18 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td style="padding-top: 48px;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
-                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                         © 2024 Amsterdam Street Art Map
                       </td>
                     </tr>
                     <tr>
-                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                         Need help? Reply to this email or contact us<br>
                         at info@streetartmapamsterdam.com
                       </td>
                     </tr>
                     <tr>
-                    <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                    <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 
