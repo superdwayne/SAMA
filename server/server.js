@@ -312,7 +312,7 @@ async function sendTokenEmail(email, token, region) {
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
-                    🎨 Thank you for your purchase!
+                    🎨 Thank you for your purchase! [v2.0-LOGO-UPDATE]
                   </td>
                 </tr>
                 <tr>

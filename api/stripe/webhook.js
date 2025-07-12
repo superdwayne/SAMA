@@ -186,7 +186,7 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                 <tr>
                   <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    Thank you for your purchase!
+                    Thank you for your purchase! [v2.0-LOGO-UPDATE]
                   </td>
                 </tr>
               </table>
