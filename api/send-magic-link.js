@@ -211,7 +211,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
                 <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                  Your access link is ready! [v2.1-BR-TAGS]
+                  Your access link is ready! [v2.2-CLEAN] 
                 </td>
               </tr>
             </table>
@@ -345,6 +345,19 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
               <tr>
                 <td style="word-break: break-all; font-size: 12px; color: #3416D8; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
                   <a href="${magicLinkUrl}" style="color: #3416D8; text-decoration: none; word-break: break-all; font-size: 12px;">${magicLinkUrl}</a>
+                </td>
+              </tr>
+            </table>
+
+             <!-- Divider -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+              <tr>
+                <td style="padding: 32px 0;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                    <tr>
+                      <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
             </table>
