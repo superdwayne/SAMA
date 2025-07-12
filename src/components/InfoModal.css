@@ -88,6 +88,23 @@
 
 /* Button styling moved to shared Landing.css file for consistency */
 
+.close-button {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #4338CA;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  z-index: 10001;
+}
+
 .close-icon {
   color: white;
   font-size: 24px;

@@ -381,3 +381,15 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.popup-content-scrollable {
+  overflow-y: auto;
+  max-height: calc(100vh - 320px); /* 280px image + 40px margin/padding */
+  /* Adjust as needed for your layout */
+}
+
+@media (max-width: 480px) {
+  .popup-content-scrollable {
+    max-height: calc(100vh - 200px); /* 180px image + 20px margin/padding */
+  }
+}
