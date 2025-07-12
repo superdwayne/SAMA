@@ -211,7 +211,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
                 <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                  Your access link is ready! [v2.0-LOGO-UPDATE]
+                  Your access link is ready! [v2.1-BR-TAGS]
                 </td>
               </tr>
             </table>
@@ -367,7 +367,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                     </tr>
                     <tr>
                     <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                        Street Art Museum Amsterdam
+                        Street Art <br/> Museum <br/> Amsterdam
                       </td>
 
                       <td style="padding: 32px 0 0 0; text-align: left;">
