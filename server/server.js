@@ -312,7 +312,7 @@ async function sendTokenEmail(email, token, region) {
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
-                    🎨 Thank you for your purchase! [v2.0-LOGO-UPDATE]
+                    🎨 Thank you for your purchase!
                   </td>
                 </tr>
                 <tr>
@@ -418,20 +418,33 @@ async function sendTokenEmail(email, token, region) {
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="padding-top: 48px;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                       <tr>
-                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0; text-align: center;">
-                          Questions? Contact us at info@streetartmuseumamsterdam.com
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0; text-align: center;">
+                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                           © 2024 Amsterdam Street Art Map
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding: 32px 0 0 0; text-align: center;">
-                          <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block; margin: 0 auto;" />
+                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                          Need help? Reply to this email or contact us<br>
+                          at info@streetartmapamsterdam.com
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="padding: 10px 0;">
+                          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                            <tr>
+                              <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding-top: 32px; vertical-align: top;">
+                          Street Art <br/> Museum <br/> Amsterdam
+                        </td>
+                        <td style="padding: 32px 0 0 0; text-align: left;">
+                          <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
                         </td>
                       </tr>
                     </table>
@@ -749,20 +762,33 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="padding-top: 48px;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                       <tr>
-                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0; text-align: center;">
-                          Questions? Reply to this email or contact info@streetartmuseumamsterdam.com
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0; text-align: center;">
+                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                           © 2024 Amsterdam Street Art Map
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding: 32px 0 0 0; text-align: center;">
-                          <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block; margin: 0 auto;" />
+                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                          Need help? Reply to this email or contact us<br>
+                          at info@streetartmapamsterdam.com
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="padding: 10px 0;">
+                          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                            <tr>
+                              <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding-top: 32px; vertical-align: top;">
+                          Street Art <br/> Museum <br/> Amsterdam
+                        </td>
+                        <td style="padding: 32px 0 0 0; text-align: left;">
+                          <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
                         </td>
                       </tr>
                     </table>
