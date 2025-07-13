@@ -356,18 +356,19 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td style="padding-top: 48px;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
-                      <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                         © 2024 Amsterdam Street Art Map
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                         Need help? Reply to this email or contact us<br>
                         at info@streetartmapamsterdam.com
                       </td>
                     </tr>
+
                     <tr>
-                      <td colspan="2" style="padding: 10px 0;">
+                      <td colspan="2" style="padding: 30px 0 20px 0px">
                         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                           <tr>
                             <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
@@ -375,10 +376,13 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                         </table>
                       </td>
                     </tr>
+
+
                     <tr>
-                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding-top: 32px; vertical-align: top;">
+                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;>
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
+
                       <td style="padding: 32px 0 0 0; text-align: left;">
                         <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
                       </td>
