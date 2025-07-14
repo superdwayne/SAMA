@@ -130,7 +130,7 @@ const EmailMagicLink = ({ onSuccess, onClose }) => {
       <div className="magic-link-overlay">
         <div className="magic-link-modal">
           <div className="modal-header">
-            <h2>📧 Check Your Email</h2>
+            <h2>Check Your Email</h2>
             <button className="close-button" onClick={onClose}>✕</button>
           </div>
           <div className="modal-content">

@@ -423,7 +423,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
 
                     <tr>
-                    <td style="font-size: 18px; color: #000; class="ultrabold">
+                    <td style="font-size: 18px; color: #000;" class="ultrabold">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 
