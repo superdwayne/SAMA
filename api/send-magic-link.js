@@ -277,15 +277,17 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Accessible Regions section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 8px 8px 0; vertical-align: top;">
+                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 0 0 0;">
                   Your Accessible Regions:
-                </td>
-                <td style="font-weight: 500; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0; vertical-align: top;">
-                  ${regions.join('<br>')}
                 </td>
               </tr>
               <tr>
-                <td colspan="2" style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td style="font-weight: 500; color: #000; font-family: Verdana, Arial, sans-serif; padding: 4px 0;">
+                  ${regions.join('')}
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 4px 0;">
                   You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.
                 </td>
               </tr>
@@ -311,7 +313,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td style="padding: 20px 0;">
                   <table cellpadding="0" cellspacing="0" border="0" role="presentation">
                     <tr>
-                      <td style="background-color: #3416D8; border-radius: 8px;">
+                      <td style="background-color: #3416D8; ">
                         <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
                       </td>
                     </tr>
