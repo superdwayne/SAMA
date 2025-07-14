@@ -1374,7 +1374,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                     ['get', 'type'],
                     // Mapbox dataset types (capitalized)
                     'Artwork', '📍',              // Art palette emoji for artwork
-                    'Souvenirs', '🏪',           // Shop emoji for souvenirs
+                    'Souvenirs', '🛍️',           // Shop emoji for souvenirs
                     'Food & Drink', '🍽️',        // Plate emoji for food & drink
                     'Culture Place', '🏛️',       // Classical building for culture
                     
@@ -1386,7 +1386,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                     
                     // Legacy/additional types
                     'mural', '📍',               // Art palette for mural
-                    'shop', '🏪',                // Shop for shop
+                    'shop', '🛍️',                // Shop for shop
                     'restaurant', '🍽️',          // Plate for restaurant
                     'sculpture', '🗿',           // Statue for sculpture
                     'graffiti', '✨',            // Sparkle for graffiti
@@ -1478,7 +1478,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 case 'gallery': return '🖼️';
                 
                 // Mapbox dataset types (capitalized)
-                case 'souvenirs': return '🏪';
+                case 'souvenirs': return '🛍️';
                 case 'food & drink': return '🍽️';
                 case 'culture place': return '🏛️';
                 
@@ -1486,7 +1486,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 case 'mural': return '📍';
                 case 'sculpture': return '🗿';
                 case 'graffiti': return '✨';
-                case 'shop': return '🏪';
+                case 'shop': return '🛍️';
                 case 'studio': return '🏠';
                 case 'wall': return '🧱';
                 
