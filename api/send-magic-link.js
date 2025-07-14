@@ -277,17 +277,15 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Accessible Regions section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 8px 8px 0; vertical-align: top;">
                   Your Accessible Regions:
                 </td>
-              </tr>
-              <tr>
-                <td style="font-weight: 500; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td style="font-weight: 500; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0; vertical-align: top;">
                   ${regions.join('<br>')}
                 </td>
               </tr>
               <tr>
-                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td colspan="2" style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
                   You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.
                 </td>
               </tr>
@@ -405,7 +403,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
 
                     <tr>
-                    <td style="font-size: 18px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">
+                    <td style="font-size: 18px; color: #000; font-family: 'PPNeueMachina-InktrapRegular', Arial, Helvetica, sans-serif;">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 
