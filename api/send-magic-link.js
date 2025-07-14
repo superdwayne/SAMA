@@ -263,12 +263,12 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 </td>
               </tr>
               <tr>
-                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; ">
                   We found your purchase history!
                 </td>
               </tr>
               <tr>
-                <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; >
                   You have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}.
                 </td>
               </tr>
@@ -277,7 +277,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Accessible Regions section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="font-size: 16px; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 0 0 0;">
+                <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, Helvetica, sans-serif; padding: 24px 0 0 0;">
                   Your Accessible Regions:
                 </td>
               </tr>
