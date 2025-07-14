@@ -215,24 +215,6 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
       vertical-align: top;
     }
 
-    .button {
-      display: inline-block;
-      background-color: #3416D8;
-      color: #ffffff !important;
-      text-decoration: none;
-      padding: 16px 32px;
-      border-radius: 8px;
-      font-size: 17px;
-      font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;
-    }
-
-    .ultrabold {
-      font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;
-    }
-
-    .button:hover {
-      background-color: #2a12c0;
-    }
   </style>
   <body>
     <table align="center" width="100%" style="margin: 0 auto; max-width: 600px; background-color: #FFFF00; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" role="presentation" cellspacing="0" cellpadding="0" border="0">
@@ -332,7 +314,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                   <table cellpadding="0" cellspacing="0" border="0" role="presentation">
                     <tr>
                       <td style="background-color: #3416D8; border-radius: 8px;">
-                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 17px; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">Access My Map Now</a>
+                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
                       </td>
                     </tr>
                   </table>
@@ -423,7 +405,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
 
                     <tr>
-                    <td style="font-size: 18px; color: #000;" class="ultrabold">
+                    <td style="font-size: 18px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 

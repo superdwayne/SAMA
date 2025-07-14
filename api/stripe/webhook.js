@@ -183,20 +183,6 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
       vertical-align: top;
     }
 
-    .button {
-      display: inline-block;
-      background-color: #3416D8;
-      color: #ffffff !important;
-      text-decoration: none;
-      padding: 16px 32px;
-      border-radius: 8px;
-      font-size: 17px;
-      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
-    }
-
-    .button:hover {
-      background-color: #2a12c0;
-    }
   </style>
 </head>
 <body>
@@ -233,7 +219,7 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
                   <table cellpadding="0" cellspacing="0" border="0" role="presentation">
                     <tr>
                       <td style="background-color: #3416D8; border-radius: 8px;">
-                        <a href="${magicLink}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 17px; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">Access My Map Now</a>
+                        <a href="${magicLink}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
                       </td>
                     </tr>
                   </table>
@@ -282,7 +268,7 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
                     </td>
                   </tr>
                   <tr>
-                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">
+                    <td style="font-size: 18px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">
                       Street Art <br/> Museum <br/> Amsterdam
                     </td>
                     <td style="padding: 32px 0 0 0; text-align: left;">

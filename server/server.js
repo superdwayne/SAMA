@@ -241,20 +241,6 @@ async function sendTokenEmail(email, token, region) {
       vertical-align: top;
     }
 
-    .button {
-      display: inline-block;
-      background-color: #3416D8;
-      color: #ffffff !important;
-      text-decoration: none;
-      padding: 16px 32px;
-      border-radius: 8px;
-      font-size: 17px;
-      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
-    }
-
-    .button:hover {
-      background-color: #2a12c0;
-    }
   </style>
 </head>
 <body>
@@ -265,7 +251,7 @@ async function sendTokenEmail(email, token, region) {
           <!-- Header -->
           <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
             <tr>
-              <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; padding-bottom: 24px;">
+              <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;">
                 Amsterdam<br>
                 Street<br>
                 Art Map
@@ -290,7 +276,7 @@ async function sendTokenEmail(email, token, region) {
                 <td style="padding: 20px 0;">
                   <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border: 2px solid #000; border-radius: 8px;">
                     <tr>
-                      <td style="padding: 15px; text-align: center; font-weight: bold; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; margin: 0;">
+                      <td style="padding: 15px; text-align: center; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; margin: 0;">
                         🎯 Start your street art adventure in ${region}!
                       </td>
                     </tr>
@@ -326,7 +312,7 @@ async function sendTokenEmail(email, token, region) {
                     </td>
                   </tr>
                   <tr>
-                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">
+                    <td style="font-size: 18px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">
                       Street Art <br/> Museum <br/> Amsterdam
                     </td>
                     <td style="padding: 32px 0 0 0; text-align: left;">
@@ -431,7 +417,7 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
           <!-- Header -->
           <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
             <tr>
-              <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; padding-bottom: 24px;">
+              <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;">
                 Amsterdam<br>
                 Street<br>
                 Art Map
@@ -443,7 +429,7 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
           <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
             <tbody>
               <tr>
-                <td style="font-size: 32px; font-weight: 900; color: #3416D8; text-transform: uppercase; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; padding: 24px 0 8px 0;">
+                <td style="font-size: 32px; font-weight: 900; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 0 8px 0;">
                   Welcome!
                 </td>
               </tr>
@@ -507,7 +493,7 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
                     </td>
                   </tr>
                   <tr>
-                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">
+                    <td style="font-size: 18px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">
                       Street Art <br/> Museum <br/> Amsterdam
                     </td>
                     <td style="padding: 32px 0 0 0; text-align: left;">
