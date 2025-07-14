@@ -277,11 +277,10 @@
 }
 
 .primary-button {
-  background: linear-gradient(135deg, #27ae60, #219a52);
+  background: #3416D8;
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 20px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -295,11 +294,11 @@
 }
 
 .secondary-button {
-  background: #ecf0f1;
+  background: #D2E3F2;
   color: #2c3e50;
   border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 0px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -522,8 +521,8 @@
   color: #222;
   font-size: 1.1rem;
   font-weight: 700;
-  border-radius: 8px;
-  padding: 8px 16px;
+  border-radius: 0px;
+  padding: 20px;
   margin-bottom: 0;
   text-align: center;
 }
@@ -545,25 +544,30 @@
   margin: 0 0 8px 0;
 }
 
-.sent-instructions-box ol {
+.sent-instructions-box ul {
   margin: 0 0 0 18px;
   padding: 0;
   font-size: 1rem;
+  font-size: 14px;
+  text-align: left;
+  line-height: 2;
 }
+
+
 
 .sent-primary-btn {
   width: 100%;
   margin-top: 8px;
   margin-bottom: 0;
   font-size: 1.1rem;
-  padding: 14px 0;
-  border-radius: 24px;
-  background: #ea4335;
+  padding: 20px 0;
+
+  background: #3416D8;
   color: #fff;
   font-weight: 700;
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(234, 67, 53, 0.10);
+
   transition: background 0.2s, transform 0.2s;
 }
 

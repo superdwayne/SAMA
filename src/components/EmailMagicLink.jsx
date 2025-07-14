@@ -135,18 +135,17 @@ const EmailMagicLink = ({ onSuccess, onClose }) => {
           </div>
           <div className="modal-content">
             <div className="sent-card">
-              <div className="sent-icon">📮</div>
               <div className="sent-title">Magic Link Sent!</div>
               <div className="sent-email-label">We've sent a special access link to:</div>
               <div className="sent-email-display">{email}</div>
               <div className="sent-instructions-box">
                 <h4>What to do next:</h4>
-                <ol>
+                <ul>
                   <li>Check your email inbox</li>
                   <li>Look for "Amsterdam Street Art Map Access"</li>
                   <li>Click the "Access Map" button in the email</li>
                   <li>You'll be automatically logged in!</li>
-                </ol>
+                </ul>
               </div>
               <button
                 className="open-gmail-btn sent-primary-btn"

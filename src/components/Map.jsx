@@ -778,15 +778,38 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   };
 
   const handleEndRoute = () => {
+    if (mapRef.current) {
+      // Prioritize the last stop of the active route
+      let destination = null;
+      if (activeRoute) {
+        const stops = getRouteLocations(activeRoute.id);
+        if (stops.length > 0) {
+          destination = stops[stops.length - 1];
+        }
+      }
+      // Fallback to the initially selected artwork if no route destination found
+      if (!destination && selectedArtwork) {
+        destination = selectedArtwork;
+      }
+      
+      if (destination) {
+        mapRef.current.flyTo({
+          center: [destination.longitude, destination.latitude],
+          zoom: 15,
+          pitch: 45,
+          duration: 2000
+        });
+
+        // After the flight, reset pitch and bearing
+        setTimeout(() => {
+          if (mapRef.current) {
+            mapRef.current.flyTo({ pitch: 0, bearing: 0, duration: 1000 });
+          }
+        }, 2100); // Start this shortly after the first animation ends
+      }
+    }
     setActiveRoute(null);
     setRouteStops([]);
-    
-    setViewport(prev => ({
-      ...prev,
-      zoom: 12,
-      pitch: 0,
-      bearing: 0
-    }));
   };
 
   const handleNavigateToRouteStop = (stop) => {
