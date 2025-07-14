@@ -236,7 +236,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Intro text -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style=" font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td style=" font-size: 16px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
                   Your access link is ready!
                 </td>
               </tr>
@@ -245,7 +245,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Divider -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="padding: 32px 0;">
+                <td style="padding: 20px 0;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
                       <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
@@ -258,7 +258,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Welcome Back section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
                   Welcome Back!
                 </td>
               </tr>
@@ -268,7 +268,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 </td>
               </tr>
               <tr>
-                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
                   You have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}.
                 </td>
               </tr>
@@ -277,13 +277,13 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Accessible Regions section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 0 0 0;">
+                <td style="font-size: 16px; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 0 0 0;">
                   Your Accessible Regions:
                 </td>
               </tr>
               <tr>
-                <td style="font-weight: 500; color: #000; font-family: Verdana, Arial, sans-serif; padding: 4px 0;">
-                  ${regions.join('')}
+                <td style="font-weight: 500; font-size: 13px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 4px 0;">
+                  ${regions.join(', ')}
                 </td>
               </tr>
               <tr>
@@ -296,12 +296,12 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Ready to explore section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 32px 0 8px 0;">
+                <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 32px 0 8px 0;">
                   Ready to explore Amsterdam's street art?
                 </td>
               </tr>
               <tr>
-                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
                   Click the button below to access your interactive map:
                 </td>
               </tr>
@@ -314,7 +314,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                   <table cellpadding="0" cellspacing="0" border="0" role="presentation">
                     <tr>
                       <td style="background-color: #3416D8; ">
-                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
+                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 10px 32px; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
                       </td>
                     </tr>
                   </table>
@@ -340,17 +340,17 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td>
                   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
-                      <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                      <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
                         Important:
                       </td>
                     </tr>
                     <tr>
-                      <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                      <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
                         This magic link expires in <strong>30 minutes</strong>
                       </td>
                     </tr>
                     <tr>
-                      <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                      <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
                         • Can only be used once<br>
                         • Your access will be permanent after activation<br>
                         • You can always request a new magic link with this email
@@ -364,12 +364,12 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
             <!-- Manual link section -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
               <tr>
-                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
                   Can't click the button? Copy and paste this link:
                 </td>
               </tr>
               <tr>
-                <td style="word-break: break-all; font-size: 12px; color: #3416D8; font-family: Verdana, Arial, sans-serif; padding: 0px 0px 180px 0px">
+                <td style="word-break: break-all; font-size: 10px; color: #3416D8; font-family: Verdana, Arial, sans-serif; padding: 0px 0px 180px 0px">
                   <a href="${magicLinkUrl}" style="color: #3416D8; text-decoration: none; word-break: break-all; font-size: 12px;">${magicLinkUrl}</a>
                 </td>
               </tr>
@@ -382,12 +382,12 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <td style="padding-top: 48px;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
-                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      <td style="font-size: 13px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                         © 2024 Amsterdam Street Art Map
                       </td>
                     </tr>
                     <tr>
-                      <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      <td style="font-size: 13px; color: #000; font-family: Verdana, Arial, sans-serif; ">
                         Need help? Reply to this email or contact us<br>
                         at info@streetartmapamsterdam.com
                       </td>
