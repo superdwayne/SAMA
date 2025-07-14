@@ -223,7 +223,11 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
       padding: 16px 32px;
       border-radius: 8px;
       font-size: 17px;
-      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
+      font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;
+    }
+
+    .ultrabold {
+      font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;
     }
 
     .button:hover {
@@ -419,7 +423,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
 
                     <tr>
-                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">
+                    <td style="font-size: 18px; color: #000;" class="ultrabold">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 
