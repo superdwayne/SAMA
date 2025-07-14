@@ -215,6 +215,11 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
       vertical-align: top;
     }
 
+     .ultrabold {
+      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
+    }
+
+
     .button {
       display: inline-block;
       background-color: #3416D8;
@@ -226,10 +231,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
       font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
     }
 
-    .ultrabold {
-      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
-    }
-
+   
     .button:hover {
       background-color: #2a12c0;
     }
