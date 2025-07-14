@@ -215,11 +215,6 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
       vertical-align: top;
     }
 
-     .ultrabold {
-      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
-    }
-
-
     .button {
       display: inline-block;
       background-color: #3416D8;
@@ -231,7 +226,6 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
       font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
     }
 
-   
     .button:hover {
       background-color: #2a12c0;
     }
@@ -425,7 +419,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
 
                     <tr>
-                    <td style="font-size: 18px; color: #000;" class="ultrabold">
+                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 
