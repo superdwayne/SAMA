@@ -26,15 +26,15 @@ async function trackAPIUsage(eventName = 'api_requests', value = 1) {
   }
 }
 
-const sgMail = require('@sendgrid/mail');
+const { Resend } = require('resend');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Initialize SendGrid
-console.log('🔑 SendGrid API Key loaded:', process.env.SENDGRID_API_KEY ? `${process.env.SENDGRID_API_KEY.substring(0, 20)}...` : 'NOT FOUND');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
+console.log('🔑 Resend API Key loaded:', process.env.RESEND_API_KEY ? `${process.env.RESEND_API_KEY.substring(0, 20)}...` : 'NOT FOUND');
 
 // Middleware
 app.use(cors({
@@ -202,17 +202,18 @@ const generateAccessToken = (region) => {
   return `${regionCode}-${timestamp}-${randomStr}`;
 };
 
-// Enhanced send email function using SendGrid only
+// Enhanced send email function using Resend
 async function sendTokenEmail(email, token, region) {
   const expirationDate = new Date();
   expirationDate.setDate(expirationDate.getDate() + 30);
   
-  const msg = {
-    to: email,
-    from: process.env.SENDER_EMAIL || 'noreply@streetartmap.com',
-    subject: 'Your Amsterdam Street Art Map Access Token',
-    text: `Thank you for your purchase!\n\nYour access token for the ${region} district is:\n${token}\n\nThis token is valid for 30 days until ${expirationDate.toLocaleDateString()}.\n\nTo activate your access:\n1. Go to ${process.env.CLIENT_URL || 'http://localhost:3000'}/token\n2. Enter your email address\n3. Enter the token above\n4. Enjoy exploring Amsterdam's street art!\n\nImportant: Keep this token safe. You'll need it to access the map.\n\nIf you have any questions, please contact us at info@streetartmuseumamsterdam.com\n\nBest regards,\nAmsterdam Street Art Map Team`,
-    html: `<!DOCTYPE html>
+  try {
+    const { data, error } = await resend.emails.send({
+      from: process.env.SENDER_EMAIL || 'noreply@streetartmap.com',
+      to: [email],
+      subject: 'Your Amsterdam Street Art Map Access Token',
+      text: `Thank you for your purchase!\n\nYour access token for the ${region} district is:\n${token}\n\nThis token is valid for 30 days until ${expirationDate.toLocaleDateString()}.\n\nTo activate your access:\n1. Go to ${process.env.CLIENT_URL || 'http://localhost:3000'}/token\n2. Enter your email address\n3. Enter the token above\n4. Enjoy exploring Amsterdam's street art!\n\nImportant: Keep this token safe. You'll need it to access the map.\n\nIf you have any questions, please contact us at info@streetartmuseumamsterdam.com\n\nBest regards,\nAmsterdam Street Art Map Team`,
+      html: `<!DOCTYPE html>
 <html style="background-color: #FFFF00;">
 <head>
   <meta charset="utf-8">
@@ -330,13 +331,21 @@ async function sendTokenEmail(email, token, region) {
   </table>
 </body>
 </html>`
-  };
-  try {
-    await sgMail.send(msg);
-    console.log('Email sent successfully via SendGrid to:', email);
-    return { method: 'sendgrid', success: true };
+    });
+
+    if (error) {
+      console.error('Resend email send error:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('DEVELOPMENT MODE - Token for', email, ':', token);
+        return { method: 'console', success: true };
+      }
+      throw error;
+    }
+
+    console.log('Email sent successfully via Resend to:', email);
+    return { method: 'resend', success: true };
   } catch (error) {
-    console.error('SendGrid email send error:', error);
+    console.error('Resend email send error:', error);
     if (process.env.NODE_ENV === 'development') {
       console.log('DEVELOPMENT MODE - Token for', email, ':', token);
       return { method: 'console', success: true };
@@ -345,13 +354,14 @@ async function sendTokenEmail(email, token, region) {
   }
 }
 
-// Send welcome email function
+// Send welcome email function using Resend
 async function sendWelcomeEmail(email, region) {
-  const msg = {
-    to: email,
-    from: process.env.SENDER_EMAIL || 'noreply@streetartmap.com',
-    subject: `Welcome to Amsterdam Street Art Map - ${region} District`,
-    text: `Welcome to the Amsterdam Street Art Map!
+  try {
+    const { data, error } = await resend.emails.send({
+      from: process.env.SENDER_EMAIL || 'noreply@streetartmap.com',
+      to: [email],
+      subject: `Welcome to Amsterdam Street Art Map - ${region} District`,
+      text: `Welcome to the Amsterdam Street Art Map!
 
 Thank you for purchasing access to the ${region} district. You're about to discover some of Amsterdam's most incredible street art!
 
@@ -378,7 +388,7 @@ Happy exploring!
 The Amsterdam Street Art Map Team
 
 Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
-    html: `<!DOCTYPE html>
+      html: `<!DOCTYPE html>
 <html style="background-color: #FFFF00;">
 <head>
   <meta charset="utf-8">
@@ -510,14 +520,17 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
   </table>
 </body>
 </html>`
-  };
+    });
 
-  try {
-    await sgMail.send(msg);
-    console.log('Welcome email sent successfully via SendGrid to:', email);
+    if (error) {
+      console.error('Resend welcome email error:', error);
+      throw error;
+    }
+
+    console.log('Welcome email sent successfully via Resend to:', email);
     return { success: true };
   } catch (error) {
-    console.error('SendGrid welcome email error:', error);
+    console.error('Resend welcome email error:', error);
     throw error;
   }
 }

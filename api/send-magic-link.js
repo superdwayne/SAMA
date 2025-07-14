@@ -1,6 +1,6 @@
-const sgMail = require('@sendgrid/mail');
-const crypto = require('crypto');
-const { createClient } = require('@supabase/supabase-js');
+import { Resend } from 'resend';
+import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -8,8 +8,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -409,22 +409,23 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
       </body>
     </html>`;
 
-  const msg = {
-    to: email,
-    from: {
-      email: process.env.SENDER_EMAIL || 'answers@streetartmuseumamsterdam.com',
-      name: 'Amsterdam Street Art Map'
-    },
-    subject: `Your Amsterdam Street Art Map Access Link`,
-    html: html
-  };
-
   try {
-    await sgMail.send(msg);
+    const { data, error } = await resend.emails.send({
+      from: process.env.SENDER_EMAIL || 'answers@streetartmuseumamsterdam.com',
+      to: [email],
+      subject: `Your Amsterdam Street Art Map Access Link`,
+      html: html
+    });
+
+    if (error) {
+      console.error('❌ Resend error:', error);
+      return false;
+    }
+
     console.log('✅ Magic link email sent to:', email);
     return true;
   } catch (error) {
-    console.error('❌ SendGrid error:', error);
+    console.error('❌ Resend error:', error);
     return false;
   }
 }

@@ -1,7 +1,9 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const sgMail = require('@sendgrid/mail');
-const crypto = require('crypto');
-const { createClient } = require('@supabase/supabase-js');
+import Stripe from 'stripe';
+import { Resend } from 'resend';
+import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -9,8 +11,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Generate secure magic token
 const generateMagicToken = () => {
@@ -288,7 +290,18 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
 </html>`
     };
 
-    await sgMail.send(msg);
+    const { data, error } = await resend.emails.send({
+      from: process.env.SENDER_EMAIL || 'admin@creativetechnologists.nl',
+      to: [email],
+      subject: `🎉 Welcome to Amsterdam Street Art Map - ${region} District Access`,
+      html: msg.html
+    });
+
+    if (error) {
+      console.error('❌ Resend error:', error);
+      throw error;
+    }
+
     console.log('✅ Purchase confirmation email sent to:', email);
   } catch (error) {
     console.error('❌ Failed to send purchase confirmation email:', error);
@@ -307,7 +320,7 @@ function getRawBody(req) {
   });
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   console.log('🔔 Stripe webhook received - START');
   console.log('🔍 Request method:', req.method);
   console.log('🔍 Request headers:', JSON.stringify(req.headers, null, 2));
