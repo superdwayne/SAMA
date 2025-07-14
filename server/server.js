@@ -290,14 +290,8 @@ async function sendTokenEmail(email, token, region) {
                 <td style="padding: 20px 0;">
                   <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border: 2px solid #000; border-radius: 8px;">
                     <tr>
-                      <td style="padding: 15px; text-align: center;">
-                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                          <tr>
-                            <td style="font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; margin: 0;">
-                              🎯 Start your street art adventure in ${region}!
-                            </td>
-                          </tr>
-                        </table>
+                      <td style="padding: 15px; text-align: center; font-weight: bold; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; margin: 0;">
+                        🎯 Start your street art adventure in ${region}!
                       </td>
                     </tr>
                   </table>
@@ -427,20 +421,6 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
       vertical-align: top;
     }
 
-    .button {
-      display: inline-block;
-      background-color: #3416D8;
-      color: #ffffff !important;
-      text-decoration: none;
-      padding: 16px 32px;
-      border-radius: 8px;
-      font-size: 17px;
-      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
-    }
-
-    .button:hover {
-      background-color: #2a12c0;
-    }
   </style>
 </head>
 <body style="background-color: #FFFF00; margin: 0; padding: 0;">

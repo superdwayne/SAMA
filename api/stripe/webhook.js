@@ -233,7 +233,7 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
                   <table cellpadding="0" cellspacing="0" border="0" role="presentation">
                     <tr>
                       <td style="background-color: #3416D8; border-radius: 8px;">
-                        <a href="${magicLink}" class="button">Access My Map Now</a>
+                        <a href="${magicLink}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-size: 17px; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">Access My Map Now</a>
                       </td>
                     </tr>
                   </table>
