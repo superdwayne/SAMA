@@ -221,9 +221,9 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                   <tr>
                     <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;" class="dark-mode-header">
-                      Amsterdam<br>
                       Street<br>
-                      Art Map
+                      Art Map<br>
+                      Amsterdam
                     </td>
                   </tr>
                 </table>
@@ -412,10 +412,10 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
   const msg = {
     to: email,
     from: {
-      email: process.env.SENDER_EMAIL || 'admin@creativetechnologists.nl',
+      email: process.env.SENDER_EMAIL || 'answers@streetartmuseumamsterdam.com',
       name: 'Amsterdam Street Art Map'
     },
-    subject: `🎨 Your Amsterdam Street Art Map Access Link`,
+    subject: `Your Amsterdam Street Art Map Access Link`,
     html: html
   };
 
