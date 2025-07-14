@@ -190,7 +190,51 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
   const html = `<!doctype html>
 <html>
-  <body style="background-color: #FFFF00; margin: 0; padding: 0; font-family: Verdana, Arial, sans-serif; color: #000000; line-height: 1.4;">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amsterdam Street Art Map – Your Magic Link</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono&display=swap');
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Verdana, Arial, sans-serif;
+      color: #000000;
+      line-height: 1.4;
+      background-color: #FFFF00;
+    }
+
+    table {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+
+    td {
+      padding: 0;
+      vertical-align: top;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: #3416D8;
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-size: 17px;
+      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
+    }
+
+    .ultrabold {
+      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
+    }
+
+    .button:hover {
+      background-color: #2a12c0;
+    }
+  </style>
+  <body>
     <table align="center" width="100%" style="margin: 0 auto; max-width: 600px; background-color: #FFFF00; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" role="presentation" cellspacing="0" cellpadding="0" border="0">
       <tbody>
         <tr style="width: 100%;">
@@ -288,7 +332,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                   <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                     <tr>
                       <td style="background-color: #3416D8;">
-                        <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px;  border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">Access My Map Now</a>
+                        <a href="${magicLinkUrl}" class="button">Access My Map Now</a>
                       </td>
                     </tr>
                   </table>
@@ -379,7 +423,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
 
                     <tr>
-                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;>
+                    <td style="font-size: 18px; color: #000; class="ultrabold">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 

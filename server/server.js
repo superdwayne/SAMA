@@ -217,22 +217,17 @@ async function sendTokenEmail(email, token, region) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amsterdam Street Art Map – Access Token</title>
+  <title>Amsterdam Street Art Map – Your Token</title>
   <style>
-    @font-face {
-      font-family: 'PPNeueMachina-PlainUltrabold';
-      src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-      font-weight: 800;
-      font-style: normal;
-    }
-    
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono&display=swap');
+
     body {
       margin: 0;
       padding: 0;
       font-family: Verdana, Arial, sans-serif;
-      background-color: #FFFF00 !important;
       color: #000000;
       line-height: 1.4;
+      background-color: #FFFF00;
     }
 
     table {
@@ -241,222 +236,117 @@ async function sendTokenEmail(email, token, region) {
       mso-table-rspace: 0pt;
     }
 
+    td {
+      padding: 0;
+      vertical-align: top;
+    }
+
     .button {
       display: inline-block;
       background-color: #3416D8;
       color: #ffffff !important;
       text-decoration: none;
       padding: 16px 32px;
-      font-weight: 900;
       border-radius: 8px;
       font-size: 17px;
-      font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;
+      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
     }
 
     .button:hover {
-      background-color: #2A0FB3;
-    }
-
-    a {
-      color: #3416D8;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
+      background-color: #2a12c0;
     }
   </style>
 </head>
-<body style="background-color: #FFFF00; margin: 0; padding: 0;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; min-height: 100vh;">
-    <tr>
-      <td style="background-color: #FFFF00;">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="background-color: #FFFF00; max-width: 600px;">
-          <tr>
-            <td style="background-color: #FFFF00; padding: 40px 20px;">
-              
-              <!-- Logo section -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;">
-                    Amsterdam<br>
-                    Street<br>
-                    Art Map
-                  </td>
-                </tr>
-              </table>
+<body>
+  <table align="center" width="100%" style="margin: 0 auto; max-width: 600px; background-color: #FFFF00; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" role="presentation" cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+      <tr>
+        <td style="padding: 40px 20px;">
+          <!-- Header -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+            <tr>
+              <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; padding-bottom: 24px;">
+                Amsterdam<br>
+                Street<br>
+                Art Map
+              </td>
+            </tr>
+          </table>
 
-              <!-- Intro text -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    Your Access Token
-                  </td>
-                </tr>
-              </table>
+          <!-- Main content -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+            <tbody>
+              <tr>
+                <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
+                  🎨 Thank you for your purchase!
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  Your access to the <strong>${region}</strong> district is now active.
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 20px 0;">
+                  <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border: 2px solid #000; border-radius: 8px;">
+                    <tr>
+                      <td style="padding: 15px; text-align: center;">
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                          <tr>
+                            <td style="font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; margin: 0;">
+                              🎯 Start your street art adventure in ${region}!
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-              <!-- Divider -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 32px 0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="height: 2px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
+          <!-- Footer -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+            <tr>
+              <td style="padding-top: 48px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                  <tr>
+                    <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      © 2024 Amsterdam Street Art Map
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      Need help? Reply to this email or contact us<br>
+                      at info@streetartmapamsterdam.com
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" style="padding: 10px 0;">
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                        <tr>
+                          <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">
+                      Street Art <br/> Museum <br/> Amsterdam
+                    </td>
+                    <td style="padding: 32px 0 0 0; text-align: left;">
+                      <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
 
-              <!-- Thank you section -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
-                    🎨 Thank you for your purchase!
-                  </td>
-                </tr>
-                <tr>
-                  <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    Your access token for the <strong>${region}</strong> district is:
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Token section -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 20px 0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 3px solid #000; border-radius: 8px;">
-                      <tr>
-                        <td style="padding: 20px; text-align: center;">
-                          <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border-radius: 5px; margin: 0 auto;">
-                            <tr>
-                              <td style="font-family: 'Courier New', monospace; font-size: 24px; color: #000; font-weight: bold; padding: 10px;">
-                                ${token}
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Expiration info -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    <strong>⏰ Valid until:</strong> ${expirationDate.toLocaleDateString()}
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Instructions -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 32px 0 8px 0;">
-                    🚀 How to activate:
-                  </td>
-                </tr>
-                <tr>
-                  <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    1. Click the button below or go to our website<br>
-                    2. Enter your email address<br>
-                    3. Enter the token above<br>
-                    4. Start exploring Amsterdam's hidden street art!
-                  </td>
-                </tr>
-              </table>
-
-              <!-- CTA Button -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 20px 0; text-align: center;">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="background-color: #3416D8; border-radius: 8px;">
-                          <a href="${process.env.CLIENT_URL || 'http://localhost:3000'}/token" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; font-weight: 900; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">🗝️ Activate Your Access</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Important notice -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    <strong>⚠️ Important:</strong> Keep this email safe. You'll need the token to access the map.
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Adventure notice -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 20px 0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border: 2px solid #000; border-radius: 8px;">
-                      <tr>
-                        <td style="padding: 15px; text-align: center;">
-                          <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                            <tr>
-                              <td style="font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; margin: 0;">
-                                🎯 Start your street art adventure in ${region}!
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Footer -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding-top: 48px;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                      <tr>
-                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
-                          © 2024 Amsterdam Street Art Map
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
-                          Need help? Reply to this email or contact us<br>
-                          at info@streetartmapamsterdam.com
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="padding: 10px 0;">
-                          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                            <tr>
-                              <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding-top: 32px; vertical-align: top;">
-                          Street Art <br/> Museum <br/> Amsterdam
-                        </td>
-                        <td style="padding: 32px 0 0 0; text-align: left;">
-                          <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </body>
 </html>`
@@ -515,20 +405,15 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amsterdam Street Art Map – Welcome</title>
   <style>
-    @font-face {
-      font-family: 'PPNeueMachina-PlainUltrabold';
-      src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-      font-weight: 800;
-      font-style: normal;
-    }
-    
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono&display=swap');
+
     body {
       margin: 0;
       padding: 0;
       font-family: Verdana, Arial, sans-serif;
-      background-color: #FFFF00 !important;
       color: #000000;
       line-height: 1.4;
+      background-color: #FFFF00;
     }
 
     table {
@@ -537,270 +422,125 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
       mso-table-rspace: 0pt;
     }
 
+    td {
+      padding: 0;
+      vertical-align: top;
+    }
+
     .button {
       display: inline-block;
       background-color: #3416D8;
       color: #ffffff !important;
       text-decoration: none;
       padding: 16px 32px;
-      font-weight: 900;
       border-radius: 8px;
       font-size: 17px;
-      font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;
+      font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
     }
 
     .button:hover {
-      background-color: #2A0FB3;
-    }
-
-    a {
-      color: #3416D8;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
+      background-color: #2a12c0;
     }
   </style>
 </head>
 <body style="background-color: #FFFF00; margin: 0; padding: 0;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; min-height: 100vh;">
-    <tr>
-      <td style="background-color: #FFFF00;">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="background-color: #FFFF00; max-width: 600px;">
-          <tr>
-            <td style="background-color: #FFFF00; padding: 40px 20px;">
-              
-              <!-- Logo section -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;">
-                    Amsterdam<br>
-                    Street<br>
-                    Art Map
-                  </td>
-                </tr>
-              </table>
+  <table align="center" width="100%" style="margin: 0 auto; max-width: 600px; background-color: #FFFF00; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" role="presentation" cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+      <tr>
+        <td style="padding: 40px 20px;">
+          <!-- Header -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+            <tr>
+              <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; padding-bottom: 24px;">
+                Amsterdam<br>
+                Street<br>
+                Art Map
+              </td>
+            </tr>
+          </table>
 
-              <!-- Welcome section -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 32px; font-weight: 900; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding: 24px 0 8px 0;">
-                    Welcome!
-                  </td>
-                </tr>
-                <tr>
-                  <td style="font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    You're now part of Amsterdam's street art community
-                  </td>
-                </tr>
-              </table>
+          <!-- Main content -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+            <tbody>
+              <tr>
+                <td style="font-size: 32px; font-weight: 900; color: #3416D8; text-transform: uppercase; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif; padding: 24px 0 8px 0;">
+                  Welcome!
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  You're now part of Amsterdam's street art community
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 20px 0;">
+                  <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border: 2px solid #000; border-radius: 25px; margin: 0 auto;">
+                    <tr>
+                      <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 10px 20px;">
+                        ${region} District Access
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
+                  You're about to discover some of Amsterdam's most incredible street art. Check your inbox for a separate email containing your magic link to access the map.
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 30px 0 8px 0; text-align: center;">
+                  <strong>Happy exploring! 🎭</strong>
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0; text-align: center;">
+                  The Amsterdam Street Art Map Team
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-              <!-- Region badge -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 20px 0;">
-                    <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border: 2px solid #000; border-radius: 25px; margin: 0 auto;">
-                      <tr>
-                        <td style="font-weight: bold; font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 10px 20px;">
-                          ${region} District Access
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Adventure begins -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
-                    🎨 Your Street Art Adventure Begins!
-                  </td>
-                </tr>
-                <tr>
-                  <td style="font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    Thank you for purchasing access to the <strong>${region}</strong> district. You're about to discover some of Amsterdam's most incredible street art!
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Features list -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 25px 0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 3px solid #000; border-radius: 10px;">
-                      <tr>
-                        <td style="padding: 25px;">
-                          <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                            <tr>
-                              <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding-bottom: 15px;">
-                                🗺️ What's included in your ${region} access:
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0; border-bottom: 1px dotted #ccc;">
-                                ✓ Interactive map with precise locations
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0; border-bottom: 1px dotted #ccc;">
-                                ✓ Artist information and artwork details
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0; border-bottom: 1px dotted #ccc;">
-                                ✓ Navigation and route planning
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0; border-bottom: 1px dotted #ccc;">
-                                ✓ Hidden gems only locals know about
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0;">
-                                ✓ 30 days of unlimited access
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Getting started -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 20px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
-                    🚀 Getting Started:
-                  </td>
-                </tr>
-                <tr>
-                  <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                    1. Check your email for your access token<br>
-                    2. Visit our map and enter your token<br>
-                    3. Unlock the ${region} district<br>
-                    4. Start exploring!
-                  </td>
-                </tr>
-              </table>
-
-              <!-- CTA Button -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 20px 0; text-align: center;">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="background-color: #3416D8; border-radius: 8px;">
-                          <a href="${process.env.CLIENT_URL || 'http://localhost:3000'}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 16px 32px; font-weight: 900; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">🗺️ Start Exploring Now</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Tips section -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding: 25px 0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #E8F4FD; border: 3px solid #0066FF; border-radius: 10px;">
-                      <tr>
-                        <td style="padding: 25px;">
-                          <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                            <tr>
-                              <td style="font-size: 20px; font-weight: bold; color: #0066FF; font-family: Verdana, Arial, sans-serif; padding-bottom: 15px;">
-                                💡 Tips for your street art adventure:
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0;">
-                                <strong>🎨 Best time to visit:</strong> Early morning or late afternoon for great lighting
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0;">
-                                <strong>📱 Pro tip:</strong> Screenshot interesting pieces for your collection
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0;">
-                                <strong>🚶‍♂️ Comfort first:</strong> Wear comfortable walking shoes
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 5px 0;">
-                                <strong>📸 Don't forget:</strong> Your camera for amazing shots!
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Happy exploring -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 30px 0 8px 0; text-align: center;">
-                    <strong>Happy exploring! 🎭</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0; text-align: center;">
-                    The Amsterdam Street Art Map Team
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Footer -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding-top: 48px;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                      <tr>
-                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
-                          © 2024 Amsterdam Street Art Map
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
-                          Need help? Reply to this email or contact us<br>
-                          at info@streetartmapamsterdam.com
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="padding: 10px 0;">
-                          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                            <tr>
-                              <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; padding-top: 32px; vertical-align: top;">
-                          Street Art <br/> Museum <br/> Amsterdam
-                        </td>
-                        <td style="padding: 32px 0 0 0; text-align: left;">
-                          <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+          <!-- Footer -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+            <tr>
+              <td style="padding-top: 48px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                  <tr>
+                    <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      © 2024 Amsterdam Street Art Map
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
+                      Need help? Reply to this email or contact us<br>
+                      at info@streetartmapamsterdam.com
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" style="padding: 10px 0;">
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                        <tr>
+                          <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-size: 18px; color: #000; font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;">
+                      Street Art <br/> Museum <br/> Amsterdam
+                    </td>
+                    <td style="padding: 32px 0 0 0; text-align: left;">
+                      <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </body>
 </html>`
