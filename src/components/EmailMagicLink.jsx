@@ -1,5 +1,6 @@
 // src/components/EmailMagicLink.jsx
 import React, { useState } from 'react';
+import ShoppingBagIcon from './ShoppingBagIcon';
 import './EmailMagicLink.css';
 
 const EmailMagicLink = ({ onSuccess, onClose }) => {
@@ -87,7 +88,9 @@ const EmailMagicLink = ({ onSuccess, onClose }) => {
           
           <div className="modal-content">
             <div className="no-purchase-step">
-              <div className="no-purchase-icon">🛍️</div>
+              <div className="no-purchase-icon">
+                <ShoppingBagIcon size={32} />
+              </div>
               <h3>No Transaction Record</h3>
               <p>We couldn't find any purchases associated with:</p>
               <div className="email-display">{email}</div>

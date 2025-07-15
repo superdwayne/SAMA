@@ -18,6 +18,7 @@ import ActiveRoute from './ActiveRoute';
 import MobileHeader from './MobileHeader';
 import RecenterButton from './RecenterButton';
 import BrickWallIcon from './BrickWallIcon';
+import ShoppingBagIcon from './ShoppingBagIcon';
 import { amsterdamRegions } from '../data/regions';
 import { streetArtLocations } from '../data/locations';
 import { fetchMapboxDataset, listAvailableDatasets, testDatasetId } from '../utils/mapboxData';
@@ -556,8 +557,8 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
       description: "This is a test brick wall pin to demonstrate the new icon.",
       type: "brick-wall",
       district: "Nieuw-West", // Use exact region name
-      latitude: 52.377354,
-      longitude: 4.823076,
+      latitude: 52.3650,
+      longitude: 4.8150,
       image_url: "",
       address: "Test Location",
       openingHours: "24/7",
@@ -576,6 +577,42 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     // Add to mapboxLocations
     setMapboxLocations(prev => [...prev, testPin]);
     setAllLocations(prev => [...prev, testPin]);
+    
+    return testPin;
+  };
+
+  // NEW: Test function to add a shopping pin
+  window.addShoppingTestPin = () => {
+    const testPin = {
+      id: "test-shopping-" + Date.now(),
+      title: "Test Shopping Store",
+      artist: "Various Artists",
+      description: "This is a test shopping pin to demonstrate the new bag icon.",
+      type: "shopping",
+      district: "Nieuw-West", // Use exact region name
+      latitude: 52.377354,
+      longitude: 4.823076,
+      image_url: "",
+      address: "Test Shopping Address",
+      openingHours: "24/7",
+      year: "2024",
+      source: "test"
+    };
+    
+    // Force unlock Nieuw-West region temporarily
+    setUnlockedRegions(prev => {
+      if (!prev.includes('Nieuw-West') && !prev.includes('New-West')) {
+        return [...prev, 'Nieuw-West', 'New-West'];
+      }
+      return prev;
+    });
+    
+    // Add to mapboxLocations
+    setMapboxLocations(prev => [...prev, testPin]);
+    setAllLocations(prev => [...prev, testPin]);
+    
+    console.log('🛍️ Added test shopping pin:', testPin);
+    console.log('📍 Pin location: Nieuw-West (temporarily unlocked)');
     
     return testPin;
   };
@@ -1705,6 +1742,12 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     // console.log(`🔍 shouldUseBrickWallIcon("${type}") = ${shouldUse}`);
     return shouldUse;
   };
+
+  const shouldUseShoppingBagIcon = (type) => {
+    const typeLower = type?.toLowerCase();
+    const shouldUse = typeLower === 'shopping' || typeLower === 'shop' || typeLower === 'souvenirs';
+    return shouldUse;
+  };
             
             
             return (
@@ -1736,10 +1779,21 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                           top: '50%',
                           left: '50%',
                           transform: 'translate(-50%, -50%)',
+                          width: '40px',
+                          height: '40px'
+                        }}>
+                          <BrickWallIcon size={40} />
+                        </div>
+                      ) : shouldUseShoppingBagIcon(location.type) ? (
+                        <div style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
                           width: '28px',
                           height: '28px'
                         }}>
-                          <BrickWallIcon size={28} />
+                          <ShoppingBagIcon size={28} />
                         </div>
                       ) : (
                         <span 
