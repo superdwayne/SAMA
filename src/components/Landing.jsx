@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import InfoModal from './InfoModal';
 import EmailMagicLink from './EmailMagicLink';
+import AlreadyVerifiedModal from './AlreadyVerifiedModal';
 import { magicLink } from '../utils/magic-links';
 import './Landing.css'; 
 
@@ -91,6 +92,8 @@ const Landing = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
+  const [showAlreadyVerifiedModal, setShowAlreadyVerifiedModal] = useState(false);
+  const [alreadyVerifiedEmail, setAlreadyVerifiedEmail] = useState('');
   const [unlockedRegions, setUnlockedRegions] = useState([]); // No free regions - all require purchase
   const navigate = useNavigate();
   const location = useLocation();
@@ -202,21 +205,27 @@ const Landing = () => {
       const result = await magicLink.verifyMagicToken(token);
       
       if (result.success) {
-        console.log('✅ Magic link verified successfully');
-        
-        // Update unlocked regions based on magic link result
-        const newRegions = magicLink.getUnlockedRegions();
-        setUnlockedRegions(newRegions);
-        
-        // Clean URL and redirect to map
-        const url = new URL(window.location);
-        url.searchParams.delete('magic');
-        window.history.replaceState({}, document.title, url.toString());
-        
-        // Show success message and redirect
-        setTimeout(() => {
-          navigate('/map?activated=true');
-        }, 1000);
+        if (result.alreadyVerified) {
+          console.log('✅ Already verified - welcome back!');
+          setAlreadyVerifiedEmail(result.email || '');
+          setShowAlreadyVerifiedModal(true);
+        } else {
+          console.log('✅ Magic link verified successfully');
+          
+          // Update unlocked regions based on magic link result
+          const newRegions = magicLink.getUnlockedRegions();
+          setUnlockedRegions(newRegions);
+          
+          // Clean URL and redirect to map
+          const url = new URL(window.location);
+          url.searchParams.delete('magic');
+          window.history.replaceState({}, document.title, url.toString());
+          
+          // Show success message and redirect
+          setTimeout(() => {
+            navigate('/map?activated=true');
+          }, 1000);
+        }
       } else {
         console.error('❌ Magic link verification failed:', result.error);
         // Could show an error modal here
@@ -508,6 +517,12 @@ const Landing = () => {
           onClose={() => setShowMagicLinkModal(false)}
         />
       )}
+      
+      <AlreadyVerifiedModal 
+        isOpen={showAlreadyVerifiedModal}
+        onClose={() => setShowAlreadyVerifiedModal(false)}
+        userEmail={alreadyVerifiedEmail}
+      />
     </div>
   );
 };

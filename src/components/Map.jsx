@@ -168,10 +168,20 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             setMagicLinkStatus('success');
             const newAccess = magicLink.getCurrentAccess();
             const newUnlockedRegions = magicLink.getUnlockedRegions();
-            console.log('🎉 Magic link success!', { 
-              access: newAccess, 
-              unlockedRegions: newUnlockedRegions 
-            });
+            
+            if (result.alreadyVerified) {
+              console.log('🎉 Already verified!', { 
+                message: result.message,
+                access: newAccess, 
+                unlockedRegions: newUnlockedRegions 
+              });
+            } else {
+              console.log('🎉 Magic link success!', { 
+                access: newAccess, 
+                unlockedRegions: newUnlockedRegions 
+              });
+            }
+            
             setUserAccess(newAccess);
             setUnlockedRegions(newUnlockedRegions);
             

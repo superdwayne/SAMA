@@ -46,6 +46,9 @@ export class SimpleMagicLink {
   // Verify magic token with server
   async verifyMagicToken(token) {
     try {
+      // First check if user already has access
+      const currentAccess = this.getCurrentAccess();
+      
       const response = await fetch('/api/verify-magic-link', {
         method: 'POST',
         headers: {
@@ -57,6 +60,18 @@ export class SimpleMagicLink {
       const result = await response.json();
 
       if (response.ok && result.success) {
+        // Check if this is a duplicate verification
+        if (currentAccess && currentAccess.email === result.email) {
+          return { 
+            success: true, 
+            alreadyVerified: true,
+            message: 'You\'re already signed in! Welcome back.',
+            email: result.email,
+            regions: result.regions,
+            hasPurchased: result.hasPurchased
+          };
+        }
+        
         // Save access data
         this.saveAccess(result.email, result.regions, result.hasPurchased);
         return result;
