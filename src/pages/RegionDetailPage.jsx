@@ -1,58 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import './RegionDetailPage.css';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { amsterdamRegions } from '../data/regions';
 import { fetchMapboxDataset } from '../utils/mapboxData';
-import { toOptimizedThumb, getRegionThumb, registerRegionThumb } from '../utils/image';
+import { toOptimizedThumb, registerRegionThumb, getRegionThumb } from '../utils/image';
 import EmailMagicLink from '../components/EmailMagicLink';
+import BrickWallIcon from '../components/BrickWallIcon';
+import './RegionDetailPage.css';
 
-// Region data with stats matching the design
-const regions = [
-  { 
-    id: 'centre', 
-    title: 'Centre', 
-    description: 'Tourists, tags & tension. </br> The city\'s loudest gallery', 
-    latitude: 52.3728, 
-    longitude: 4.8936, 
+
+
+// Convert GeoJSON regions to the format expected by RegionDetailPage
+const regions = amsterdamRegions.features.map(feature => {
+  const props = feature.properties;
+  return {
+    id: props.name.toLowerCase().replace(/\s+/g, '-'),
+    title: props.name,
+    description: props.description,
+    latitude: feature.geometry.coordinates[0][0][1], // Use first coordinate
+    longitude: feature.geometry.coordinates[0][0][0],
     isFree: false,
     image: '/images/center.png'
-  },
-  { 
-    id: 'noord', 
-    title: 'Noord', 
-    description: 'From shipyards to street art. Noord is culture unleashed', 
-    latitude: 52.4000, 
-    longitude: 4.9000, 
-    isFree: false,
-    image: '/images/center.png'
-  },
-  { 
-    id: 'east', 
-    title: 'East', 
-    description: 'East is hip, hungry and covered in color', 
-    latitude: 52.3600, 
-    longitude: 4.9400, 
-    isFree: false,
-    image: '/images/center.png' 
-  },
-  { 
-    id: 'nieuw-west', 
-    title: 'Nieuw-West', 
-    description: 'Emerging street art destination with fresh perspectives', 
-    latitude: 52.3700, 
-    longitude: 4.8100, 
-    isFree: false,
-    image: '/images/center.png' 
-  },
-  { 
-    id: 'south', 
-    title: 'South', 
-    description: 'Upscale galleries meet urban edge.<br /> Where sophistication gets street smart', 
-    latitude: 52.3500, 
-    longitude: 4.8850, 
-    isFree: false,
-    image: '/images/SOUTH.jpg' 
-  },
-];
+  };
+});
 
 const regionStats = {
   'Centre': {
@@ -63,31 +32,45 @@ const regionStats = {
     image: '/images/collage.png'
   },
   'Noord': {
-    artworks: 18,
-    galleries: 2,
-    legalWalls: 1,
-    featuredArtists: 12,
+    artworks: 40,
+    galleries: 5,
+    legalWalls: 4,
+    featuredArtists: 25,
     image: '/images/collage.png'
   },
   'East': {
-    artworks: 22,
-    galleries: 1,
+    artworks: 30,
+    galleries: 2,
     legalWalls: 3,
     featuredArtists: 18,
-   image: '/images/collage.png'
+    image: '/images/collage.png'
+  },
+  'West': {
+    artworks: 22,
+    galleries: 3,
+    legalWalls: 2,
+    featuredArtists: 14,
+    image: '/images/collage.png'
+  },
+  'South-East': {
+    artworks: 18,
+    galleries: 1,
+    legalWalls: 2,
+    featuredArtists: 10,
+    image: '/images/collage.png'
   },
   'Nieuw-West': {
     artworks: 15,
     galleries: 1,
     legalWalls: 3,
     featuredArtists: 8,
-   image: '/images/collage.png'
+    image: '/images/collage.png'
   },
   'South': {
-    artworks: 28,
-    galleries: 4,
-    legalWalls: 2,
-    featuredArtists: 20,
+    artworks: 20,
+    galleries: 2,
+    legalWalls: 1,
+    featuredArtists: 12,
     image: '/images/collage.png'
   },
 };
@@ -319,7 +302,9 @@ const RegionDetailPage = () => {
                 <span className="stat-label">Galleries</span>
               </div>
               <div className="stat-item">
-                <span className="stat-icon">🎨</span>
+                <span className="stat-icon">
+                  <BrickWallIcon size={20} />
+                </span>
                 <span className="stat-number">{stats.legalWalls}</span>
                 <span className="stat-label">Legal Walls</span>
               </div>

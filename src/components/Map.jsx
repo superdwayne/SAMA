@@ -17,6 +17,7 @@ import RouteNavigator from './RouteNavigator';
 import ActiveRoute from './ActiveRoute';
 import MobileHeader from './MobileHeader';
 import RecenterButton from './RecenterButton';
+import BrickWallIcon from './BrickWallIcon';
 import { amsterdamRegions } from '../data/regions';
 import { streetArtLocations } from '../data/locations';
 import { fetchMapboxDataset, listAvailableDatasets, testDatasetId } from '../utils/mapboxData';
@@ -108,6 +109,40 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   useEffect(() => {
     console.log('🔓 Current unlocked regions:', unlockedRegions);
   }, [unlockedRegions]);
+
+  // Debug: Log all pin types when mapboxLocations change
+  useEffect(() => {
+    if (mapboxLocations.length > 0) {
+      console.log('🎯 All Mapbox pin types:');
+      const typeCounts = {};
+      mapboxLocations.forEach(location => {
+        const type = location.type || 'unknown';
+        typeCounts[type] = (typeCounts[type] || 0) + 1;
+        console.log(`  📍 "${location.title}" - Type: "${type}" - District: "${location.district}"`);
+      });
+      console.log('📊 Type counts:', typeCounts);
+      
+      // Special debug for Institution pins
+      const institutionPins = mapboxLocations.filter(loc => 
+        loc.type?.toLowerCase() === 'institution'
+      );
+      if (institutionPins.length > 0) {
+        console.log('🏛️ Institution pins found:', institutionPins);
+        institutionPins.forEach(pin => {
+          const isUnlocked = unlockedRegions.some(unlockedRegion => {
+            const unlockedVariants = getRegionVariants(unlockedRegion);
+            const locationVariants = getRegionVariants(pin.district);
+            return unlockedVariants.some(unlockedVariant => 
+              locationVariants.some(locVariant => 
+                unlockedVariant.toLowerCase() === locVariant.toLowerCase()
+              )
+            );
+          });
+          console.log(`🏛️ Institution pin "${pin.title}" in "${pin.district}": ${isUnlocked ? 'SHOULD SHOW' : 'HIDDEN - region not unlocked'}`);
+        });
+      }
+    }
+  }, [mapboxLocations, unlockedRegions]);
 
   // Initialize custom token if available on mount
   useEffect(() => {
@@ -418,6 +453,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     if (mapboxPin) {
       console.log(`📍 Found Mapbox pin: "${mapboxPin.title}"`);
       console.log(`  District: "${mapboxPin.district}"`);
+      console.log(`  Type: "${mapboxPin.type}"`);
       
       if (requestedRegion) {
         const requestedVariants = getRegionVariants(requestedRegion);
@@ -449,6 +485,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     if (geojsonPin) {
       console.log(`🎨 Found GeoJSON pin: "${geojsonPin.properties.title}"`);
       console.log(`  Region: "${geojsonPin.properties.region}"`);
+      console.log(`  Type: "${geojsonPin.properties.type}"`);
     }
     
     if (!mapboxPin && !geojsonPin) {
@@ -459,6 +496,158 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         regionPinsData.features.forEach(f => console.log(`  - ${f.properties.title}`));
       }
     }
+  };
+
+  // NEW: Debug function to check all pin types in Nieuw-West
+  window.debugNieuwWestPins = () => {
+    console.log('🔍 Debugging Nieuw-West pins...');
+    
+    const nieuwWestPins = mapboxLocations.filter(loc => {
+      const districtVariants = getRegionVariants(loc.district);
+      const nieuwWestVariants = getRegionVariants('Nieuw-West');
+      return districtVariants.some(districtVariant => 
+        nieuwWestVariants.some(nwVariant => 
+          districtVariant.toLowerCase() === nwVariant.toLowerCase()
+        )
+      );
+    });
+    
+    console.log(`📍 Found ${nieuwWestPins.length} Nieuw-West pins:`);
+    
+    const typeCounts = {};
+    nieuwWestPins.forEach(pin => {
+      const type = pin.type || 'unknown';
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+      console.log(`  📍 "${pin.title}" - Type: "${type}" - Artist: "${pin.artist}"`);
+    });
+    
+    console.log('📊 Type counts in Nieuw-West:', typeCounts);
+    
+    // Check for Institution pins specifically
+    const institutionPins = nieuwWestPins.filter(pin => 
+      pin.type?.toLowerCase().includes('institution') || 
+      pin.type?.toLowerCase().includes('instituion')
+    );
+    
+    console.log(`🏛️ Institution pins found: ${institutionPins.length}`);
+    institutionPins.forEach(pin => {
+      console.log(`  🏛️ "${pin.title}" - Type: "${pin.type}" - Artist: "${pin.artist}"`);
+    });
+    
+    return nieuwWestPins;
+  };
+
+  // NEW: Test function to add a brick wall pin
+  window.addBrickWallTestPin = () => {
+    const testPin = {
+      id: "test-brick-wall-" + Date.now(),
+      title: "Test Brick Wall",
+      artist: "Test Artist",
+      description: "This is a test brick wall pin to demonstrate the new icon.",
+      type: "brick-wall",
+      district: "Nieuw-West", // Use exact region name
+      latitude: 52.377354,
+      longitude: 4.823076,
+      image_url: "",
+      address: "Test Location",
+      openingHours: "24/7",
+      year: "2024",
+      source: "test"
+    };
+    
+    // Force unlock Nieuw-West region temporarily
+    setUnlockedRegions(prev => {
+      if (!prev.includes('Nieuw-West') && !prev.includes('New-West')) {
+        return [...prev, 'Nieuw-West', 'New-West'];
+      }
+      return prev;
+    });
+    
+    // Add to mapboxLocations
+    setMapboxLocations(prev => [...prev, testPin]);
+    setAllLocations(prev => [...prev, testPin]);
+    
+    return testPin;
+  };
+
+  // NEW: Simple test to check if BrickWallIcon works
+  window.testBrickWallIcon = () => {
+    console.log('🧱 Testing BrickWallIcon component...');
+    
+    // Check if BrickWallIcon is imported correctly
+    console.log('🔍 BrickWallIcon import check:', typeof BrickWallIcon);
+    
+    // Test the shouldUseBrickWallIcon function
+    console.log('🔍 shouldUseBrickWallIcon tests:');
+    console.log('  "brick-wall" ->', shouldUseBrickWallIcon('brick-wall'));
+    console.log('  "wall" ->', shouldUseBrickWallIcon('wall'));
+    console.log('  "legal-wall" ->', shouldUseBrickWallIcon('legal-wall'));
+    console.log('  "artwork" ->', shouldUseBrickWallIcon('artwork'));
+    
+    // Create a simple test div
+    const testDiv = document.createElement('div');
+    testDiv.style.position = 'fixed';
+    testDiv.style.top = '50px';
+    testDiv.style.left = '50px';
+    testDiv.style.zIndex = '9999';
+    testDiv.style.backgroundColor = 'white';
+    testDiv.style.padding = '10px';
+    testDiv.style.border = '2px solid red';
+    testDiv.innerHTML = '<h3>BrickWallIcon Test</h3><p>Check console for details</p>';
+    
+    document.body.appendChild(testDiv);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+      if (testDiv.parentNode) {
+        testDiv.parentNode.removeChild(testDiv);
+      }
+    }, 5000);
+    
+    return testDiv;
+  };
+
+  // Debug function specifically for Nieuw-West region
+  window.debugNieuwWest = () => {
+    console.log('🏘️ === NIEUW-WEST DEBUG ===');
+    console.log('Current requested region:', requestedRegion);
+    console.log('Current unlocked regions:', unlockedRegions);
+    
+    const nieuwWestPins = mapboxLocations.filter(loc => {
+      const locationVariants = getRegionVariants(loc.district);
+      return locationVariants.some(variant => 
+        variant.toLowerCase().includes('nieuw-west') || 
+        variant.toLowerCase().includes('new-west')
+      );
+    });
+    
+    console.log(`🏘️ Found ${nieuwWestPins.length} pins in Nieuw-West:`);
+    nieuwWestPins.forEach(pin => {
+      console.log(`  📍 "${pin.title}" - Type: "${pin.type}" - District: "${pin.district}"`);
+    });
+    
+    if (regionPinsData) {
+      const nieuwWestGeoJSON = regionPinsData.features.filter(f => {
+        const locationVariants = getRegionVariants(f.properties.region);
+        return locationVariants.some(variant => 
+          variant.toLowerCase().includes('nieuw-west') || 
+          variant.toLowerCase().includes('new-west')
+        );
+      });
+      
+      console.log(`🎨 Found ${nieuwWestGeoJSON.length} GeoJSON pins in Nieuw-West:`);
+      nieuwWestGeoJSON.forEach(pin => {
+        console.log(`  🎨 "${pin.properties.title}" - Type: "${pin.properties.type}" - Region: "${pin.properties.region}"`);
+      });
+    }
+    
+    return { nieuwWestPins, nieuwWestGeoJSON: regionPinsData?.features.filter(f => {
+      const locationVariants = getRegionVariants(f.properties.region);
+      return locationVariants.some(variant => 
+        variant.toLowerCase().includes('nieuw-west') || 
+        variant.toLowerCase().includes('new-west')
+      );
+    }) };
   };
 
   // Remove auto-unlock - only unlock purchased regions
@@ -1357,7 +1546,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                     );
                   });
                   
-                  console.log(`🎨 GeoJSON pin: "${feature.properties.title}" in "${feature.properties.region}": ${isUnlocked ? 'SHOW' : 'HIDE'}`);
+                  console.log(`🎨 GeoJSON pin: "${feature.properties.title}" in "${feature.properties.region}" (type: "${feature.properties.type}"): ${isUnlocked ? 'SHOW' : 'HIDE'}`);
                   return isUnlocked;
                 })
               }}
@@ -1375,13 +1564,17 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                     // Mapbox dataset types (capitalized)
                     'Artwork', '📍',              // Art palette emoji for artwork
                     'Souvenirs', '🛍️',           // Shop emoji for souvenirs
+                    'Shopping', '🛍️',            // Shop emoji for shopping
                     'Food & Drink', '🍽️',        // Plate emoji for food & drink
-                    'Culture Place', '🏛️',       // Classical building for culture
+                    'Culture Place', '🎭',       // Classical building for culture
+                    'Institution', '🏛️',         // Building for institutions
+                    'institution', '🏛️',         // Building for institutions (lowercase)
+                    'Instituion', '🏛️',          // Building for institutions (typo fix)
                     
                     // Local data types (lowercase)
                     'museum', '🏛️',              // Museum building
                     'artwork', '📍',             // Art palette for artwork
-                    'legal-wall', '📍',          // Pin for legal walls
+                    'legal-wall', '🧱',          // Pin for legal walls
                     'gallery', '🖼️',            // Picture frame for gallery
                     
                     // Legacy/additional types
@@ -1390,6 +1583,8 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                     'restaurant', '🍽️',          // Plate for restaurant
                     'sculpture', '🗿',           // Statue for sculpture
                     'graffiti', '✨',            // Sparkle for graffiti
+                    'brick-wall', '🧱',          // Brick wall for street art walls
+                    'wall', '🧱',                // Wall for walls
                     
                     '📍'                         // Default art icon
                   ],
@@ -1454,14 +1649,10 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                   )
                 );
               });
-              console.log(`📍 General view: "${location.title}" in district "${location.district}": ${isUnlocked ? 'SHOW' : 'HIDE'} (unlocked: ${unlockedRegions.join(', ')})`);
+              console.log(`📍 General view: "${location.title}" in district "${location.district}" (type: "${location.type}"): ${isUnlocked ? 'SHOW' : 'HIDE'} (unlocked: ${unlockedRegions.join(', ')})`);
               return isUnlocked;
             })
             .map((location, index) => {
-            // Debug: Log which pins made it through the filter
-            // if (requestedRegion) {
-            //   console.log(`✅ Pin passed filter: "${location.title}" in district "${location.district}"`);
-            // }
             
             const isUnlocked = unlockedRegions.includes(location.district);
             const isDestination = navigationTarget?.id === location.id;
@@ -1474,13 +1665,16 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 // Local data types
                 case 'museum': return '🏛️';
                 case 'artwork': return '📍';
-                case 'legal-wall': return '📍';
+                case 'legal-wall': return '🧱';
                 case 'gallery': return '🖼️';
                 
                 // Mapbox dataset types (capitalized)
                 case 'souvenirs': return '🛍️';
+                case 'shopping': return '🛍️';
                 case 'food & drink': return '🍽️';
-                case 'culture place': return '🏛️';
+                case 'culture place': return '🎭';
+                case 'institution': return '🏛️';
+                case 'instituion': return '🏛️';  // Typo fix
                 
                 // Legacy/additional types
                 case 'mural': return '📍';
@@ -1489,35 +1683,19 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 case 'shop': return '🛍️';
                 case 'studio': return '🏠';
                 case 'wall': return '🧱';
+                case 'brick-wall': return '🧱';
                 
                 default: return '📍'; // Default to art icon
               }
             };
+
+  const shouldUseBrickWallIcon = (type) => {
+    const typeLower = type?.toLowerCase();
+    const shouldUse = typeLower === 'brick-wall' || typeLower === 'wall' || typeLower === 'legal-wall';
+    // console.log(`🔍 shouldUseBrickWallIcon("${type}") = ${shouldUse}`);
+    return shouldUse;
+  };
             
-            const getMarkerColor = (type) => {
-              switch(type?.toLowerCase()) {
-                // Local data types
-                case 'museum': return '#2980b9';        // Blue
-                case 'artwork': return '#e74c3c';       // Red  
-                case 'legal-wall': return '#27ae60';    // Green
-                case 'gallery': return '#8e44ad';       // Purple
-                
-                // Mapbox dataset types
-                case 'souvenirs': return '#f39c12';     // Orange
-                case 'food & drink': return '#e67e22';  // Dark orange
-                case 'culture place': return '#2980b9'; // Blue
-                
-                // Legacy/additional types
-                case 'mural': return '#e74c3c';         // Red
-                case 'sculpture': return '#8e44ad';     // Purple
-                case 'graffiti': return '#f39c12';      // Orange
-                case 'shop': return '#27ae60';          // Green
-                case 'studio': return '#e67e22';        // Dark orange
-                case 'wall': return '#95a5a6';          // Gray
-                
-                default: return '#FFD700';              // Gold default
-              }
-            };
             
             return (
               <Marker
@@ -1542,19 +1720,32 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                         position: 'relative'
                       }}
                     >
-                      <span 
-                        className="marker-icon" 
-                        style={{
+                      {shouldUseBrickWallIcon(location.type) ? (
+                        <div style={{
                           position: 'absolute',
                           top: '50%',
                           left: '50%',
                           transform: 'translate(-50%, -50%)',
-                          fontSize: '12px',
-                          lineHeight: 1
-                        }}
-                      >
-                        {getMarkerIcon(location.type)}
-                      </span>
+                          width: '28px',
+                          height: '28px'
+                        }}>
+                          <BrickWallIcon size={28} />
+                        </div>
+                      ) : (
+                        <span 
+                          className="marker-icon" 
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            fontSize: '12px',
+                            lineHeight: 1
+                          }}
+                        >
+                          {getMarkerIcon(location.type)}
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>

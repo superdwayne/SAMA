@@ -209,7 +209,7 @@ async function sendTokenEmail(email, token, region) {
   
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL || 'noreply@streetartmap.com',
+      from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
       to: [email],
       subject: 'Your Amsterdam Street Art Map Access Token',
       text: `Thank you for your purchase!\n\nYour access token for the ${region} district is:\n${token}\n\nThis token is valid for 30 days until ${expirationDate.toLocaleDateString()}.\n\nTo activate your access:\n1. Go to ${process.env.CLIENT_URL || 'http://localhost:3000'}/token\n2. Enter your email address\n3. Enter the token above\n4. Enjoy exploring Amsterdam's street art!\n\nImportant: Keep this token safe. You'll need it to access the map.\n\nIf you have any questions, please contact us at info@streetartmuseumamsterdam.com\n\nBest regards,\nAmsterdam Street Art Map Team`,
@@ -358,7 +358,7 @@ async function sendTokenEmail(email, token, region) {
 async function sendWelcomeEmail(email, region) {
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL || 'noreply@streetartmap.com',
+      from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
       to: [email],
       subject: `Welcome to Amsterdam Street Art Map - ${region} District`,
       text: `Welcome to the Amsterdam Street Art Map!

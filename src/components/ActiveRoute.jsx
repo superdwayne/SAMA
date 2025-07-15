@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getRouteLocations } from '../data/routes';
 import { streetArtLocations } from '../data/locations';
+import BrickWallIcon from './BrickWallIcon';
 import './ActiveRoute.css';
 
 const ActiveRoute = ({ route, userLocation, onNavigateToStop, onEndRoute, onNextStop }) => {
@@ -215,7 +216,7 @@ const ActiveRoute = ({ route, userLocation, onNavigateToStop, onEndRoute, onNext
                 </div>
                 <div className="stop-type">
                   {location.type === 'gallery' ? '🏛️' : 
-                   location.type === 'legal-wall' ? '🎨' : 
+                   location.type === 'legal-wall' ? <BrickWallIcon size={16} /> : 
                    location.type === 'artwork' ? '🖼️' : 
                    location.type === 'museum' ? '🏛️' : '📍'}
                 </div>

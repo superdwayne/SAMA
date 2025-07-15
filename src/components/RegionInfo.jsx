@@ -1,4 +1,5 @@
 import React from 'react';
+import BrickWallIcon from './BrickWallIcon';
 import './RegionInfo.css';
 
 const RegionInfo = ({ region, onClose, isUnlocked, onUnlock }) => {
@@ -24,7 +25,12 @@ const RegionInfo = ({ region, onClose, isUnlocked, onUnlock }) => {
                 <ul>
                   <li>📍 {region.artworkCount || 0} Artworks</li>
                   <li>🏛️ {region.galleryCount || 0} Galleries</li>
-                  <li>🎨 {region.legalWallCount || 0} Legal Walls</li>
+                  <li>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <BrickWallIcon size={16} />
+                      {region.legalWallCount || 0} Legal Walls
+                    </span>
+                  </li>
                   <li>👥 {region.artistCount || 0} Featured Artists</li>
                 </ul>
               </div>

@@ -411,7 +411,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL || 'onboarding@resend.dev',
+      from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
       to: [email],
       subject: `Your Amsterdam Street Art Map Access Link`,
       html: html

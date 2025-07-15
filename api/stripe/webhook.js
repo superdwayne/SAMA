@@ -291,7 +291,7 @@ async function sendPurchaseConfirmationEmail(email, region, baseUrl) {
     };
 
     const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL || 'admin@creativetechnologists.nl',
+      from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
       to: [email],
       subject: `🎉 Welcome to Amsterdam Street Art Map - ${region} District Access`,
       html: msg.html
