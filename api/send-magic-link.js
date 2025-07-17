@@ -220,10 +220,13 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                   <tr>
-                    <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;" class="dark-mode-header">
+                    <td width="50%" style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px; vertical-align: top;" class="dark-mode-header">
                       Street<br>
                       Art Map<br>
                       Amsterdam
+                    </td>
+                    <td width="50%" style="text-align: right; padding-bottom: 24px; vertical-align: top;">
+                      <img src="https://www.streetartmapamsterdam.nl/images/URBANITES_UNITED.png" alt="Urbanites United" style="width: 200px; height: auto; display: block; margin-left: auto;" />
                     </td>
                   </tr>
                 </table>
@@ -352,12 +355,29 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                   <tr>
                     <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
-                      Can't click the button? Copy and paste this link:
+                      Having trouble clicking the button?  Try copying and pasting this link into your browser:
                     </td>
                   </tr>
                   <tr>
                     <td style="word-break: break-all; font-size: 10px; color: #3416D8; font-family: Verdana, Arial, sans-serif; padding: 0px 0px 180px 0px">
                       <a href="${magicLinkUrl}" style="color: #3416D8; text-decoration: none; word-break: break-all; font-size: 12px;" class="dark-mode-link">${magicLinkUrl}</a>
+                    </td>
+                  </tr>
+                   <tr>
+                    <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
+                     If you have any questions or need assistance, feel free to reach out to us at <br />
+                     to reach out to us at <br />
+Answers@StreetArtMuseumAmsterdam.com
+                    </td>
+                  </tr>
+                   <tr>
+                    <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
+                    Enjoy your journey,
+                    </td>
+                  </tr>
+                   <tr>
+                    <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
+                    SAMA Crew
                     </td>
                   </tr>
                 </table>
@@ -368,36 +388,10 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                         <tr>
                           <td style="font-size: 13px; color: #000; font-family: Verdana, Arial, sans-serif;" class="dark-mode-text">
-                            © 2024 Amsterdam Street Art Map
+                            © 2025 Stichting Street Museum Amsterdam
                           </td>
                         </tr>
-                        <tr>
-                          <td style="font-size: 13px; color: #000; font-family: Verdana, Arial, sans-serif;" class="dark-mode-text">
-                            Need help? Reply to this email or contact us<br>
-                            at info@streetartmapamsterdam.com
-                          </td>
-                        </tr>
-    
-                        <tr>
-                          <td colspan="2" style="padding: 30px 0 20px 0px">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                              <tr>
-                                <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-    
-    
-                        <tr>
-                        <td style=" width: 100%; font-size: 18px; color: #000; font-family: 'PPNeueMachina-InktrapRegular', Arial, Helvetica, sans-serif;" class="dark-mode-text">
-                            Street Art <br/> Museum <br/> Amsterdam
-                          </td>
-    
-                          <td style="padding: 32px 0 0 0; text-align: left;">
-                            <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
-                          </td>
-                        </tr>
+                        
                       </table>
                     </td>
                   </tr>
@@ -413,7 +407,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
     const { data, error } = await resend.emails.send({
       from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
       to: [email],
-      subject: `Your Amsterdam Street Art Map Access Link`,
+      subject: `Thank You for Your Purchase - Your Map Access is Now Active`,
       html: html
     });
 
