@@ -220,7 +220,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                 
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                   <tr>
-                    <td width="50%" style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px; vertical-align: top;" class="dark-mode-header">
+                    <td width="50%" style="font-size: 30px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px; vertical-align: top;" class="dark-mode-header">
                       Street<br>
                       Art Map<br>
                       Amsterdam
@@ -231,61 +231,27 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                   </tr>
                 </table>
     
-                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                  <tr>
-                    <td style=" font-size: 16px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;" class="dark-mode-text">
-                      Your access link is ready!
-                    </td>
-                  </tr>
-                </table>
-    
-                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                  <tr>
-                    <td style="padding: 20px 0;">
-                      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                        <tr>
-                          <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
     
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                   <tr>
                     <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
-                      Welcome Back!
+                      Dear Street Art Explorer,
                     </td>
                   </tr>
                   <tr>
                     <td style="color: #000; font-family: Verdana, Arial, sans-serif;" class="dark-mode-text">
-                      We found your purchase history!
+                     Thank you for your purchase!
                     </td>
                   </tr>
                   <tr>
                     <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif;" class="dark-mode-text">
-                      You have access to ${regions.length} region${regions.length > 1 ? 's' : ''}: ${regions.join(', ')}.
+                      Your access to the ${regions.length > 1 ? 's' : ''}: ${regions.join(', ')} district is now active. We’re excited to have you explore the area through the lens of street art and
+discover the stories that shape this vibrant part of Amsterdam.
                     </td>
                   </tr>
                 </table>
     
-                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                  <tr>
-                    <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, Helvetica, sans-serif; padding: 24px 0 0 0;" class="dark-mode-text">
-                      Your Accessible Regions:
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: 500; font-size: 13px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 4px 0;" class="dark-mode-text">
-                      ${regions.join(', ')}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding: 4px 0;" class="dark-mode-text">
-                      You purchased ${purchaseData.purchaseCount} access${purchaseData.purchaseCount > 1 ? 'es' : ''} total.
-                    </td>
-                  </tr>
-                </table>
+               
     
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                   <tr>
@@ -306,7 +272,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                       <table cellpadding="0" cellspacing="0" border="0" role="presentation">
                         <tr>
                           <td style="background-color: #3416D8;" class="dark-mode-button-cell">
-                            <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 10px 32px; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;" class="dark-mode-button-link">Access My Map Now</a>
+                            <a href="${magicLinkUrl}" style="display: inline-block; background-color: #3416D8; color: #ffffff !important; text-decoration: none; padding: 10px 32px; border-radius: 8px; font-size: 17px; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;" class="dark-mode-button-link">Enter the Street Art Map</a>
                           </td>
                         </tr>
                       </table>
@@ -359,7 +325,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                     </td>
                   </tr>
                   <tr>
-                    <td style="word-break: break-all; font-size: 10px; color: #3416D8; font-family: Verdana, Arial, sans-serif; padding: 0px 0px 180px 0px">
+                    <td style="word-break: break-all; font-size: 10px; color: #3416D8; font-family: Verdana, Arial, sans-serif; padding: 0px 0px 0px 0px">
                       <a href="${magicLinkUrl}" style="color: #3416D8; text-decoration: none; word-break: break-all; font-size: 12px;" class="dark-mode-link">${magicLinkUrl}</a>
                     </td>
                   </tr>
@@ -391,10 +357,27 @@ Answers@StreetArtMuseumAmsterdam.com
                             © 2025 Stichting Street Museum Amsterdam
                           </td>
                         </tr>
-                        
                       </table>
                     </td>
                   </tr>
+                   <tr>
+                      <td colspan="2" style="padding: 30px 0 20px 0px">
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                          <tr>
+                            <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                    <td style=" width: 100%; font-size: 18px; color: #000; font-family: 'PPNeueMachina-InktrapRegular', Arial, Helvetica, sans-serif;" class="dark-mode-text">
+                        Street Art <br/> Museum <br/> Amsterdam
+                      </td>
+
+                      <td style="padding: 32px 0 0 0; text-align: left;">
+                        <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
+                      </td>
+                    </tr>
                 </table>
               </td>
             </tr>
@@ -405,7 +388,7 @@ Answers@StreetArtMuseumAmsterdam.com
 
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
+      from: process.env.SENDER_EMAIL || 'Answers@StreetArtMuseumAmsterdam.com',
       to: [email],
       subject: `Thank You for Your Purchase - Your Map Access is Now Active`,
       html: html
