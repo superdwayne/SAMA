@@ -388,7 +388,7 @@ Answers@StreetArtMuseumAmsterdam.com
 
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL || 'Answers@StreetArtMuseumAmsterdam.com',
+      from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
       to: [email],
       subject: `Thank You for Your Purchase - Your Map Access is Now Active`,
       html: html
