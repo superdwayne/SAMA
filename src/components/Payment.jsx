@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { trackPaymentEvent, trackRegionInteraction, trackUserJourney } from '../utils/analytics';
-import { fetchPrice } from '../utils/api';
+import { fetchPrice as fetchPriceFromAPI } from '../utils/api';
 import './Payment.css';
 
 const Payment = ({ setUnlockedRegions }) => {
@@ -103,7 +103,7 @@ const Payment = ({ setUnlockedRegions }) => {
         
         if (priceId) {
           try {
-            const priceData = await fetchPrice(priceId);
+            const priceData = await fetchPriceFromAPI(priceId);
             console.log('💰 Payment component - Price data received:', priceData);
             setPrice(priceData);
           } catch (error) {
