@@ -332,8 +332,7 @@ discover the stories that shape this vibrant part of Amsterdam.
                    <tr>
                     <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
                      If you have any questions or need assistance, feel free to reach out to us at <br />
-                     to reach out to us at <br />
-Answers@StreetArtMuseumAmsterdam.com
+                     to reach out to us at <b>Answers@StreetArtMuseumAmsterdam.com</b>
                     </td>
                   </tr>
                    <tr>
@@ -375,7 +374,7 @@ Answers@StreetArtMuseumAmsterdam.com
                       </td>
 
                       <td style="padding: 32px 0 0 0; text-align: left;">
-                        <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
+                        <img src="images/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
                       </td>
                     </tr>
                 </table>
