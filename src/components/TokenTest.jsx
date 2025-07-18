@@ -7,6 +7,7 @@ const TokenTest = ({ setUnlockedRegions }) => {
   const [generatedToken, setGeneratedToken] = useState('');
   const [testResults, setTestResults] = useState(null);
   const [loading, setLoading] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
   const regions = [
     'North', 'South', 'East', 'West', 
@@ -17,7 +18,7 @@ const TokenTest = ({ setUnlockedRegions }) => {
   const generateTestToken = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/test/generate-token', {
+      const response = await fetch(`${API_URL}/test/generate-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ const TokenTest = ({ setUnlockedRegions }) => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/token/validate', {
+      const response = await fetch(`${API_URL}/token/validate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +114,7 @@ const TokenTest = ({ setUnlockedRegions }) => {
       // Step 1: Generate token (simulating payment)
       console.log('🎯 Step 1: Simulating payment and token generation...');
       
-      const generateResponse = await fetch('http://localhost:3001/api/test/generate-token', {
+      const generateResponse = await fetch(`${API_URL}/test/generate-token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, region }),
@@ -135,7 +136,7 @@ const TokenTest = ({ setUnlockedRegions }) => {
       // Step 3: Validate token (simulating customer activation)
       console.log('🔑 Step 3: Customer activating token...');
       
-      const validateResponse = await fetch('http://localhost:3001/api/token/validate', {
+      const validateResponse = await fetch(`${API_URL}/token/validate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, email }),

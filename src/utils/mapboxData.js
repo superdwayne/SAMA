@@ -8,17 +8,17 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 // Region-specific dataset IDs
 const REGION_DATASETS = {
-  'Centre': 'cmcut1t446aqw1lljnelbo105', // New Center dataset
+  'Centre': 'cmcut1t446aqw1lljnelbo105', // Centre dataset
   'Center': 'cmcut1t446aqw1lljnelbo105', // Alternative spelling
   'Centrum': 'cmcut1t446aqw1lljnelbo105', // Dutch name for Center
-  'Noord': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
-  'North': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
-  'East': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
-  'Nieuw-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // New Nieuw-West specific dataset
+  'Noord': 'cmd8pa31s0z4o1nqopxbxt8ob', // North dataset
+  'North': 'cmd8pa31s0z4o1nqopxbxt8ob', // Alternative spelling
+  'East': 'cmd8p7zbx01hp1ts22egpc8gj', // East dataset
+  'Nieuw-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // Nieuw-West specific dataset
   'New-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // Alternative spelling
-  'West': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
-  'South': 'cmcut1t446aqw1lljnelbo105', // TEMP: Using Centre dataset until proper dataset is created
-  'South-East': 'cmcut1t446aqw1lljnelbo105' // TEMP: Using Centre dataset until proper dataset is created
+  'West': 'cmd8p91sz2zh71opaktguag9b', // West dataset
+  'South': 'cmd8paqs41srl1nqe0oqxmvjg', // South dataset
+  'South-East': 'cmd8p9ju32k3h1nns36c6ugbv' // South-East dataset
 };
 
 // In-memory cache for already-fetched datasets (per region)
@@ -54,8 +54,8 @@ export const fetchMapboxDataset = async (specificRegion = null) => {
       console.log('🔄 Fetching locations from all region datasets...');
       
       for (const [region, datasetId] of Object.entries(REGION_DATASETS)) {
-        // Skip duplicates (Center/Centre and New-West/Nieuw-West use same datasets)
-        if (region === 'Center' || region === 'North' || region === 'New-West') continue;
+        // Skip duplicates (alternative spellings that use the same dataset)
+        if (region === 'Center' || region === 'New-West') continue;
         
         try {
           const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${datasetId}/features?access_token=${MAPBOX_TOKEN}`);
@@ -259,6 +259,36 @@ export const DATASET_INFO = {
     editUrl: 'https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105',
     tileset: 'sama-map.cmcut1t446aqw1lljnelbo105-2vy9x'
   },
+  Noord: {
+    id: 'cmd8pa31s0z4o1nqopxbxt8ob',
+    name: 'Amsterdam Street Art - Noord District',
+    editUrl: 'https://studio.mapbox.com/datasets/cmd8pa31s0z4o1nqopxbxt8ob'
+  },
+  North: {
+    id: 'cmd8pa31s0z4o1nqopxbxt8ob',
+    name: 'Amsterdam Street Art - North District (alias for Noord)',
+    editUrl: 'https://studio.mapbox.com/datasets/cmd8pa31s0z4o1nqopxbxt8ob'
+  },
+  East: {
+    id: 'cmd8p7zbx01hp1ts22egpc8gj',
+    name: 'Amsterdam Street Art - East District',
+    editUrl: 'https://studio.mapbox.com/datasets/cmd8p7zbx01hp1ts22egpc8gj'
+  },
+  West: {
+    id: 'cmd8p91sz2zh71opaktguag9b',
+    name: 'Amsterdam Street Art - West District',
+    editUrl: 'https://studio.mapbox.com/datasets/cmd8p91sz2zh71opaktguag9b'
+  },
+  South: {
+    id: 'cmd8paqs41srl1nqe0oqxmvjg',
+    name: 'Amsterdam Street Art - South District',
+    editUrl: 'https://studio.mapbox.com/datasets/cmd8paqs41srl1nqe0oqxmvjg'
+  },
+  'South-East': {
+    id: 'cmd8p9ju32k3h1nns36c6ugbv',
+    name: 'Amsterdam Street Art - South-East District',
+    editUrl: 'https://studio.mapbox.com/datasets/cmd8p9ju32k3h1nns36c6ugbv'
+  },
   'Nieuw-West': {
     id: 'cmcxrlelg0rjy1mrxtpa0coq1',
     name: 'Amsterdam Street Art - Nieuw-West District',
@@ -272,8 +302,8 @@ export const DATASET_INFO = {
     tileset: 'sama-map.cmcxrlelg0rjy1mrxtpa0coq1-722ch'
   },
   default: {
-    id: 'cmcqcjc7f0nm71no2kwuyzgdb',
-    name: 'Amsterdam Street Art Locations (Other Regions)',
-    editUrl: 'https://studio.mapbox.com/datasets/cmcqcjc7f0nm71no2kwuyzgdb'
+    id: 'cmcut1t446aqw1lljnelbo105',
+    name: 'Amsterdam Street Art - Centre District (default)',
+    editUrl: 'https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105'
   }
 };

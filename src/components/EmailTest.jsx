@@ -20,7 +20,8 @@ const EmailTest = () => {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/email/test', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const response = await fetch(`${API_URL}/email/test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +49,8 @@ const EmailTest = () => {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/email/send-token', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const response = await fetch(`${API_URL}/email/send-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

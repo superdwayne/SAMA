@@ -1,6 +1,7 @@
 import React from 'react';
 import QRCode from 'qrcode.react';
 import BrickWallIcon from './BrickWallIcon';
+import RestaurantIcon from './RestaurantIcon';
 import './MapLegend.css';
 
 const MapLegend = ({ baseUrl = 'https://amsterdamstreetart.vercel.app' }) => {
@@ -49,6 +50,12 @@ const MapLegend = ({ baseUrl = 'https://amsterdamstreetart.vercel.app' }) => {
             <div className="icon-item">
               <span className="icon">🎬</span>
               <span className="icon-label">Cinema</span>
+            </div>
+            <div className="icon-item">
+              <span className="icon">
+                <RestaurantIcon size={16} />
+              </span>
+              <span className="icon-label">Restaurant</span>
             </div>
           </div>
         </div>

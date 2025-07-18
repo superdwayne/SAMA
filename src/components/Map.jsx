@@ -19,6 +19,7 @@ import MobileHeader from './MobileHeader';
 import RecenterButton from './RecenterButton';
 import BrickWallIcon from './BrickWallIcon';
 import ShoppingBagIcon from './ShoppingBagIcon';
+import RestaurantIcon from './RestaurantIcon';
 import { amsterdamRegions } from '../data/regions';
 import { streetArtLocations } from '../data/locations';
 import { fetchMapboxDataset, listAvailableDatasets, testDatasetId } from '../utils/mapboxData';
@@ -339,11 +340,11 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   window.testAllDatasets = async () => {
     const datasets = {
       'Centre': 'cmcut1t446aqw1lljnelbo105',
-      'Noord': 'cmcqcjc7f0nm71no2kwuyzgdb',
-      'East': 'cmcqcjc7f0nm71no2kwuyzgdb', 
-      'West': 'cmcqcjc7f0nm71no2kwuyzgdb',
-      'South': 'cmcqcjc7f0nm71no2kwuyzgdb',
-      'South-East': 'cmcqcjc7f0nm71no2kwuyzgdb',
+      'Noord': 'cmd8pa31s0z4o1nqopxbxt8ob',
+      'East': 'cmd8p7zbx01hp1ts22egpc8gj', 
+      'West': 'cmd8p91sz2zh71opaktguag9b',
+      'South': 'cmd8paqs41srl1nqe0oqxmvjg',
+      'South-East': 'cmd8p9ju32k3h1nns36c6ugbv',
       'Nieuw-West': 'cmcxrlelg0rjy1mrxtpa0coq1'
     };
 
@@ -393,6 +394,22 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
     
     console.log('🔒 All regions are now locked');
     return [];
+  };
+
+  // Debug function to test restaurant icon
+  window.testRestaurantIcon = () => {
+    console.log('🍽️ Testing restaurant icon functionality...');
+    console.log('shouldUseRestaurantIcon("Food & Drink"):', shouldUseRestaurantIcon('Food & Drink'));
+    console.log('shouldUseRestaurantIcon("restaurant"):', shouldUseRestaurantIcon('restaurant'));
+    console.log('shouldUseRestaurantIcon("cafe"):', shouldUseRestaurantIcon('cafe'));
+    console.log('shouldUseRestaurantIcon("dining"):', shouldUseRestaurantIcon('dining'));
+    console.log('shouldUseRestaurantIcon("artwork"):', shouldUseRestaurantIcon('artwork'));
+    
+    // Check if any current locations use restaurant types
+    const restaurantLocations = mapboxLocations.filter(loc => shouldUseRestaurantIcon(loc.type));
+    console.log(`📍 Found ${restaurantLocations.length} restaurant locations:`, restaurantLocations);
+    
+    return restaurantLocations;
   };
 
   // Debug function to show all pin districts (you can call this in browser console)
@@ -1718,7 +1735,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                 // Mapbox dataset types (capitalized)
                 case 'souvenirs': return '🛍️';
                 case 'shopping': return '🛍️';
-                case 'food & drink': return '🍽️';
+                case 'food & drink': return '🍽️'; // Will be handled by RestaurantIcon component
                 case 'culture place': return '🎭';
                 case 'institution': return '🏛️';
                 case 'instituion': return '🏛️';  // Typo fix
@@ -1746,6 +1763,12 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   const shouldUseShoppingBagIcon = (type) => {
     const typeLower = type?.toLowerCase();
     const shouldUse = typeLower === 'shopping' || typeLower === 'shop' || typeLower === 'souvenirs';
+    return shouldUse;
+  };
+
+  const shouldUseRestaurantIcon = (type) => {
+    const typeLower = type?.toLowerCase();
+    const shouldUse = typeLower === 'food & drink' || typeLower === 'restaurant' || typeLower === 'cafe' || typeLower === 'dining';
     return shouldUse;
   };
             
@@ -1794,6 +1817,17 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
                           height: '28px'
                         }}>
                           <ShoppingBagIcon size={28} />
+                        </div>
+                      ) : shouldUseRestaurantIcon(location.type) ? (
+                        <div style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          width: '32px',
+                          height: '32px'
+                        }}>
+                          <RestaurantIcon size={32} />
                         </div>
                       ) : (
                         <span 
