@@ -5,7 +5,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs/promises');
-const tokensPath = path.join(process.cwd(), 'tokens.json');
+
 
 // Function to track API usage with Stripe meter
 async function trackAPIUsage(eventName = 'api_requests', value = 1) {
@@ -73,11 +73,9 @@ app.post('/api/stripe/webhook', async (req, res) => {
     const session = event.data.object;
     
     const customerEmail = session.customer_details?.email || session.customer_email;
-    const accessToken = session.metadata?.access_token;
     let region = session.metadata?.region;
     
     console.log('📧 Customer email:', customerEmail);
-    console.log('🔑 Access token from metadata:', accessToken);
     console.log('🗺️ Region from session metadata:', region);
     
     // If no metadata on session, check if this came from a payment link
@@ -86,105 +84,31 @@ app.post('/api/stripe/webhook', async (req, res) => {
         console.log('🔗 Session came from payment link, fetching metadata...');
         const paymentLink = await stripe.paymentLinks.retrieve(session.payment_link);
         console.log('🔍 Payment link metadata:', JSON.stringify(paymentLink.metadata, null, 2));
-        region = paymentLink.metadata?.region || 'Center';
-        
-        // Log additional metadata for debugging
-        console.log('🔍 Payment link source:', paymentLink.metadata?.source);
-        console.log('🔍 Payment link auto_generate_token:', paymentLink.metadata?.auto_generate_token);
+        region = paymentLink.metadata?.region || 'Centre';
       } catch (error) {
         console.error('❌ Error fetching payment link metadata:', error);
       }
     }
     
-    // Check if this is a hardcoded payment link with metadata
-    const isHardcodedLink = session.metadata?.source === 'hardcoded_link' || session.metadata?.auto_generate_token === 'true' || 
-                           (session.payment_link && !accessToken); // Also detect payment links without explicit source
-    
-    // For hardcoded links with region metadata, generate token
-    if (isHardcodedLink && region && customerEmail) {
-      console.log('🔗 Hardcoded payment link detected with region:', region);
-      const newAccessToken = generateAccessToken(region);
-      
-      console.log('🔑 Generated new token:', newAccessToken);
-      console.log('🗺️ Using region:', region);
+    // Send magic link to customer
+    if (customerEmail) {
+      console.log('🔗 Sending magic link to customer:', customerEmail);
       
       try {
-        await storeToken(newAccessToken, {
-          email: customerEmail,
-          region: region,
-          status: 'active',
-          stripeSessionId: session.id,
-          activatedAt: Date.now(),
-          createdAt: Date.now(),
-          expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000),
-          source: 'hardcoded_link'
-        });
+        await sendMagicLinkViaAPI(customerEmail);
+        console.log(`✅ Magic link sent to ${customerEmail}`);
         
-        await sendTokenEmail(customerEmail, newAccessToken, region);
-        console.log(`✅ Access token email sent to ${customerEmail} with token ${newAccessToken}`);
+        // Also send welcome email
+        if (region) {
+          await sendWelcomeEmail(customerEmail, region);
+          console.log(`✅ Welcome email sent to ${customerEmail} for ${region} region`);
+        }
         
       } catch (error) {
-        console.error('❌ Failed to process hardcoded payment:', error);
+        console.error('❌ Failed to send magic link:', error);
       }
-      
-      return res.json({received: true});
-    }
-    
-    // Fallback for completely missing metadata (legacy hardcoded links)
-    if (!accessToken && !region && customerEmail) {
-      console.log('⚠️ Legacy hardcoded link detected, using default region');
-      const newAccessToken = generateAccessToken('Centre');
-      const newRegion = 'Centre';
-      
-      try {
-        await storeToken(newAccessToken, {
-          email: customerEmail,
-          region: newRegion,
-          status: 'active',
-          stripeSessionId: session.id,
-          activatedAt: Date.now(),
-          createdAt: Date.now(),
-          expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000),
-          source: 'legacy_hardcoded_link'
-        });
-        
-        await sendTokenEmail(customerEmail, newAccessToken, newRegion);
-        console.log(`✅ Legacy payment processed - access token email sent to ${customerEmail}`);
-        
-      } catch (error) {
-        console.error('❌ Failed to process legacy payment:', error);
-      }
-      
-      return res.json({received: true});
-    }
-    
-    // Original logic for API-generated payments
-    if (!customerEmail || !accessToken || !region) {
-      console.error('❌ Missing required data for API payment');
-      return res.json({received: true});
-    }
-
-    try {
-      const tokenData = await getToken(accessToken);
-      if (!tokenData) {
-        console.error('❌ Token not found in storage:', accessToken);
-        return res.json({received: true});
-      }
-
-      await storeToken(accessToken, {
-        ...tokenData,
-        email: customerEmail,
-        status: 'active',
-        stripeSessionId: session.id,
-        activatedAt: Date.now()
-      });
-      console.log('✅ Token status updated to active');
-      
-      await sendTokenEmail(customerEmail, accessToken, region);
-      console.log(`✅ Access token email sent to ${customerEmail}`);
-      
-    } catch (error) {
-      console.error('❌ Failed to process API payment:', error);
+    } else {
+      console.error('❌ No customer email found in session');
     }
   }
 
@@ -194,165 +118,8 @@ app.post('/api/stripe/webhook', async (req, res) => {
 // Regular JSON middleware for other endpoints (must come after webhook)
 app.use(express.json());
 
-// Generate access token
-const generateAccessToken = (region) => {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const randomStr = crypto.randomBytes(6).toString('hex').toUpperCase();
-  const regionCode = region ? region.substring(0, 3).toUpperCase() : 'AMS';
-  return `${regionCode}-${timestamp}-${randomStr}`;
-};
 
-// Enhanced send email function using Resend
-async function sendTokenEmail(email, token, region) {
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + 30);
-  
-  try {
-    const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL || 'noreply@streetartmapamsterdam.nl',
-      to: [email],
-      subject: 'Your Amsterdam Street Art Map Access Token',
-      text: `Thank you for your purchase!\n\nYour access token for the ${region} district is:\n${token}\n\nThis token is valid for 30 days until ${expirationDate.toLocaleDateString()}.\n\nTo activate your access:\n1. Go to ${process.env.CLIENT_URL || 'http://localhost:3000'}/token\n2. Enter your email address\n3. Enter the token above\n4. Enjoy exploring Amsterdam's street art!\n\nImportant: Keep this token safe. You'll need it to access the map.\n\nIf you have any questions, please contact us at info@streetartmuseumamsterdam.com\n\nBest regards,\nAmsterdam Street Art Map Team`,
-      html: `<!DOCTYPE html>
-<html style="background-color: #FFFF00;">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amsterdam Street Art Map – Your Token</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono&display=swap');
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Verdana, Arial, sans-serif;
-      color: #000000;
-      line-height: 1.4;
-      background-color: #FFFF00;
-    }
-
-    table {
-      border-collapse: collapse;
-      mso-table-lspace: 0pt;
-      mso-table-rspace: 0pt;
-    }
-
-    td {
-      padding: 0;
-      vertical-align: top;
-    }
-
-  </style>
-</head>
-<body>
-  <table align="center" width="100%" style="margin: 0 auto; max-width: 600px; background-color: #FFFF00; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" role="presentation" cellspacing="0" cellpadding="0" border="0">
-    <tbody>
-      <tr>
-        <td style="padding: 40px 20px;">
-          <!-- Header -->
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
-            <tr>
-              <td style="font-size: 48px; font-weight: 900; line-height: 0.9; color: #3416D8; text-transform: uppercase; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; padding-bottom: 24px;">
-                Amsterdam<br>
-                Street<br>
-                Art Map
-              </td>
-            </tr>
-          </table>
-
-          <!-- Main content -->
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
-            <tbody>
-              <tr>
-                <td style="font-size: 24px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;">
-                  🎨 Thank you for your purchase!
-                </td>
-              </tr>
-              <tr>
-                <td style="font-size: 18px; color: #000; font-family: Verdana, Arial, sans-serif; padding: 8px 0;">
-                  Your access to the <strong>${region}</strong> district is now active.
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 20px 0;">
-                  <table cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFF00; border: 2px solid #000; border-radius: 8px;">
-                    <tr>
-                      <td style="padding: 15px; text-align: center; font-weight: bold; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif; margin: 0;">
-                        🎯 Start your street art adventure in ${region}!
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- Footer -->
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-            <tr>
-              <td style="padding-top: 48px;">
-                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                  <tr>
-                    <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
-                      © 2024 Amsterdam Street Art Map
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" style="font-size: 14px; color: #000; font-family: Verdana, Arial, sans-serif; ">
-                      Need help? Reply to this email or contact us<br>
-                      at info@streetartmapamsterdam.com
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" style="padding: 10px 0;">
-                      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                        <tr>
-                          <td style="height: 1px; background-color: #000; line-height: 1px; font-size: 1px;">&nbsp;</td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="font-size: 18px; color: #000; font-family: 'PPNeueMachina-PlainUltrabold', Arial, Helvetica, sans-serif;">
-                      Street Art <br/> Museum <br/> Amsterdam
-                    </td>
-                    <td style="padding: 32px 0 0 0; text-align: left;">
-                      <img src="https://www.streetartmapamsterdam.nl/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</body>
-</html>`
-    });
-
-    if (error) {
-      console.error('Resend email send error:', error);
-      if (process.env.NODE_ENV === 'development') {
-        console.log('DEVELOPMENT MODE - Token for', email, ':', token);
-        return { method: 'console', success: true };
-      }
-      throw error;
-    }
-
-    console.log('Email sent successfully via Resend to:', email);
-    return { method: 'resend', success: true };
-  } catch (error) {
-    console.error('Resend email send error:', error);
-    if (process.env.NODE_ENV === 'development') {
-      console.log('DEVELOPMENT MODE - Token for', email, ':', token);
-      return { method: 'console', success: true };
-    }
-    throw error;
-  }
-}
 
 // Send welcome email function using Resend
 async function sendWelcomeEmail(email, region) {
@@ -373,9 +140,9 @@ What's included in your ${region} access:
 ✓ 30 days of unlimited access
 
 Getting Started:
-1. Check your email for your access token
-2. Visit our map at ${process.env.CLIENT_URL || 'http://localhost:3000'}
-3. Enter your token to unlock the ${region} district
+1. Check your email for your magic link
+2. Click the magic link to access the map
+3. Your ${region} district will be automatically unlocked
 4. Start exploring!
 
 Tips for your street art adventure:
@@ -535,27 +302,7 @@ Questions? Reply to this email or contact info@streetartmuseumamsterdam.com`,
   }
 }
 
-async function storeToken(token, data) {
-  let tokens = {};
-  try {
-    const content = await fs.readFile(tokensPath, 'utf8');
-    tokens = JSON.parse(content);
-  } catch (err) {
-    // Ignore if file does not exist
-  }
-  tokens[token] = data;
-  await fs.writeFile(tokensPath, JSON.stringify(tokens, null, 2));
-}
 
-async function getToken(token) {
-  try {
-    const content = await fs.readFile(tokensPath, 'utf8');
-    const tokens = JSON.parse(content);
-    return tokens[token];
-  } catch (err) {
-    return null;
-  }
-}
 
 // Send welcome email endpoint (for testing)
 app.post('/api/email/send-welcome', async (req, res) => {
@@ -587,98 +334,7 @@ app.post('/api/email/send-welcome', async (req, res) => {
   }
 });
 
-// Send token email endpoint (for manual token generation)
-app.post('/api/email/send-token', async (req, res) => {
-  try {
-    const { email, region } = req.body;
-    if (!email || !region) {
-      return res.status(400).json({ error: 'Email and region are required' });
-    }
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format' });
-    }
-    // Generate token
-    const token = generateAccessToken(region);
-    // Store token
-    await storeToken(token, {
-      email,
-      region,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + (30 * 24 * 60 * 60 * 1000),
-      status: 'active',
-      activatedAt: Date.now(),
-      testToken: true
-    });
-    // Send email
-    const emailResult = await sendTokenEmail(email, token, region);
-    
-    return res.json({
-      success: true,
-      message: 'Access token sent to email successfully',
-      emailMethod: emailResult.method,
-      token: process.env.NODE_ENV === 'development' ? token : undefined
-    });
-  } catch (error) {
-    console.error('Send token email error:', error);
-    if (res.headersSent) return;
-    return res.status(500).json({
-      error: 'Failed to send email',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
-// Validate token endpoint
-app.post('/api/token/validate', async (req, res) => {
-  try {
-    const { token, email } = req.body;
-    
-    const tokenData = await getToken(token);
-    
-    if (!tokenData) {
-      return res.status(404).json({ 
-        valid: false, 
-        error: 'Token not found' 
-      });
-    }
-    
-    if (tokenData.email !== email) {
-      return res.status(403).json({ 
-        valid: false, 
-        error: 'Email does not match token' 
-      });
-    }
-    
-    const tokenStatus = tokenData.status || 'active';
-    
-    if (tokenStatus !== 'active') {
-      return res.status(402).json({ 
-        valid: false, 
-        error: 'Token not activated - payment may still be processing' 
-      });
-    }
-    
-    if (Date.now() > tokenData.expiresAt) {
-      return res.status(410).json({ 
-        valid: false, 
-        error: 'Token has expired' 
-      });
-    }
-    
-    res.json({
-      valid: true,
-      region: tokenData.region,
-      expiresAt: tokenData.expiresAt,
-      activatedAt: tokenData.activatedAt,
-      isTestToken: tokenData.testToken || false
-    });
-  } catch (error) {
-    console.error('Token validation error:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // Test webhook simulation endpoint (for development)
 app.post('/api/test/simulate-webhook', async (req, res) => {
@@ -688,46 +344,16 @@ app.post('/api/test/simulate-webhook', async (req, res) => {
     console.log('\n🧪 SIMULATING WEBHOOK WITH PROPER DATA');
     console.log('====================================');
     
-    // Generate test data like a real payment
-    const accessToken = generateAccessToken(region);
-    
-    // Store token first (like create-checkout-session does)
-    await storeToken(accessToken, {
-      region,
-      email: 'pending',
-      createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'pending',
-      stripeSessionId: 'sim_test_session_123'
-    });
-    
     console.log('Customer email:', email);
-    console.log('Access token:', accessToken);
     console.log('Region:', region);
     
-    // Now simulate the webhook processing
-    const tokenData = await getToken(accessToken);
-    if (!tokenData) {
-      console.error('❌ Token not found in storage:', accessToken);
-      return res.status(500).json({ error: 'Token not found' });
-    }
-
-    await storeToken(accessToken, {
-      ...tokenData,
-      email: email,
-      status: 'active',
-      stripeSessionId: 'sim_test_session_123',
-      activatedAt: Date.now()
-    });
-    console.log('✅ Token status updated to active');
-    
-    await sendTokenEmail(email, accessToken, region);
-    console.log(`✅ Access token email sent to ${email}`);
+    // Send magic link instead of token
+    await sendMagicLinkViaAPI(email);
+    console.log(`✅ Magic link sent to ${email}`);
     
     res.json({
       success: true,
-      message: 'Webhook simulation completed',
-      accessToken: accessToken,
+      message: 'Webhook simulation completed - magic link sent',
       email: email,
       region: region
     });
@@ -794,8 +420,6 @@ app.post('/api/create-checkout-session', async (req, res) => {
 
   if (!region) return res.status(400).json({ error: 'Region is required' });
 
-  const accessToken = generateAccessToken(region);
-
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -803,32 +427,23 @@ app.post('/api/create-checkout-session', async (req, res) => {
       mode: 'payment',
       success_url: `${process.env.FRONTEND_URL}/thank-you`,
       cancel_url: `${process.env.FRONTEND_URL}`,
-      metadata: { access_token: accessToken, region },
+      metadata: { region },
       payment_intent_data: {
-        metadata: { access_token: accessToken, region }
+        metadata: { region }
       },
       custom_text: {
-        submit: { message: 'Your access token will be included in your receipt email' }
+        submit: { message: 'Your magic link will be sent to your email after payment' }
       },
       invoice_creation: {
         enabled: true,
         invoice_data: {
-          description: `Access to ${region} Street Art Map - Your token: ${accessToken}`,
-          custom_fields: [{ name: 'Access Token', value: accessToken }]
+          description: `Access to ${region} Street Art Map - Magic link will be sent via email`,
+          custom_fields: [{ name: 'Access Method', value: 'Magic Link' }]
         }
       }
     });
 
-    await storeToken(accessToken, {
-      region,
-      email: 'pending',
-      createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'pending',
-      stripeSessionId: session.id
-    });
-
-    console.log(`💳 Created checkout session for ${region}, token: ${accessToken}`);
+    console.log(`💳 Created checkout session for ${region}`);
     res.json({ url: session.url });
   } catch (err) {
     console.error('Error creating checkout session:', err);

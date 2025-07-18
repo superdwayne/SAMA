@@ -53,7 +53,7 @@ const StripePayment = ({ onClose }) => {
             <span className="amount">19.99</span>
             <span className="period">one-time</span>
           </div>
-          <p className="price-note">One-time payment • 1 year access • Token sent via email</p>
+          <p className="price-note">One-time payment • 1 year access • Magic link sent via email</p>
         </div>
 
         <button 
@@ -66,12 +66,12 @@ const StripePayment = ({ onClose }) => {
         <div className="security-badges">
           <span>🔒 SSL Secured</span>
           <span>💳 Stripe Protected</span>
-          <span>📧 Token via Email</span>
+                          <span>📧 Magic Link via Email</span>
         </div>
 
         <p className="terms">
           By purchasing, you agree to our terms of service. 
-          No subscription required. You'll receive your unique access token via email.
+                      No subscription required. You'll receive your magic link via email.
         </p>
       </div>
     </div>

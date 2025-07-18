@@ -20,8 +20,8 @@ const EmailTest = () => {
     setResult(null);
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-    const response = await fetch(`${API_URL}/email/test`, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    const response = await fetch(`${API_URL}/api/email/test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,14 +43,14 @@ const EmailTest = () => {
     }
   };
 
-  const sendAccessToken = async () => {
+  const sendMagicLink = async () => {
     setLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-    const response = await fetch(`${API_URL}/email/send-token`, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${API_URL}/api/send-magic-link`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const EmailTest = () => {
       if (response.ok) {
         setResult(data);
       } else {
-        setError(data.error || 'Failed to send access token');
+        setError(data.error || 'Failed to send magic link');
       }
     } catch (err) {
       setError('Network error: ' + err.message);
@@ -129,11 +129,11 @@ const EmailTest = () => {
           </button>
           
           <button 
-            onClick={sendAccessToken}
+            onClick={sendMagicLink}
             disabled={!email || !region || loading}
-            className="token-button"
+            className="magic-link-button"
           >
-            {loading ? '⏳ Sending...' : '🗝️ Send Access Token'}
+            {loading ? '⏳ Sending...' : '🔗 Send Magic Link'}
           </button>
         </div>
 
@@ -142,9 +142,7 @@ const EmailTest = () => {
             <h3>✅ Success!</h3>
             <p><strong>Message:</strong> {result.message}</p>
             <p><strong>Method:</strong> {result.method || result.emailMethod}</p>
-            {result.token && (
-              <p><strong>Token (Dev Only):</strong> <code>{result.token}</code></p>
-            )}
+
           </div>
         )}
 
@@ -159,7 +157,7 @@ const EmailTest = () => {
           <h3>📋 Instructions:</h3>
           <ul>
             <li><strong>Test Email:</strong> Sends a sample email to verify email service works</li>
-            <li><strong>Access Token:</strong> Generates and sends a real access token for the selected region</li>
+            <li><strong>Magic Link:</strong> Generates and sends a magic link for the selected region</li>
             <li><strong>SendGrid:</strong> Uses SendGrid API (requires SENDGRID_API_KEY in .env)</li>
             <li><strong>Nodemailer:</strong> Uses Gmail SMTP (requires EMAIL_USER and EMAIL_PASS in .env)</li>
           </ul>

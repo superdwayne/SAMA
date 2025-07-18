@@ -9,7 +9,8 @@ const UnlockPrompt = ({ region, onUnlock, onClose }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/create-checkout-session`, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${API_URL}/api/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ region: region.name }),
@@ -82,7 +83,7 @@ const UnlockPrompt = ({ region, onUnlock, onClose }) => {
           <p className="or-text">Or</p>
           <button className="text-button request-magic-link" onClick={() => {
             // Navigate to magic link request
-            window.location.href = '/token';
+            window.location.href = '/activate';
           }}>
             🔗 Already purchased? Request Magic Link
           </button>

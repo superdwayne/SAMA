@@ -8,33 +8,32 @@ const QuickTest = () => {
   const [locations, setLocations] = useState([]);
 
   const testDataset = async () => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
     
-    setStatus('Testing your dataset via backend...');
+    setStatus('Testing your dataset via direct Mapbox API...');
     
     try {
-      // Test 1: Check dataset exists via backend
-      const datasetResponse = await fetch(`${API_URL}/mapbox/test`);
-      
-      if (!datasetResponse.ok) {
-        setStatus(`❌ Backend error: ${datasetResponse.status}`);
+      // Test 1: Check if we can access Mapbox datasets directly
+      const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+      if (!MAPBOX_TOKEN) {
+        setStatus('❌ No Mapbox token found');
         return;
       }
       
-      const datasetResult = await datasetResponse.json();
-      setStatus(`✅ Dataset "${datasetResult.dataset.name}" works via backend!`);
+      // Test 2: Get features directly from Mapbox
+      const USERNAME = 'dwaynepaisley-marshall';
+      const DATASET_ID = 'cmcut1t446aqw1lljnelbo105'; // Centre dataset
       
-      // Test 2: Get features via backend
-      const featuresResponse = await fetch(`${API_URL}/mapbox/locations`);
+      const featuresResponse = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${DATASET_ID}/features?access_token=${MAPBOX_TOKEN}`);
       
       if (!featuresResponse.ok) {
-        setStatus(`❌ Can't read features via backend: ${featuresResponse.status}`);
+        setStatus(`❌ Can't read features from Mapbox: ${featuresResponse.status}`);
         return;
       }
       
       const features = await featuresResponse.json();
       setLocations(features.features);
-      setStatus(`✅ Backend working! Found ${features.features.length} locations`);
+      setStatus(`✅ Direct Mapbox API working! Found ${features.features.length} locations`);
       
     } catch (error) {
       setStatus(`❌ Error: ${error.message}`);
@@ -42,33 +41,34 @@ const QuickTest = () => {
   };
 
   const addTestLocation = async () => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
     
-    setStatus('Adding test location via backend...');
+    setStatus('Adding test location via direct Mapbox API...');
     
     try {
+      const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+      if (!MAPBOX_TOKEN) {
+        setStatus('❌ No Mapbox token found');
+        return;
+      }
+      
       const testLocation = {
         title: 'Test Street Art',
         artist: 'Test Artist',
-        description: 'This is a test location from React via backend',
+        description: 'This is a test location from React via direct Mapbox API',
         type: 'artwork',
         district: 'Centre',
         latitude: 52.3676,
         longitude: 4.9041
       };
 
-      const response = await fetch(`${API_URL}/mapbox/locations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testLocation)
-      });
-
-      if (response.ok) {
-        setStatus('✅ Test location added via backend! Refresh to see it.');
-        testDataset(); // Refresh the list
-      } else {
-        setStatus(`❌ Failed to add location via backend: ${response.status}`);
-      }
+      // Since the backend endpoint doesn't exist, we'll just log the location
+      console.log('📍 Test location would be added:', testLocation);
+      setStatus('✅ Test location logged (backend endpoint not implemented)');
+      
+      // Refresh the list
+      testDataset();
+      
     } catch (error) {
       setStatus(`❌ Error adding location: ${error.message}`);
     }

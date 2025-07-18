@@ -38,7 +38,7 @@ const Success = () => {
             ✅ Your order is complete!
           </h2>
           <p style={{ color: '#155724', fontSize: '18px', margin: 0 }}>
-            Check your email for your unique access token
+            Check your email for your magic link to access the map
           </p>
         </div>
         
@@ -58,9 +58,9 @@ const Success = () => {
             lineHeight: '1.8',
             paddingLeft: '20px'
           }}>
-            <li>You'll receive an email with your unique access token</li>
+            <li>You'll receive an email with your magic link</li>
             <li>The email includes step-by-step instructions</li>
-            <li>Use the token to unlock your purchased region(s)</li>
+            <li>Click the magic link to unlock your purchased region(s)</li>
             <li>Your access is valid for 1 full year</li>
           </ol>
         </div>

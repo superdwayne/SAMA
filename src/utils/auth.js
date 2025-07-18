@@ -1,36 +1,11 @@
-// Updated authentication utilities with strict region locking
-
-// Token structure: {token: string, expiresAt: timestamp, regions: array, email: string}
-export const checkAccessToken = async () => {
-  try {
-    const tokenData = localStorage.getItem('streetArtMapTokenData');
-    
-    if (!tokenData) {
-      return false;
-    }
-    
-    const data = JSON.parse(tokenData);
-    const now = Date.now();
-    
-    // Check if token has expired
-    if (now > data.expiresAt) {
-      // Token expired, clear all access
-      clearAccess();
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('Error checking access token:', error);
-    return false;
-  }
-};
+// Magic link authentication utilities
 
 export const validateMagicLink = async (magicToken) => {
   try {
     console.log('🔍 Validating magic link token...');
     
-    const response = await fetch('/api/validate-magic-link', {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    const response = await fetch(`${API_URL}/api/verify-magic-link`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -73,82 +48,6 @@ export const validateMagicLink = async (magicToken) => {
       valid: false, 
       error: 'Network error during validation'
     };
-  }
-};
-
-export const validateAccessToken = async (token) => {
-  try {
-    // Check if we have a magic link token in the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const magicToken = urlParams.get('magic');
-    
-    if (magicToken) {
-      console.log('🔗 Found magic link token in URL');
-      
-      // Validate magic link
-      const magicResult = await validateMagicLink(magicToken);
-      
-      if (magicResult.valid) {
-        // Clean up URL
-        const url = new URL(window.location);
-        url.searchParams.delete('magic');
-        window.history.replaceState({}, document.title, url.toString());
-        
-        return magicResult;
-      } else {
-        return { valid: false, error: magicResult.error };
-      }
-    }
-    
-    // Fallback to regular token validation
-    if (process.env.NODE_ENV === 'production' || window.location.hostname !== 'localhost') {
-      try {
-        const response = await fetch('/api/validate-token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        const result = await response.json();
-        
-        if (response.ok && result.success) {
-          return { 
-            valid: true, 
-            data: {
-              token,
-              expiresAt: new Date(result.expiresAt).getTime(),
-              regions: result.regions,
-              email: result.email
-            }
-          };
-        } else {
-          return { valid: false, error: result.error || 'Invalid token' };
-        }
-      } catch (apiError) {
-        console.warn('API validation failed, falling back to local validation:', apiError);
-        // Fall through to local validation
-      }
-    }
-    
-    // Local validation for development
-    if (!token || token.length < 10) {
-      return { valid: false, error: 'Invalid token format' };
-    }
-    
-    // Check if token exists in localStorage
-    const storedData = localStorage.getItem('streetArtMapTokenData');
-    if (storedData) {
-      const data = JSON.parse(storedData);
-      if (data.token === token && Date.now() <= data.expiresAt) {
-        return { valid: true, data };
-      }
-    }
-    
-    return { valid: false, error: 'Token not found or expired' };
-  } catch (error) {
-    return { valid: false, error: error.message };
   }
 };
 
@@ -264,22 +163,6 @@ function showAuthErrorMessage(error) {
   }, 8000);
 }
 
-export const saveAccessToken = (token, regions, email = null) => {
-  const tokenData = {
-    token,
-    expiresAt: Date.now() + (365 * 24 * 60 * 60 * 1000), // 1 year from now
-    regions, // Only purchased regions, no freebies
-    createdAt: Date.now(),
-    email
-  };
-  
-  localStorage.setItem('streetArtMapTokenData', JSON.stringify(tokenData));
-  if (email) {
-    localStorage.setItem('userEmail', email);
-  }
-  saveUnlockedRegions(regions); // Only purchased regions
-};
-
 export const getTokenData = () => {
   try {
     const data = localStorage.getItem('streetArtMapTokenData');
@@ -287,11 +170,6 @@ export const getTokenData = () => {
   } catch {
     return null;
   }
-};
-
-export const getAccessToken = () => {
-  const data = getTokenData();
-  return data?.token || null;
 };
 
 export const getUserEmail = () => {
@@ -353,7 +231,8 @@ export const clearAccess = () => {
 // Send magic link request
 export const requestMagicLink = async (email) => {
   try {
-    const response = await fetch('/api/send-magic-link', {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    const response = await fetch(`${API_URL}/api/send-magic-link`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

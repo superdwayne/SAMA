@@ -94,14 +94,14 @@ const ActivationPage = () => {
     if (result.data.userSession) {
       localStorage.setItem('streetArtMapSession', JSON.stringify(result.data.userSession));
       
-      const tokenData = {
+      const accessData = {
         email: result.data.email,
         expiresAt: new Date(result.data.expiresAt).getTime(),
         regions: [result.data.region],
         createdAt: Date.now(),
-        activatedViaEmail: true
+        activatedViaMagicLink: true
       };
-      localStorage.setItem('streetArtMapTokenData', JSON.stringify(tokenData));
+      localStorage.setItem('streetArtMapTokenData', JSON.stringify(accessData));
       localStorage.setItem('unlockedRegions', JSON.stringify([result.data.region]));
     }
 

@@ -49,7 +49,8 @@ export class SimpleMagicLink {
       // First check if user already has access
       const currentAccess = this.getCurrentAccess();
       
-      const response = await fetch('/api/verify-magic-link', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${API_URL}/api/verify-magic-link`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

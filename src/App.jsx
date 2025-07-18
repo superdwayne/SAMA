@@ -6,9 +6,7 @@ import Map from './components/Map';
 import { fetchMapboxDataset } from './utils/mapboxData';
 import { toOptimizedThumb, registerRegionThumb } from './utils/image';
 import Payment from './components/Payment';
-import TokenEntry from './components/TokenEntry';
 import EmailTest from './components/EmailTest';
-import TokenTest from './components/TokenTest';
 import DatasetDebug from './components/DatasetDebug';
 import QuickTest from './components/QuickTest';
 import Success from './components/Success';
@@ -17,7 +15,7 @@ import RegionDetailPage from './pages/RegionDetailPage';
 import Landing from './components/Landing';
 import NoAccessPrompt from './components/NoAccessPrompt';
 
-import { checkAccessToken, getUnlockedRegions, handleMagicLinkAuth } from './utils/auth';
+import { getUnlockedRegions, handleMagicLinkAuth } from './utils/auth';
 import './App.css';
 
 function App() {
@@ -94,14 +92,13 @@ function App() {
           setShowNoAccess(true);
         }
         
-        // Check existing access token
-        const hasAccess = await checkAccessToken();
-        if (hasAccess) {
-          const regions = getUnlockedRegions();
+        
+        // Check for existing unlocked regions
+        const regions = getUnlockedRegions();
+        if (regions.length > 0) {
           setUnlockedRegions(regions); // Only purchased regions
-          
           console.log('🔑 User has access to regions:', regions);
-          setShowNoAccess(regions.length === 0);
+          setShowNoAccess(false);
         } else {
           console.log('🔒 No existing access found - all regions locked');
           setUnlockedRegions([]); // Ensure no regions are unlocked
@@ -165,10 +162,8 @@ function App() {
           <Route path="/region/:id" element={<RegionDetailPage />} />
           <Route path="/map" element={<Map unlockedRegions={unlockedRegions} setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/payment/:region" element={<Payment setUnlockedRegions={setUnlockedRegions} />} />
-          <Route path="/token" element={<TokenEntry setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/activate" element={<ActivatePage />} />
           <Route path="/email-test" element={<EmailTest />} />
-          <Route path="/token-test" element={<TokenTest setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/debug-dataset" element={<DatasetDebug />} />
           <Route path="/quick-test" element={<QuickTest />} />
           <Route path="/success" element={<Success />} />

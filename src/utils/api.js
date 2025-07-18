@@ -1,5 +1,5 @@
 // API configuration
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 // Payment API calls
 export const createPaymentIntent = async (region, email) => {

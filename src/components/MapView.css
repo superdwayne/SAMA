@@ -376,42 +376,7 @@
   margin: 0;
 }
 
-.token-entry-button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-  backdrop-filter: blur(10px);
-}
 
-.token-entry-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
-}
-
-.token-status-badge {
-  background: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-  border: 1px solid #4caf50;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(10px);
-}
-
-.status-icon {
-  font-size: 1.1rem;
-}
 
 /* User location marker */
 .user-location-marker {
@@ -702,17 +667,7 @@
     font-size: 1rem;
   }
 
-  .token-entry-button {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    min-width: 120px;
-  }
 
-  .token-status-badge {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    min-width: 120px;
-  }
 
   .navigation-bar {
     top: 50px;
@@ -748,23 +703,7 @@
     flex-wrap: nowrap;
   }
 
-  .token-entry-button,
-  .token-status-badge {
-    flex: 1;
-    text-align: center;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  .token-status-badge .status-text {
-    display: none;
-  }
-
-  .token-status-badge .status-icon {
-    font-size: 1.2rem;
-  }
 
   /* Adjust other elements to account for fixed header */
   .navigation-bar {
