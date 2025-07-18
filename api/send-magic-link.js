@@ -374,7 +374,7 @@ discover the stories that shape this vibrant part of Amsterdam.
                       </td>
 
                       <td style="padding: 32px 0 0 0; text-align: left;">
-                        <img src="images/sama-logo.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
+                        <img src="https://www.streetartmapamsterdam.nl/images/sama-logo2.png" alt="Street Art Museum Amsterdam" style="width: 120px; height: auto; display: block;" />
                       </td>
                     </tr>
                 </table>
