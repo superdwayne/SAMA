@@ -402,7 +402,7 @@ const Landing = () => {
       <header className="landing-new-header">
         <div className="header-row">
           <div className="header-left">
-            <img src="images/sama-logo.png" alt="SAMA Logo" className="sama-logo" />
+            <img src="images/SAMA-logo-copy.png" alt="SAMA Logo" className="sama-logo" />
             <div className="header-text">
               <span className="sama-subtitle">Street Art</span>
               <span className="sama-subtitle">Museum</span>

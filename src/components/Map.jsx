@@ -38,7 +38,6 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { trackRegionInteraction, trackUserJourney, trackMapInteraction } from '../utils/analytics';
 import { toOptimizedThumb, registerRegionThumb } from '../utils/image';
-import { getCurrentLocation } from '../utils/location';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1Ijoic2FtYS1tYXAiLCJhIjoiY21hanBybnhoMGliYzJrcjlwcGFlM2N0cyJ9.HmrYtyAyvmTA7pcl9hpI9A';
 
@@ -1393,7 +1392,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
         {!isNavigating && selectedArtwork == null && (
           <div className="custom-mobile-header" style={{ background: '#EEFF00', padding: '20px 24px 0 24px' }}>
             <div className="header-left">
-              <img src="/images/sama-logo.png" onClick={() => navigate('/')} alt="SAMA Logo" className="sama-logo" />
+              <img src="/images/SAMA-logo-copy.png" onClick={() => navigate('/')} alt="SAMA Logo" className="sama-logo" />
               <div className="header-text">
                 <span className="sama-subtitle">Street Art</span>
                 <span className="sama-subtitle">Museum</span>
