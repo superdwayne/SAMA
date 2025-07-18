@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { trackPaymentEvent, trackRegionInteraction, trackUserJourney } from '../utils/analytics';
+import { fetchPrice } from '../utils/api';
 import './Payment.css';
 
 const Payment = ({ setUnlockedRegions }) => {
@@ -101,15 +102,12 @@ const Payment = ({ setUnlockedRegions }) => {
         console.log('💰 Payment component - Price ID:', priceId);
         
         if (priceId) {
-          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-          const response = await fetch(`${API_URL}/api/get-price?priceId=${priceId}`);
-          
-          if (response.ok) {
-            const priceData = await response.json();
+          try {
+            const priceData = await fetchPrice(priceId);
             console.log('💰 Payment component - Price data received:', priceData);
             setPrice(priceData);
-          } else {
-            console.error('❌ Payment component - Failed to fetch price:', response.statusText);
+          } catch (error) {
+            console.error('❌ Payment component - Failed to fetch price:', error);
             // Fallback to default price
             setPrice({ formattedPrice: '€4,99' });
           }

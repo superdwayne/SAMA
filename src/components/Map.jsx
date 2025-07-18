@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Map, { Marker, Popup, Source, Layer, NavigationControl, GeolocateControl } from 'react-map-gl';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import WelcomeTooltip from './WelcomeTooltip';
@@ -6,7 +6,7 @@ import RegionInfo from './RegionInfo';
 import ArtworkPopup from './ArtworkPopup';
 import UnlockPrompt from './UnlockPrompt';
 import NavigationPopup from './NavigationPopup';
-import TokenStatus from './TokenStatus';
+// TokenStatus component removed - using magic links instead
 import EnhancedNavigation from './EnhancedNavigation';
 import SmartNavigation from './SmartNavigation';
 import { enhancedNavigationService } from '../utils/enhancedNavigation';
@@ -25,7 +25,7 @@ import { streetArtLocations } from '../data/locations';
 import { fetchMapboxDataset, listAvailableDatasets, testDatasetId } from '../utils/mapboxData';
 import { neighborhoodDescriptions, getNeighborhoodQRUrl } from '../data/neighborhoods';
 import { artRoutes, getRouteLocations } from '../data/routes';
-import { getTokenData, getRemainingDays } from '../utils/auth';
+import { getTokenData, getRemainingDays, getUnlockedRegions, handleMagicLinkAuth } from '../utils/auth';
 import { mapboxTokenManager } from '../utils/mapboxAuth';
 import MapboxTokenSettings from './MapboxTokenSettings';
 import { magicLink } from '../utils/magic-links';
@@ -34,6 +34,11 @@ import NeighborhoodOverlay from './NeighborhoodOverlay';
 import { navigationService } from '../utils/navigation';
 import { locationService } from '../utils/location';
 import './MapView.css';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { trackRegionInteraction, trackUserJourney, trackMapInteraction } from '../utils/analytics';
+import { toOptimizedThumb, registerRegionThumb } from '../utils/image';
+import { getCurrentLocation } from '../utils/location';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1Ijoic2FtYS1tYXAiLCJhIjoiY21hanBybnhoMGliYzJrcjlwcGFlM2N0cyJ9.HmrYtyAyvmTA7pcl9hpI9A';
 
@@ -63,7 +68,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   const [navigationTarget, setNavigationTarget] = useState(null);
   const [navigationRoute, setNavigationRoute] = useState(null);
   const [isNavigating, setIsNavigating] = useState(false);
-  const [showTokenStatus, setShowTokenStatus] = useState(true);
+  // TokenStatus removed - using magic links instead
   const [enhancedNavigation, setEnhancedNavigation] = useState(null);
   const [currentNavigationStep, setCurrentNavigationStep] = useState(null);
   const [showLocationPermission, setShowLocationPermission] = useState(false);
@@ -1477,12 +1482,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
             </div>
           </div>
         )}
-        {/* Token status alert */}
-        {showTokenStatus && remainingDays <= 7 && remainingDays > 0 && (
-          <TokenStatus 
-            onRenew={() => navigate('/token')}
-          />
-        )}
+        {/* Token status removed - using magic links instead */}
 
         {/* Welcome Tooltip */}
         {/* {showWelcome && (

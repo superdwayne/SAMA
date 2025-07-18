@@ -1,5 +1,34 @@
-// API configuration
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// API utility for handling URLs in both development and production
+export const getApiUrl = (endpoint) => {
+  // In development, use the Vite proxy
+  if (import.meta.env.DEV) {
+    return `/api/${endpoint}`;
+  }
+  
+  // In production, use the full URL if provided, otherwise relative
+  const apiUrl = import.meta.env.VITE_API_URL;
+  if (apiUrl) {
+    return `${apiUrl}/api/${endpoint}`;
+  }
+  
+  // Fallback to relative URL (works with Vercel rewrites)
+  return `/api/${endpoint}`;
+};
+
+export const fetchPrice = async (priceId) => {
+  try {
+    const response = await fetch(getApiUrl(`get-price?priceId=${encodeURIComponent(priceId)}`));
+    
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error fetching price:', error);
+    throw error;
+  }
+};
 
 // Payment API calls
 export const createPaymentIntent = async (region, email) => {
