@@ -742,6 +742,52 @@ app.post('/api/test/simulate-webhook', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Get price from Stripe price ID
+app.get('/api/get-price', async (req, res) => {
+  try {
+    const { priceId } = req.query;
+    
+    console.log('🔍 Price API called with priceId:', priceId);
+    
+    if (!priceId) {
+      return res.status(400).json({ error: 'Price ID is required' });
+    }
+
+    console.log('💰 Fetching price from Stripe with ID:', priceId);
+
+    // Fetch the price directly from Stripe
+    const price = await stripe.prices.retrieve(priceId);
+    
+    console.log('📦 Price data from Stripe:', {
+      id: price.id,
+      unit_amount: price.unit_amount,
+      currency: price.currency,
+      active: price.active,
+      product: price.product
+    });
+
+    const priceData = {
+      amount: price.unit_amount,
+      currency: price.currency,
+      formattedPrice: new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: price.currency.toUpperCase(),
+        minimumFractionDigits: 2
+      }).format(price.unit_amount / 100)
+    };
+
+    console.log('💰 Final price data:', priceData);
+    res.status(200).json(priceData);
+
+  } catch (error) {
+    console.error('❌ Error fetching price:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch price from Stripe',
+      details: error.message 
+    });
+  }
+});
 app.post('/api/create-checkout-session', async (req, res) => {
   const { region } = req.body;
   const TEST_PRICE_ID = 'price_1RbnlIJ3urOr8HD7Gor4UvdG';

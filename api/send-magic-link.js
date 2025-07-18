@@ -153,7 +153,7 @@ async function checkPurchaseHistory(email) {
 async function createMagicLink(email) {
   try {
     const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+    const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 hours
     
     // Update the user with the new magic token
     const { data, error } = await supabase
@@ -226,7 +226,7 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
                       Amsterdam
                     </td>
                     <td width="50%" style="text-align: right; padding-bottom: 24px; vertical-align: top;">
-                      <img src="https://www.streetartmapamsterdam.nl/images/URBANITES_UNITED.png" alt="Urbanites United" style="width: 200px; height: auto; display: block; margin-left: auto;" />
+                      <img src="https://www.streetartmapamsterdam.nl/images/un.png" alt="Urbanites United" style="width: 200px; height: auto; display: block; margin-left: auto;" />
                     </td>
                   </tr>
                 </table>
@@ -303,14 +303,15 @@ discover the stories that shape this vibrant part of Amsterdam.
                         </tr>
                         <tr>
                           <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;" class="dark-mode-text">
-                            This magic link expires in <strong class="dark-mode-text">30 minutes</strong>
+                            This magic link expires in <strong class="dark-mode-text">48 hours</strong>
                           </td>
                         </tr>
                         <tr>
                           <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;" class="dark-mode-text">
                             • Can only be used once<br>
                             • Your access will be permanent after activation<br>
-                            • You can always request a new magic link with this email
+                            • The link is valid for <b>30 days</b>
+
                           </td>
                         </tr>
                       </table>
@@ -332,7 +333,7 @@ discover the stories that shape this vibrant part of Amsterdam.
                    <tr>
                     <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
                      If you have any questions or need assistance, feel free to reach out to us at <br />
-                     to reach out to us at <b>Answers@StreetArtMuseumAmsterdam.com</b>
+                    <b>Answers@StreetArtMuseumAmsterdam.com</b>
                     </td>
                   </tr>
                    <tr>
@@ -369,7 +370,7 @@ discover the stories that shape this vibrant part of Amsterdam.
                       </td>
                     </tr>
                     <tr>
-                    <td style=" width: 100%; font-size: 18px; color: #000; font-family: 'PPNeueMachina-InktrapRegular', Arial, Helvetica, sans-serif;" class="dark-mode-text">
+                    <td style=" width: 100%; font-size: 13px; color: #000; font-family: 'PPNeueMachina-InktrapRegular', Arial, Helvetica, sans-serif;" class="dark-mode-text">
                         Street Art <br/> Museum <br/> Amsterdam
                       </td>
 

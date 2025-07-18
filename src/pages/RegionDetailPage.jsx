@@ -86,16 +86,18 @@ const regionAliasMap = {
   'oost': 'east',
   'nieuw-west': 'nieuw-west',
   'new-west': 'nieuw-west',
-  'west': 'nieuw-west', // If you want 'west' to show Nieuw-West, otherwise add a separate region
+  'west': 'west', // Fixed: West should be its own region
   'south': 'south',
   'zuid': 'south',
-  'south-east': 'south', // If you want South-East to show South, otherwise add a separate region
-  'zuidoost': 'south',
+  'south-east': 'south-east', // Fixed: South-East should be its own region
+  'zuidoost': 'south-east',
 };
 
 const RegionDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [price, setPrice] = useState(null);
+  const [loadingPrice, setLoadingPrice] = useState(true);
   
   // Normalize the id from the URL and map aliases to canonical region id
   const normalizedId = id ? id.toLowerCase() : '';
@@ -216,14 +218,77 @@ const RegionDetailPage = () => {
     };
   }, [regionName]);
   
+  // Fetch price from Stripe
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        setLoadingPrice(true);
+        
+        // Price IDs for each region
+        const priceIds = {
+          'centre': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
+          'center': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
+          'noord': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
+          'north': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
+          'east': 'price_1RbeqUJ3urOr8HD7ElBhh5rB',
+          'nieuw-west': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
+          'new-west': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
+          'south': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
+          'zuid': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
+          'south-east': 'price_1Rbf8wJ3urOr8HD7gvLlK0aa',
+          'west': 'price_1Rbf23J3urOr8HD7gxyHwFW0'
+        };
+        
+        console.log('🔍 RegionDetailPage - Region ID:', region?.id);
+        console.log('🔍 RegionDetailPage - Region Title:', region?.title);
+        
+        const priceId = priceIds[region?.id];
+        console.log('💰 RegionDetailPage - Price ID:', priceId);
+        
+        if (priceId) {
+          const response = await fetch(`http://localhost:3001/api/get-price?priceId=${priceId}`);
+          
+          if (response.ok) {
+            const priceData = await response.json();
+            console.log('💰 RegionDetailPage - Price data received:', priceData);
+            setPrice(priceData);
+          } else {
+            console.error('❌ RegionDetailPage - Failed to fetch price:', response.statusText);
+            // Fallback to default price
+            setPrice({ formattedPrice: '€4,99' });
+          }
+        } else {
+          // Fallback to default price
+          setPrice({ formattedPrice: '€4,99' });
+        }
+      } catch (error) {
+        console.error('Error fetching price:', error);
+        // Fallback to default price
+        setPrice({ formattedPrice: '€4,99' });
+      } finally {
+        setLoadingPrice(false);
+      }
+    };
+
+    if (region) {
+      fetchPrice();
+    }
+  }, [region]);
+  
   const handleGetItNow = async () => {
     // Direct Stripe links for each region
     const stripeLinks = {
-      'centre': 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01',
-      'noord': 'https://buy.stripe.com/00w00k4nF8KQgdlgZx1oI03',
-      'east': 'https://buy.stripe.com/cNi8wQbQ70ekgdl38H1oI04',
-      'nieuw-west': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06',
-      'south': 'https://buy.stripe.com/5lObJq5YB8KQgdl16z1oI07',
+      'centre': 'https://buy.stripe.com/cNi14o5rJ8KQf9hgZx1oI08',
+      'center': 'https://buy.stripe.com/cNi14o5rJ8KQf9hgZx1oI08',
+      'noord': 'https://buy.stripe.com/00w6oI4nFf9egdl9x51oI07',
+      'north': 'https://buy.stripe.com/00w6oI4nFf9egdl9x51oI07',
+      'east': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c',
+      'nieuw-west': 'https://buy.stripe.com/00w00k8DVf9e3qzbFd1oI0a',
+      'new-west': 'https://buy.stripe.com/00w00k8DVf9e3qzbFd1oI0a',
+      'south': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c',
+      'zuid': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c',
+      'south-east': 'https://buy.stripe.com/dRmcN6cUb7GM1ir5gP1oI09',
+      'west': 'https://buy.stripe.com/fZu6oI6vNe5af9h7oX1oI0b'
     };
 
     const stripeUrl = stripeLinks[region.id];
@@ -324,7 +389,9 @@ const RegionDetailPage = () => {
             <div className="lock-icon">
               <img src="/images/unlockdis.png" alt="Locked" className="unlock-icon-img" />
             </div>
-            <div className="price-large">€4,99</div>
+            <div className="price-large">
+              {loadingPrice ? 'Loading...' : (price?.formattedPrice || '€4,99')}
+            </div>
             <div className="price-subtitle">One-time payment</div>
             <div className="price-description">
               Lifetime access to all<br/>

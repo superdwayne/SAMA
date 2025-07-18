@@ -8,6 +8,8 @@ const Payment = ({ setUnlockedRegions }) => {
   const { region } = useParams();
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [price, setPrice] = useState(null);
+  const [loadingPrice, setLoadingPrice] = useState(true);
   
   // Enable scrolling for payment page
   useEffect(() => {
@@ -44,12 +46,14 @@ const Payment = ({ setUnlockedRegions }) => {
   const regionInfo = {
     'centre': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
     'center': { artworks: 25, galleries: 3, walls: 2, artists: 15, description: 'Tourists, tags & tension.\nThe city\'s loudest gallery' },
-    'noord': { artworks: 40, galleries: 5, walls: 4, artists: 25, description: 'From shipyards to street art.\nNoord is culture unleashed' },
+    'noord': { artworks: 40, galleries: 5, walls: 4, artists: 25, description: 'From shipyards to street art.\nNorth is culture unleashed' },
     'north': { artworks: 40, galleries: 5, walls: 4, artists: 25, description: 'From shipyards to street art.\nNorth is culture unleashed' },
     'south': { artworks: 28, galleries: 4, walls: 2, artists: 20, description: 'Upscale galleries meet urban edge.\nWhere sophistication gets street smart' },
     'zuid': { artworks: 28, galleries: 4, walls: 2, artists: 20, description: 'Upscale galleries meet urban edge.\nWhere sophistication gets street smart' },
     'east': { artworks: 30, galleries: 2, walls: 3, artists: 18, description: 'East is hip, hungry and\ncovered in color' },
-    'nieuw-west': { artworks: 15, galleries: 1, walls: 3, artists: 8, description: 'Emerging street art destination\nwith fresh perspectives' }
+    'nieuw-west': { artworks: 15, galleries: 1, walls: 3, artists: 8, description: 'Emerging street art destination\nwith fresh perspectives' },
+    'south-east': { artworks: 22, galleries: 3, walls: 2, artists: 16, description: 'Where tradition meets innovation.\nA vibrant cultural crossroads' },
+    'west': { artworks: 18, galleries: 2, walls: 2, artists: 12, description: 'Historic charm meets modern creativity.\nWest Amsterdam\'s artistic soul' }
   };
   
   const info = regionInfo[region?.toLowerCase()] || regionInfo['centre'];
@@ -60,13 +64,69 @@ const Payment = ({ setUnlockedRegions }) => {
     const lower = regionStr.toLowerCase();
     if (lower === 'nieuw-west' || lower === 'new-west') return 'Nieuw-West';
     if (lower === 'centre' || lower === 'center') return 'Centre';
-    if (lower === 'noord' || lower === 'north') return 'Noord';
+    if (lower === 'noord' || lower === 'north') return 'North';
     if (lower === 'south' || lower === 'zuid') return 'South';
     if (lower === 'east' || lower === 'oost') return 'East';
+    if (lower === 'south-east' || lower === 'southeast') return 'South-East';
+    if (lower === 'west') return 'West';
     return regionStr.charAt(0).toUpperCase() + regionStr.slice(1);
   };
   
   const displayRegion = formatRegionName(region);
+  
+  // Fetch price from Stripe
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        setLoadingPrice(true);
+        
+        // Price IDs for each region
+        const priceIds = {
+          'Centre': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
+          'Center': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
+          'Noord': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
+          'North': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
+          'East': 'price_1RbeqUJ3urOr8HD7ElBhh5rB',
+          'Nieuw-West': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
+          'New-West': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
+          'South': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
+          'Zuid': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
+          'South-East': 'price_1Rbf8wJ3urOr8HD7gvLlK0aa',
+          'West': 'price_1Rbf23J3urOr8HD7gxyHwFW0'
+        };
+        
+        const priceId = priceIds[displayRegion];
+        
+        console.log('🔍 Payment component - Region:', displayRegion);
+        console.log('💰 Payment component - Price ID:', priceId);
+        
+        if (priceId) {
+          const response = await fetch(`http://localhost:3001/api/get-price?priceId=${priceId}`);
+          
+          if (response.ok) {
+            const priceData = await response.json();
+            console.log('💰 Payment component - Price data received:', priceData);
+            setPrice(priceData);
+          } else {
+            console.error('❌ Payment component - Failed to fetch price:', response.statusText);
+            // Fallback to default price
+            setPrice({ formattedPrice: '€4,99' });
+          }
+        } else {
+          // Fallback to default price
+          setPrice({ formattedPrice: '€4,99' });
+        }
+      } catch (error) {
+        console.error('Error fetching price:', error);
+        // Fallback to default price
+        setPrice({ formattedPrice: '€4,99' });
+      } finally {
+        setLoadingPrice(false);
+      }
+    };
+
+    fetchPrice();
+  }, [displayRegion]);
   
   // Track payment page view
   useEffect(() => {
@@ -99,18 +159,20 @@ const Payment = ({ setUnlockedRegions }) => {
     setProcessing(true);
     setError(null);
 
-    // Direct Stripe links for each region (with embedded metadata)
-    const stripeLinks = {
-      'Centre': 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01',
-      'Center': 'https://buy.stripe.com/5kQ8wQ4nF7GM1irgZx1oI01', // Alternative spelling
-      'Noord': 'https://buy.stripe.com/00w00k4nF8KQgdlgZx1oI03',
-      'North': 'https://buy.stripe.com/00w00k4nF8KQgdlgZx1oI03', // Alternative spelling
-      'East': 'https://buy.stripe.com/cNi8wQbQ70ekgdl38H1oI04',
-      'Nieuw-West': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06',
-      'New-West': 'https://buy.stripe.com/3cI4gA4nF3qw6CL9x51oI06', // Alternative spelling
-      'South': 'https://buy.stripe.com/5lObJq5YB8KQgdl16z1oI07',
-      'Zuid': 'https://buy.stripe.com/5lObJq5YB8KQgdl16z1oI07' // Alternative Dutch spelling
-    };
+      // Direct Stripe links for each region (with embedded metadata)
+  const stripeLinks = {
+    'Centre': 'https://buy.stripe.com/cNi14o5rJ8KQf9hgZx1oI08',
+    'Center': 'https://buy.stripe.com/cNi14o5rJ8KQf9hgZx1oI08', // Alternative spelling
+    'Noord': 'https://buy.stripe.com/00w6oI4nFf9egdl9x51oI07',
+    'North': 'https://buy.stripe.com/00w6oI4nFf9egdl9x51oI07', // Alternative spelling
+    'East': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c',
+    'Nieuw-West': 'https://buy.stripe.com/00w00k8DVf9e3qzbFd1oI0a',
+    'New-West': 'https://buy.stripe.com/00w00k8DVf9e3qzbFd1oI0a', // Alternative spelling
+    'South': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c',
+    'Zuid': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c', // Alternative Dutch spelling
+    'South-East': 'https://buy.stripe.com/dRmcN6cUb7GM1ir5gP1oI09',
+    'West': 'https://buy.stripe.com/fZu6oI6vNe5af9h7oX1oI0b'
+  };
 
     const stripeUrl = stripeLinks[displayRegion];
     
@@ -177,7 +239,9 @@ const Payment = ({ setUnlockedRegions }) => {
             <div className="lock-icon">
               <img src="/images/unlockdis.png" alt="Locked" className="unlock-icon-img" />
             </div>
-            <div className="price-large">€4,99</div>
+            <div className="price-large">
+              {loadingPrice ? 'Loading...' : (price?.formattedPrice || '€4,99')}
+            </div>
             <div className="price-subtitle">One-time payment</div>
             <div className="price-description">
               Lifetime access to all<br/>
