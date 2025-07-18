@@ -109,7 +109,7 @@ const Payment = ({ setUnlockedRegions }) => {
           } catch (error) {
             console.error('❌ Payment component - Failed to fetch price:', error);
             // Fallback to default price
-            setPrice({ formattedPrice: '€4,99' });
+            setPrice({ formattedPrice: '€4,99', fallback: true });
           }
         } else {
           // Fallback to default price
@@ -240,6 +240,11 @@ const Payment = ({ setUnlockedRegions }) => {
             </div>
             <div className="price-large">
               {loadingPrice ? 'Loading...' : (price?.formattedPrice || '€4,99')}
+              {price?.fallback && (
+                <div className="fallback-indicator">
+                  ⚠️ Using default price
+                </div>
+              )}
             </div>
             <div className="price-subtitle">One-time payment</div>
             <div className="price-description">
