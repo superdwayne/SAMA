@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { amsterdamRegions } from '../data/regions';
 import { fetchMapboxDataset } from '../utils/mapboxData';
 import { toOptimizedThumb, registerRegionThumb, getRegionThumb } from '../utils/image';
+import { fetchRegionPrice } from '../utils/pricing';
 import EmailMagicLink from '../components/EmailMagicLink';
 import BrickWallIcon from '../components/BrickWallIcon';
 import './RegionDetailPage.css';
@@ -220,60 +221,27 @@ const RegionDetailPage = () => {
   
   // Fetch price from Stripe
   useEffect(() => {
-    const fetchPrice = async () => {
+    const loadPrice = async () => {
+      if (!region) return;
+      
       try {
         setLoadingPrice(true);
+        console.log('🔍 Loading price for region:', region.id, '(', region.title, ')');
         
-        // Price IDs for each region
-        const priceIds = {
-          'centre': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
-          'center': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
-          'noord': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
-          'north': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
-          'east': 'price_1RbeqUJ3urOr8HD7ElBhh5rB',
-          'nieuw-west': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
-          'new-west': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
-          'south': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
-          'zuid': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
-          'south-east': 'price_1Rbf8wJ3urOr8HD7gvLlK0aa',
-          'west': 'price_1Rbf23J3urOr8HD7gxyHwFW0'
-        };
+        const priceData = await fetchRegionPrice(region.id);
+        setPrice(priceData);
         
-        console.log('🔍 RegionDetailPage - Region ID:', region?.id);
-        console.log('🔍 RegionDetailPage - Region Title:', region?.title);
-        
-        const priceId = priceIds[region?.id];
-        console.log('💰 RegionDetailPage - Price ID:', priceId);
-        
-        if (priceId) {
-          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-          const response = await fetch(`${API_URL}/api/get-price?priceId=${encodeURIComponent(priceId)}`);
-          
-          if (response.ok) {
-            const priceData = await response.json();
-            console.log('💰 RegionDetailPage - Price data received:', priceData);
-            setPrice(priceData);
-          } else {
-            console.error('❌ RegionDetailPage - Failed to fetch price:', response.statusText);
-            // Fallback to default price
-            setPrice({ formattedPrice: '€4,99' });
-          }
-        } else {
-          // Fallback to default price
-          setPrice({ formattedPrice: '€4,99' });
-        }
+        console.log('✅ Price loaded successfully:', priceData);
       } catch (error) {
-        console.error('Error fetching price:', error);
-        // Fallback to default price
+        console.error('❌ Failed to load price:', error);
+        // fetchRegionPrice already handles fallbacks, so this shouldn't happen
         setPrice({ formattedPrice: '€4,99' });
       } finally {
         setLoadingPrice(false);
       }
     };
 
-    if (region) {
-      fetchPrice();
-    }
+    loadPrice();
   }, [region]);
   
   const handleGetItNow = async () => {
