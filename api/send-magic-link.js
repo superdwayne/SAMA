@@ -234,18 +234,18 @@ async function sendMagicLinkEmail(email, magicLinkUrl, purchaseData) {
     
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                   <tr>
-                    <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 8px 0;" class="dark-mode-text">
-                      Dear Street Art Explorer,
+                    <td style="font-size: 16px; font-weight: bold; color: #000; font-family: Verdana, Arial, sans-serif; padding: 24px 0 10px 0;" class="dark-mode-text">
+                      Dear Street Art Explorer, 
                     </td>
                   </tr>
                   <tr>
-                    <td style="color: #000; font-family: Verdana, Arial, sans-serif;" class="dark-mode-text">
-                     Thank you for your purchase!
+                    <td style="color: #000; font-family: Verdana, Arial, sans-serif; padding-bottom: 10px;" class="dark-mode-text">
+                     Thank you for your purchase! </br>
                     </td>
                   </tr>
                   <tr>
                     <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif;" class="dark-mode-text">
-                      Your access to the ${regions.length > 1 ? 's' : ''}: ${regions.join(', ')} district is now active. We’re excited to have you explore the area through the lens of street art and
+                      Your access to ${regions.join(', ')} district${regions.length > 1 ? 's' : ''}  is now active. We're excited to have you explore the area through the lens of street art and
 discover the stories that shape this vibrant part of Amsterdam.
                     </td>
                   </tr>
