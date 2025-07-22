@@ -19,6 +19,28 @@ const generateMagicToken = () => {
   return crypto.randomBytes(32).toString('hex');
 };
 
+// Normalize region names to match expected format
+const normalizeRegionName = (region) => {
+  if (!region) return 'Centre';
+  
+  const regionMap = {
+    'west': 'West',
+    'center': 'Centre',
+    'centre': 'Centre',
+    'north': 'Noord',
+    'noord': 'Noord',
+    'south': 'South',
+    'east': 'East',
+    'south-east': 'South-East',
+    'zuidoost': 'South-East',
+    'nieuw-west': 'Nieuw-West',
+    'new-west': 'Nieuw-West'
+  };
+  
+  const normalized = regionMap[region.toLowerCase()];
+  return normalized || region; // Return original if no mapping found
+};
+
 // Store purchase in database
 async function storePurchase(session, region) {
   try {
@@ -462,22 +484,27 @@ export default async (req, res) => {
           }
         }
         
+        // Normalize region name to ensure proper capitalization
+        const normalizedRegion = normalizeRegionName(region);
+        console.log('🔧 Region normalization:', region, '→', normalizedRegion);
+        
         console.log('💳 Processing completed payment:');
         console.log('  Email:', customerEmail);
-        console.log('  Region:', region);
+        console.log('  Original Region:', region);
+        console.log('  Normalized Region:', normalizedRegion);
         console.log('  Amount:', session.amount_total);
         console.log('  Session ID:', session.id);
         
         if (customerEmail) {
-          // Store purchase in database
-          await storePurchase(session, region);
+          // Store purchase in database with normalized region
+          await storePurchase(session, normalizedRegion);
           
           // Send confirmation email with magic link
           const baseUrl = req.headers.host ? 
             `https://${req.headers.host}` : 
             'https://www.streetartmapamsterdam.nl';
           
-          await sendPurchaseConfirmationEmail(customerEmail, region, baseUrl);
+          await sendPurchaseConfirmationEmail(customerEmail, normalizedRegion, baseUrl);
           
           console.log('✅ Purchase processed successfully');
         } else {
