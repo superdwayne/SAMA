@@ -709,6 +709,18 @@
   background: #1a1ad6;
 }
 
+.region-action-btn.region-action-btn-overlay:disabled {
+  background: #2D2DF6;
+  color: #ffffff;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.region-action-btn.region-action-btn-overlay:disabled:hover {
+  background: #2D2DF6;
+  transform: translate(-50%, -50%);
+}
+
 .region-image {
   width: 100%;
   height: 100%;

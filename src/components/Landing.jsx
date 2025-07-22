@@ -16,6 +16,7 @@ const regions = [
     latitude: 52.3728,
     longitude: 4.8936,
     isFree: false,
+    comingSoon: false,
     image: '/images/CENTRE.jpg'
   },
 
@@ -27,6 +28,7 @@ const regions = [
     latitude: 52.3700,
     longitude: 4.8100,
     isFree: false,
+    comingSoon: false,
     image: '/images/NEW-WEST.JPG'
   },
 
@@ -38,6 +40,7 @@ const regions = [
     latitude: 52.3500,
     longitude: 4.8850,
     isFree: false,
+    comingSoon: false,
     image: '/images/SOUTH.jpg'
   },
 
@@ -49,6 +52,7 @@ const regions = [
     latitude: 52.3720,
     longitude: 4.8500,
     isFree: false,
+    comingSoon: false,
     image: '/images/WEST.jpg'
   },
 
@@ -60,6 +64,7 @@ const regions = [
     latitude: 52.3600,
     longitude: 4.9400,
     isFree: false,
+    comingSoon: true,
     image: '/images/EAST.jpeg'
   },
 
@@ -71,6 +76,7 @@ const regions = [
     latitude: 52.4000,
     longitude: 4.9000,
     isFree: false,
+    comingSoon: false,
     image: '/images/NORTH.jpg'
   },
 
@@ -82,6 +88,7 @@ const regions = [
     latitude: 52.3150,
     longitude: 4.9550,
     isFree: false,
+    comingSoon: true,
     image: '/images/SOUTH-EAST.jpg'
   }
 ];
@@ -325,6 +332,12 @@ const Landing = () => {
     console.log('🔓 isRegionUnlocked(region.title):', isRegionUnlocked(region.title));
     console.log('🎆 unlockedRegions:', unlockedRegions);
     
+    // Don't allow action for coming soon regions
+    if (region.comingSoon) {
+      console.log('⏳ Region coming soon:', region.title);
+      return;
+    }
+    
     if (region.isFree || isRegionUnlocked(region.title)) {
       // For free regions or unlocked regions, go to the region-specific map
       console.log('✅ Going to map for region:', region.title);
@@ -461,8 +474,9 @@ const Landing = () => {
                       <button
                         className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
+                        disabled={region.comingSoon}
                       >
-                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
+                        {region.comingSoon ? 'Coming soon' : ((region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now')}
                       </button>
                     </>
                   ) : (
@@ -481,8 +495,9 @@ const Landing = () => {
                       <button
                         className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
+                        disabled={region.comingSoon}
                       >
-                        {(region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now'}
+                        {region.comingSoon ? 'Coming soon' : ((region.isFree || isRegionUnlocked(region.title)) ? 'Open map' : 'Get it now')}
                       </button>
                     </>
                   )}
