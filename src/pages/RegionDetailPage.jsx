@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { amsterdamRegions } from '../data/regions';
+import { amsterdamRegions, getRegionStats } from '../data/regions';
 import { fetchMapboxDataset } from '../utils/mapboxData';
 import { toOptimizedThumb, registerRegionThumb, getRegionThumb } from '../utils/image';
 import { fetchRegionPrice } from '../utils/pricing';
 import EmailMagicLink from '../components/EmailMagicLink';
 import BrickWallIcon from '../components/BrickWallIcon';
+import DynamicTypeStats from '../components/DynamicTypeStats';
 import './RegionDetailPage.css';
 
 
@@ -23,58 +24,6 @@ const regions = amsterdamRegions.features.map(feature => {
     image: '/images/center.png'
   };
 });
-
-const regionStats = {
-  'Centre': {
-    artworks: 25,
-    galleries: 3,
-    legalWalls: 2,
-    featuredArtists: 15,
-    image: '/images/collage.png'
-  },
-  'Noord': {
-    artworks: 40,
-    galleries: 5,
-    legalWalls: 4,
-    featuredArtists: 25,
-    image: '/images/collage.png'
-  },
-  'East': {
-    artworks: 30,
-    galleries: 2,
-    legalWalls: 3,
-    featuredArtists: 18,
-    image: '/images/collage.png'
-  },
-  'West': {
-    artworks: 22,
-    galleries: 3,
-    legalWalls: 2,
-    featuredArtists: 14,
-    image: '/images/collage.png'
-  },
-  'South-East': {
-    artworks: 18,
-    galleries: 1,
-    legalWalls: 2,
-    featuredArtists: 10,
-    image: '/images/collage.png'
-  },
-  'Nieuw-West': {
-    artworks: 15,
-    galleries: 1,
-    legalWalls: 3,
-    featuredArtists: 8,
-    image: '/images/collage.png'
-  },
-  'South': {
-    artworks: 20,
-    galleries: 2,
-    legalWalls: 1,
-    featuredArtists: 12,
-    image: '/images/collage.png'
-  },
-};
 
 // Alias map: maps all possible slugs/aliases to canonical region IDs
 const regionAliasMap = {
@@ -99,6 +48,9 @@ const RegionDetailPage = () => {
   const { id } = useParams();
   const [price, setPrice] = useState(null);
   const [loadingPrice, setLoadingPrice] = useState(true);
+  const [regionStats, setRegionStats] = useState({});
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsError, setStatsError] = useState(null);
   
   // Normalize the id from the URL and map aliases to canonical region id
   const normalizedId = id ? id.toLowerCase() : '';
@@ -176,12 +128,34 @@ const RegionDetailPage = () => {
   }
   
   const regionName = region.title;
-  const stats = regionStats[regionName] || regionStats['Centre'];
+  const stats = regionStats[regionName] || { totalLocations: 0, types: {} };
 
-  // State for dynamic background image, defaulting to the placeholder in stats
-  const initialThumb = getRegionThumb(regionName) || stats.image;
-  const [backgroundImage, setBackgroundImage] = useState(initialThumb);
+  // State for dynamic background image
+  const [backgroundImage, setBackgroundImage] = useState('/images/collage.png');
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
+
+  // Load dynamic region statistics from Mapbox
+  useEffect(() => {
+    const loadRegionStats = async () => {
+      try {
+        setStatsLoading(true);
+        setStatsError(null);
+        
+        console.log('📊 Loading dynamic stats for region:', regionName);
+        const allStats = await getRegionStats();
+        setRegionStats(allStats);
+        
+        console.log('✅ Region stats loaded:', allStats);
+      } catch (error) {
+        console.error('❌ Failed to load region stats:', error);
+        setStatsError(error.message);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    loadRegionStats();
+  }, [regionName]);
 
   // Fetch a random image for this region from the Mapbox dataset
   useEffect(() => {
@@ -321,37 +295,12 @@ const RegionDetailPage = () => {
           <div className="region-description">{renderRegionDescription(region)}</div>
         </div>
         
-        {/* Stats and Map Container - Horizontal Layout */}
-        <div className="stats-map-flex">
-          <div className="stat-flex-item">
-            <div className="stat-row">
-              <div className="stat-item">
-                <span className="stat-icon">📍</span>
-                <span className="stat-number">{stats.artworks}</span>
-                <span className="stat-label">Artworks</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-icon">🏛️</span>
-                <span className="stat-number">{stats.galleries}</span>
-                <span className="stat-label">Galleries</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-icon">
-                  <BrickWallIcon size={20} />
-                </span>
-                <span className="stat-number">{stats.legalWalls}</span>
-                <span className="stat-label">Legal Walls</span>
-              </div>
-            </div>
-          </div>
-          <div className="map-flex-item">
-            <img
-              src="/images/map.png"
-              alt="Map preview"
-              className="map-preview-img"
-            />
-          </div>
-        </div>
+                {/* Dynamic Type Statistics */}
+        <DynamicTypeStats 
+          stats={stats}
+          loading={statsLoading}
+          error={statsError}
+        />
 
         <div className="payment-section">
           <div className="price-section">

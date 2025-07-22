@@ -9,7 +9,6 @@ const RestaurantIcon = ({ size = 24, className = '' }) => {
       height={size}
       className={className}
       style={{
-        display: 'block',
         objectFit: 'contain'
       }}
     />

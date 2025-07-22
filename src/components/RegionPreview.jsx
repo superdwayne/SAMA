@@ -4,50 +4,42 @@ import './RegionPreview.css';
 // Utils
 import { fetchMapboxDataset } from '../utils/mapboxData';
 import { toOptimizedThumb, getRegionThumb, registerRegionThumb } from '../utils/image';
-
-// Region data with stats matching the design
-const regionStats = {
-  'Center': {
-    artworks: 25,
-    galleries: 3,
-    legalWalls: 2,
-    featuredArtists: 15,
-    image: '/images/collage.png'
-  },
-  'North': {
-    artworks: 18,
-    galleries: 2,
-    legalWalls: 1,
-    featuredArtists: 12,
-    image: '/images/collage.png'
-  },
-  'East': {
-    artworks: 22,
-    galleries: 1,
-    legalWalls: 3,
-    featuredArtists: 18,
-    image: '/images/collage.png'
-  },
-  'South': {
-    artworks: 28,
-    galleries: 4,
-    legalWalls: 2,
-    featuredArtists: 20,
-    image: '/images/collage.png'
-  }
-};
+import { getRegionStats } from '../data/regions';
+import DynamicTypeStats from './DynamicTypeStats';
 
 const RegionPreview = ({ region, onClose }) => {
   const navigate = useNavigate();
+  const [regionStats, setRegionStats] = useState({});
+  const [statsLoading, setStatsLoading] = useState(true);
   
   if (!region) return null;
   
   const regionName = region.title === 'Center' ? 'Center' : region.title;
-  const stats = regionStats[regionName] || regionStats['Center'];
+  const stats = regionStats[regionName] || { totalLocations: 0, types: {} };
 
   // State to hold the background image. Defaults to the static placeholder.
-  const initialThumb = getRegionThumb(regionName) || stats.image;
-  const [backgroundImage, setBackgroundImage] = useState(initialThumb);
+  const [backgroundImage, setBackgroundImage] = useState('/images/collage.png');
+
+  // Load dynamic region statistics from Mapbox
+  useEffect(() => {
+    const loadRegionStats = async () => {
+      try {
+        setStatsLoading(true);
+        
+        console.log('📊 Loading dynamic stats for region preview:', regionName);
+        const allStats = await getRegionStats();
+        setRegionStats(allStats);
+        
+        console.log('✅ Region preview stats loaded:', allStats);
+      } catch (error) {
+        console.error('❌ Failed to load region preview stats:', error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    loadRegionStats();
+  }, [regionName]);
 
   // Fetch a random image from the Mapbox dataset whenever the region changes
   useEffect(() => {
@@ -98,11 +90,11 @@ const RegionPreview = ({ region, onClose }) => {
     if (isUnlocked) {
       // For free regions, go to the region-specific map
       navigate(`/map?region=${region.title}`);
-      return;
+    } else {
+      // For paid regions, go to the region detail page
+      navigate(`/region/${region.id}`);
     }
-    
-    // For paid regions, go to payment page first
-    navigate(`/payment/${region.id}`);
+    onClose();
   };
 
   return (
@@ -141,34 +133,13 @@ const RegionPreview = ({ region, onClose }) => {
           <p className="region-description" dangerouslySetInnerHTML={{ __html: region.description }} />
         </div>
         
-        {/* Stats and Map Container - Flexbox Layout */}
-        <div className="stats-map-flex">
-          <div className="stat-flex-item">
-            <div className="stat-row">
-              <span className="stat-icon">📍</span>
-              <span className="stat-number">{stats.artworks}</span>
-              <span className="stat-label">Artworks</span>
+        {/* Dynamic Type Statistics */}
+        <DynamicTypeStats 
+          stats={stats}
+          loading={statsLoading}
+          error={null}
+        />
 
-              <span className="stat-icon">🏛️</span>
-              <span className="stat-number">{stats.galleries}</span>
-              <span className="stat-label">Galleries</span>
-
-              <span className="stat-icon">🎨</span>
-              <span className="stat-number">{stats.legalWalls}</span>
-              <span className="stat-label">Legal Walls</span>
-            </div>
-          </div>
-          <div className="map-flex-item">
-            <img
-              src="/images/map.png"
-              alt="Map preview"
-              className="map-preview-img"
-            />
-          </div>
-        </div>
-
-        
-        
         {/* Action Button */}
         <button className="get-it-now-btn" onClick={handleGetItNow}>
         Unlock District

@@ -236,6 +236,153 @@ export const testDatasetId = async (datasetId) => {
   }
 };
 
+// Calculate region statistics from Mapbox data
+export const calculateRegionStats = async (specificRegion = null) => {
+  try {
+    const MAPBOX_TOKEN = getMapboxToken();
+    const USERNAME = 'sama-map';
+    
+    let allLocations = [];
+    
+    if (specificRegion && REGION_DATASETS[specificRegion]) {
+      // Fetch specific region dataset
+      const DATASET_ID = REGION_DATASETS[specificRegion];
+      console.log(`📊 Calculating stats for ${specificRegion} from dataset: ${DATASET_ID}`);
+      
+      const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${DATASET_ID}/features?access_token=${MAPBOX_TOKEN}`);
+      if (!response.ok) {
+        throw new Error(`Mapbox API error for ${specificRegion}! status: ${response.status}`);
+      }
+      const data = await response.json();
+      allLocations = data.features;
+    } else {
+      // Fetch from all region datasets
+      console.log('📊 Calculating stats from all region datasets...');
+      
+      for (const [region, datasetId] of Object.entries(REGION_DATASETS)) {
+        // Skip duplicates (alternative spellings that use the same dataset)
+        if (region === 'Center' || region === 'New-West') continue;
+        
+        try {
+          const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${datasetId}/features?access_token=${MAPBOX_TOKEN}`);
+          if (response.ok) {
+            const data = await response.json();
+            allLocations = allLocations.concat(data.features);
+          }
+        } catch (error) {
+          console.warn(`⚠️ Could not fetch ${region} dataset for stats:`, error.message);
+        }
+      }
+    }
+    
+    // Group locations by region and calculate statistics with dynamic types
+    const regionStats = {};
+    
+    allLocations.forEach(feature => {
+      const props = feature.properties;
+      const region = props.region || props.district || 'Centrum';
+      
+      // Normalize region names
+      const normalizedRegion = normalizeRegionName(region);
+      
+      if (!regionStats[normalizedRegion]) {
+        regionStats[normalizedRegion] = {
+          totalLocations: 0,
+          types: {} // Dynamic types object
+        };
+      }
+      
+      // Get item type and normalize it
+      const itemType = (props.type || 'mural').toLowerCase().trim();
+      const normalizedType = normalizeItemType(itemType);
+      
+      // Count by normalized type
+      if (!regionStats[normalizedRegion].types[normalizedType]) {
+        regionStats[normalizedRegion].types[normalizedType] = 0;
+      }
+      regionStats[normalizedRegion].types[normalizedType]++;
+      
+      regionStats[normalizedRegion].totalLocations++;
+    });
+    
+    console.log('📊 Calculated region statistics with dynamic types:', regionStats);
+    return regionStats;
+    
+  } catch (error) {
+    console.error('❌ Error calculating region stats:', error);
+    return {};
+  }
+};
+
+// Helper function to normalize region names
+const normalizeRegionName = (regionName) => {
+  const regionMap = {
+    'Centre': 'Centre',
+    'Center': 'Centre',
+    'Centrum': 'Centre',
+    'Noord': 'Noord',
+    'North': 'Noord',
+    'South': 'South',
+    'Zuid': 'South',
+    'East': 'East',
+    'Oost': 'East',
+    'West': 'West',
+    'Westerpark': 'West',
+    'South-East': 'South-East',
+    'Zuidoost': 'South-East',
+    'Nieuw-West': 'Nieuw-West',
+    'New-West': 'Nieuw-West'
+  };
+  
+  return regionMap[regionName] || regionName;
+};
+
+// Helper function to normalize item types
+const normalizeItemType = (type) => {
+  // Map similar types to standardized names
+  const typeMap = {
+    'mural': 'Mural',
+    'street art': 'Street Art',
+    'streetart': 'Street Art',
+    'graffiti': 'Graffiti',
+    'tag': 'Tag',
+    'sticker': 'Sticker',
+    'paste up': 'Paste Up',
+    'pasteup': 'Paste Up',
+    'paste-up': 'Paste Up',
+    'installation': 'Installation',
+    'sculpture': 'Sculpture',
+    'gallery': 'Gallery',
+    'museum': 'Museum',
+    'legal wall': 'Legal Wall',
+    'legalwall': 'Legal Wall',
+    'wall': 'Wall',
+    'piece': 'Piece',
+    'throw up': 'Throw Up',
+    'throwup': 'Throw Up',
+    'throw-up': 'Throw Up',
+    'bomb': 'Bomb',
+    'wildstyle': 'Wildstyle',
+    'wild style': 'Wildstyle',
+    'wild-style': 'Wildstyle'
+  };
+  
+  // Check for exact matches first
+  if (typeMap[type]) {
+    return typeMap[type];
+  }
+  
+  // Check for partial matches
+  for (const [key, value] of Object.entries(typeMap)) {
+    if (type.includes(key) || key.includes(type)) {
+      return value;
+    }
+  }
+  
+  // If no match found, capitalize the first letter
+  return type.charAt(0).toUpperCase() + type.slice(1);
+};
+
 // Export dataset info for reference
 export const DATASET_INFO = {
   Centrum: {
@@ -297,4 +444,60 @@ export const DATASET_INFO = {
     name: 'Amsterdam Street Art - Centre District (default)',
     editUrl: 'https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105'
   }
+};
+
+// Test function to verify region statistics calculation
+export const testRegionStats = async () => {
+  console.log('🧪 Testing region statistics calculation...');
+  
+  try {
+    const stats = await calculateRegionStats();
+    console.log('📊 Calculated region statistics with dynamic types:', stats);
+    
+    // Log summary for each region
+    Object.entries(stats).forEach(([region, data]) => {
+      console.log(`📍 ${region}: ${data.totalLocations} total items`);
+      
+      // Log all types found in this region
+      if (data.types && Object.keys(data.types).length > 0) {
+        console.log(`  📋 Types found:`);
+        Object.entries(data.types)
+          .sort(([,a], [,b]) => b - a) // Sort by count (highest first)
+          .forEach(([type, count]) => {
+            console.log(`    ${getTypeIcon(type)} ${type}: ${count}`);
+          });
+      } else {
+        console.log(`  ⚠️ No types found`);
+      }
+    });
+    
+    return stats;
+  } catch (error) {
+    console.error('❌ Region stats test failed:', error);
+    return null;
+  }
+};
+
+// Helper function to get icon for type (for console logging)
+const getTypeIcon = (type) => {
+  const typeLower = type.toLowerCase();
+  
+  if (typeLower.includes('mural')) return '🎨';
+  if (typeLower.includes('street art')) return '🎨';
+  if (typeLower.includes('graffiti')) return '✏️';
+  if (typeLower.includes('tag')) return '✏️';
+  if (typeLower.includes('sticker')) return '🏷️';
+  if (typeLower.includes('paste up') || typeLower.includes('pasteup')) return '📄';
+  if (typeLower.includes('installation')) return '🗿';
+  if (typeLower.includes('sculpture')) return '🗿';
+  if (typeLower.includes('piece')) return '🎨';
+  if (typeLower.includes('throw up') || typeLower.includes('throwup')) return '💨';
+  if (typeLower.includes('bomb')) return '💣';
+  if (typeLower.includes('wildstyle') || typeLower.includes('wild style')) return '🌀';
+  if (typeLower.includes('gallery')) return '🏛️';
+  if (typeLower.includes('museum')) return '🏛️';
+  if (typeLower.includes('legal wall') || typeLower.includes('legalwall')) return '🧱';
+  if (typeLower.includes('wall')) return '🧱';
+  
+  return '📍';
 };

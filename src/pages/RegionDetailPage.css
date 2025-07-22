@@ -200,7 +200,7 @@
 .stats-map-flex {
   display: flex;
   background: #fff;
-
+  margin-bottom: 10px;
   align-items: center;
  
 }

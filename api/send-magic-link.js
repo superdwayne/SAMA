@@ -303,17 +303,10 @@ discover the stories that shape this vibrant part of Amsterdam.
                         </tr>
                         <tr>
                           <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;" class="dark-mode-text">
-                            This magic link expires in <strong class="dark-mode-text">48 hours</strong>
+                            This magic can only be used once and is valid for 30 days.
                           </td>
                         </tr>
-                        <tr>
-                          <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;" class="dark-mode-text">
-                            • Can only be used once<br>
-                            • Your access will be permanent after activation<br>
-                            • The link is valid for <b>30 days</b>
-
-                          </td>
-                        </tr>
+                       
                       </table>
                     </td>
                   </tr>

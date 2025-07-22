@@ -1,3 +1,5 @@
+import { calculateRegionStats } from '../utils/mapboxData';
+
 export const amsterdamRegions = {
   type: 'FeatureCollection',
   features: [
@@ -6,10 +8,6 @@ export const amsterdamRegions = {
       properties: {
         name: 'Centre',
         description: 'The historic heart of Amsterdam, featuring iconic canals and vibrant street art in unexpected corners.',
-        artworkCount: 25,
-        galleryCount: 3,
-        legalWallCount: 2,
-        artistCount: 15,
         featuredInfo: 'Home to STRAAT Museum and numerous hidden gems in the Jordaan neighborhood.',
         aliases: ['Center'] // Alternative names
       },
@@ -29,10 +27,6 @@ export const amsterdamRegions = {
       properties: {
         name: 'Noord',
         description: 'Amsterdam Noord is the street art capital with massive murals and the famous NDSM wharf.',
-        artworkCount: 40,
-        galleryCount: 5,
-        legalWallCount: 4,
-        artistCount: 25,
         featuredInfo: 'NDSM wharf is a creative hub with legal walls and stunning large-scale murals.',
         aliases: ['North'] // Alternative names
       },
@@ -52,10 +46,6 @@ export const amsterdamRegions = {
       properties: {
         name: 'South',
         description: 'Zuid features upscale street art and the MOCO Museum with works by Banksy.',
-        artworkCount: 20,
-        galleryCount: 2,
-        legalWallCount: 1,
-        artistCount: 12,
         featuredInfo: 'Visit MOCO Museum for contemporary street art exhibitions.',
         aliases: ['Zuid']
       },
@@ -75,10 +65,6 @@ export const amsterdamRegions = {
       properties: {
         name: 'East',
         description: 'Oost is a multicultural district with diverse street art reflecting its communities.',
-        artworkCount: 30,
-        galleryCount: 2,
-        legalWallCount: 3,
-        artistCount: 18,
         featuredInfo: 'Javastraat and Dappermarkt area showcase international street art styles.',
         aliases: ['Oost']
       },
@@ -98,10 +84,6 @@ export const amsterdamRegions = {
       properties: {
         name: 'West',
         description: 'West Amsterdam combines industrial heritage with contemporary urban art.',
-        artworkCount: 22,
-        galleryCount: 3,
-        legalWallCount: 2,
-        artistCount: 14,
         featuredInfo: 'The Westerpark area hosts regular street art festivals and events.',
         aliases: ['Westerpark']
       },
@@ -121,10 +103,6 @@ export const amsterdamRegions = {
       properties: {
         name: 'South-East',
         description: 'Zuidoost showcases vibrant murals celebrating cultural diversity.',
-        artworkCount: 18,
-        galleryCount: 1,
-        legalWallCount: 2,
-        artistCount: 10,
         featuredInfo: 'Bijlmer area features powerful community-driven street art projects.',
         aliases: ['Zuidoost']
       },
@@ -144,23 +122,79 @@ export const amsterdamRegions = {
       properties: {
         name: 'Nieuw-West',
         description: 'Nieuw-West is an emerging street art destination with fresh perspectives and innovative works.',
-        artworkCount: 15,
-        galleryCount: 1,
-        legalWallCount: 3,
-        artistCount: 8,
-        featuredInfo: 'Sloterplas area features new generation street artists and experimental works.',
+        featuredInfo: 'Emerging artists and experimental street art installations.',
         aliases: ['New-West']
       },
       geometry: {
         type: 'Polygon',
         coordinates: [[
           [4.8000, 52.3600],
-          [4.8300, 52.3600],
-          [4.8300, 52.3800],
+          [4.8400, 52.3600],
+          [4.8400, 52.3800],
           [4.8000, 52.3800],
           [4.8000, 52.3600]
         ]]
       }
     }
   ]
+};
+
+// Cache for region statistics
+let regionStatsCache = null;
+let lastStatsUpdate = 0;
+const STATS_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// Get region statistics dynamically from Mapbox data
+export const getRegionStats = async (regionName = null) => {
+  const now = Date.now();
+  
+  // Return cached stats if still valid
+  if (regionStatsCache && (now - lastStatsUpdate) < STATS_CACHE_DURATION) {
+    if (regionName) {
+      return regionStatsCache[regionName] || getDefaultStats();
+    }
+    return regionStatsCache;
+  }
+  
+  try {
+    console.log('🔄 Fetching fresh region statistics from Mapbox...');
+    const stats = await calculateRegionStats(regionName);
+    
+    // Update cache
+    regionStatsCache = stats;
+    lastStatsUpdate = now;
+    
+    if (regionName) {
+      return stats[regionName] || getDefaultStats();
+    }
+    return stats;
+  } catch (error) {
+    console.error('❌ Failed to fetch region stats, using defaults:', error);
+    if (regionName) {
+      return getDefaultStats();
+    }
+    return getDefaultStatsForAllRegions();
+  }
+};
+
+// Default statistics fallback
+const getDefaultStats = () => ({
+  totalLocations: 0,
+  types: {}
+});
+
+const getDefaultStatsForAllRegions = () => ({
+  'Centre': getDefaultStats(),
+  'Noord': getDefaultStats(),
+  'South': getDefaultStats(),
+  'East': getDefaultStats(),
+  'West': getDefaultStats(),
+  'South-East': getDefaultStats(),
+  'Nieuw-West': getDefaultStats()
+});
+
+// Clear cache (useful for testing or when data is updated)
+export const clearRegionStatsCache = () => {
+  regionStatsCache = null;
+  lastStatsUpdate = 0;
 };

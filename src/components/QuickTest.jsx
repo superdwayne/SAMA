@@ -2,10 +2,15 @@
 // Test this at: http://localhost:3000/quick-test
 
 import React, { useState } from 'react';
+import { testRegionStats } from '../utils/mapboxData';
+import { getRegionStats, clearRegionStatsCache } from '../data/regions';
+import './QuickTest.css';
 
 const QuickTest = () => {
   const [status, setStatus] = useState('');
   const [locations, setLocations] = useState([]);
+  const [testResults, setTestResults] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const testDataset = async () => {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -74,8 +79,37 @@ const QuickTest = () => {
     }
   };
 
+  const runRegionStatsTest = async () => {
+    setLoading(true);
+    try {
+      console.log('🧪 Running region stats test...');
+      
+      // Clear cache to force fresh data
+      clearRegionStatsCache();
+      
+      // Test the raw calculation function
+      const rawStats = await testRegionStats();
+      
+      // Test the cached getRegionStats function
+      const cachedStats = await getRegionStats();
+      
+      setTestResults({
+        rawStats,
+        cachedStats,
+        timestamp: new Date().toISOString()
+      });
+      
+      console.log('✅ Region stats test completed');
+    } catch (error) {
+      console.error('❌ Region stats test failed:', error);
+      setTestResults({ error: error.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+    <div className="quick-test">
       <h1>🧪 Quick Dataset Test (via Backend)</h1>
       
       <div style={{ 
@@ -143,6 +177,35 @@ const QuickTest = () => {
           ))}
         </div>
       )}
+
+      <div className="test-section">
+        <h3>Region Statistics Test</h3>
+        <button 
+          onClick={runRegionStatsTest} 
+          disabled={loading}
+          className="test-button"
+        >
+          {loading ? 'Testing...' : 'Test Region Stats'}
+        </button>
+        
+        {testResults && (
+          <div className="test-results">
+            <h4>Test Results ({testResults.timestamp})</h4>
+            
+            {testResults.error ? (
+              <div className="error">❌ Error: {testResults.error}</div>
+            ) : (
+              <div>
+                <h5>Raw Stats (from Mapbox):</h5>
+                <pre>{JSON.stringify(testResults.rawStats, null, 2)}</pre>
+                
+                <h5>Cached Stats (from getRegionStats):</h5>
+                <pre>{JSON.stringify(testResults.cachedStats, null, 2)}</pre>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       <div style={{ backgroundColor: '#fff3cd', padding: '15px', borderRadius: '5px', marginTop: '20px' }}>
         <h3>📖 Instructions:</h3>

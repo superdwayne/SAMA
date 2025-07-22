@@ -1,0 +1,88 @@
+/* Dynamic Type Stats - Matching original design */
+
+/* Use existing CSS classes from RegionDetailPage.css */
+.stats-map-flex {
+  display: flex;
+  background: #fff;
+  align-items: center;
+}
+
+.stat-flex-item {
+  flex: 1;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-icon {
+  font-size: 24px;
+  width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3416D8;
+  font-family: 'PPNeueMachina-PlainUltrabold', Arial, sans-serif;
+  min-width: 30px;
+}
+
+.stat-label {
+  font-size: 24px;
+  font-weight: 400;
+  color: #3416D8;
+  font-family: 'PPNeueMachina-PlainUltrabold', Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.map-flex-item {
+  flex: 0 0 auto;
+}
+
+.map-preview-img {
+  width: 148px;
+  height: 148px;
+  object-fit: cover;
+  background: #f0f0f0;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .stat-row {
+    margin-left: 8px;
+  }
+  
+  .stat-item {
+    gap: 8px;
+  }
+  
+  .stat-icon {
+    font-size: 20px;
+    width: 24px;
+  }
+  
+  .stat-number {
+    font-size: 20px;
+    min-width: 24px;
+  }
+  
+  .stat-label {
+    font-size: 20px;
+  }
+  
+  .map-preview-img {
+    width: 120px;
+    height: 120px;
+  }
+} 
