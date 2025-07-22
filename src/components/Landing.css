@@ -710,14 +710,26 @@
 }
 
 .region-action-btn.region-action-btn-overlay:disabled {
-  background: #2D2DF6;
+  background: #0066FF;
   color: #ffffff;
   cursor: not-allowed;
   opacity: 1;
 }
 
 .region-action-btn.region-action-btn-overlay:disabled:hover {
-  background: #2D2DF6;
+  background: #0066FF;
+  transform: translate(-50%, -50%);
+}
+
+/* Coming Soon Region Styling */
+.region-action-btn.coming-soon {
+  background: #0066FF !important;
+  color: #ffffff !important;
+  cursor: not-allowed !important;
+}
+
+.region-action-btn.coming-soon:hover {
+  background: #0066FF !important;
   transform: translate(-50%, -50%);
 }
 

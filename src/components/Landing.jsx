@@ -472,7 +472,7 @@ const Landing = () => {
                         />
                       )}
                       <button
-                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${region.comingSoon ? ' coming-soon' : (region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                         disabled={region.comingSoon}
                       >
@@ -493,7 +493,7 @@ const Landing = () => {
                         />
                       )}
                       <button
-                        className={`region-action-btn region-action-btn-overlay${(region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
+                        className={`region-action-btn region-action-btn-overlay${region.comingSoon ? ' coming-soon' : (region.isFree || isRegionUnlocked(region.title)) ? ' open-map-btn free-region' : ' paid-region'}`}
                         onClick={() => handleGetItNow(region)}
                         disabled={region.comingSoon}
                       >
@@ -505,10 +505,10 @@ const Landing = () => {
               </div>
             </div>
             {/* Lock/Unlock icon at bottom left */}
-            <div className={`region-lock-badge${(region.isFree || isRegionUnlocked(region.title)) ? ' unlocked' : ''}`}>
+            <div className={`region-lock-badge${(region.isFree || isRegionUnlocked(region.title)) && !region.comingSoon ? ' unlocked' : ''}`}>
               <img
-                src={(region.isFree || isRegionUnlocked(region.title)) ? '/images/unlocked.png' : '/images/locked.png'}
-                alt={(region.isFree || isRegionUnlocked(region.title)) ? 'Unlocked' : 'Locked'}
+                src={(region.isFree || isRegionUnlocked(region.title)) && !region.comingSoon ? '/images/unlocked.png' : '/images/locked.png'}
+                alt={(region.isFree || isRegionUnlocked(region.title)) && !region.comingSoon ? 'Unlocked' : 'Locked'}
                 className="region-lock-icon"
               />
             </div>
