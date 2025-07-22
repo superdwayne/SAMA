@@ -393,3 +393,32 @@
     max-height: calc(100vh - 280px); /* 260px image + 20px margin/padding */
   }
 }
+
+/* Fixed Navigate Button */
+.navigate-btn {
+  font-family: 'PP Neue Machina Inktrap Ultrabold', 'Inter', Arial, sans-serif;
+  font-size: 17px;
+  background: #3416D8;
+  color: #fff;
+  border: none;
+  padding: 18px 32px;
+  cursor: pointer;
+  font-weight: 800;
+  text-align: center;
+  transition: background 0.2s;
+  display: block;
+  width: 70%;
+  margin: 0px auto;
+  margin-top: 20px;
+  position: sticky;
+  bottom: 20px;
+  z-index: 1000;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(52, 22, 216, 0.3);
+}
+
+.navigate-btn:hover {
+  background: #2200b8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(52, 22, 216, 0.4);
+}

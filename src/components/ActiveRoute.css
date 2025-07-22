@@ -185,7 +185,6 @@
   color: #fff;
   border: none;
   padding: 18px 32px;
-  margin-top: auto;
   cursor: pointer;
   font-weight: 800;
   text-align: center;
@@ -194,6 +193,11 @@
   width: 70%;
   margin: 0px auto;
   margin-top: 20px;
+  position: sticky;
+  bottom: 20px;
+  z-index: 1000;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(52, 22, 216, 0.3);
 }
 
 .navigate-btn:hover {
