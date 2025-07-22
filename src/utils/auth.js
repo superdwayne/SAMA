@@ -5,7 +5,7 @@ export const validateMagicLink = async (magicToken) => {
     console.log('🔍 Validating magic link token...');
     
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-    const response = await fetch(`${API_URL}/api/verify-magic-link`, {
+    const response = await fetch(`${API_URL}/verify-magic-link`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,6 +44,10 @@ export const validateMagicLink = async (magicToken) => {
     }
   } catch (error) {
     console.error('❌ Error validating magic link:', error);
+    console.error('🔍 API URL:', import.meta.env.VITE_API_URL || 'http://localhost:3001');
+    console.error('🔍 Token length:', magicToken ? magicToken.length : 'No token');
+    console.error('🔍 Token preview:', magicToken ? magicToken.substring(0, 8) + '...' : 'No token');
+    
     return { 
       valid: false, 
       error: 'Network error during validation'
@@ -232,7 +236,7 @@ export const clearAccess = () => {
 export const requestMagicLink = async (email) => {
   try {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-    const response = await fetch(`${API_URL}/api/send-magic-link`, {
+    const response = await fetch(`${API_URL}/send-magic-link`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

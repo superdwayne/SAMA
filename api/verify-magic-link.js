@@ -1,73 +1,164 @@
 // api/verify-magic-link.js
-// Simple verification without file storage
+// Proper verification using Supabase database
+
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 export default async function handler(req, res) {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
     const { token } = req.body;
-
+    
     if (!token) {
       return res.status(400).json({ error: 'Token is required' });
     }
 
-    // Decode token data
-    const tokenData = verifyMagicToken(token);
+    console.log('🔍 Validating magic link token:', token.substring(0, 8) + '...');
 
-    if (!tokenData) {
-      return res.status(401).json({ 
-        error: 'Invalid or expired magic link. Please request a new one.' 
+    // Validate magic link token
+    const validation = await validateMagicLink(token);
+    
+    if (!validation.valid) {
+      console.log('❌ Invalid magic link:', validation.error);
+      return res.status(401).json({
+        error: 'Invalid or expired magic link',
+        message: validation.error
       });
     }
 
-    // Determine regions based on purchase history
-    let regions = [];
-    if (tokenData.hasPurchased) {
-      // Only unlock the specific regions purchased, not all regions
-      regions = tokenData.regions || [];
-    }
-
+    // Get user's purchased regions
+    const purchaseData = getUserRegions(validation.user);
+    
+    console.log('✅ Magic link validated successfully for:', validation.email);
+    
     res.status(200).json({
       success: true,
-      email: tokenData.email,
-      regions,
-      hasPurchased: tokenData.hasPurchased,
-      message: tokenData.hasPurchased 
-        ? 'Welcome back! You have full access to all regions.'
-        : 'Welcome! You have access to the East region.'
+      email: validation.email,
+      regions: purchaseData.regions,
+      hasPurchased: purchaseData.regions.length > 0,
+      expiresAt: Date.now() + (365 * 24 * 60 * 60 * 1000), // 1 year
+      message: 'Access granted successfully'
     });
 
   } catch (error) {
-    console.error('Magic link verification error:', error);
+    console.error('❌ Magic link validation error:', error);
+    
+    // Check if it's an environment variable issue
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+      console.error('❌ Missing Supabase environment variables');
+      return res.status(500).json({ 
+        error: 'Server configuration error - missing database credentials',
+        details: 'SUPABASE_URL or SUPABASE_SERVICE_KEY not configured'
+      });
+    }
+    
     res.status(500).json({ 
-      error: 'Failed to verify magic link. Please try again.' 
+      error: 'Failed to validate magic link',
+      details: error.message 
     });
   }
 }
 
-// Verify magic token (decode embedded data)
-function verifyMagicToken(token) {
+// Validate magic link token
+async function validateMagicLink(token) {
   try {
-    // Decode the token
-    const payload = Buffer.from(token, 'base64').toString('utf8');
-    const data = JSON.parse(payload);
+    // Find the user with this magic token
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('magic_token', token)
+      .single();
     
-    // Check if token is expired (10 minutes to match email)
-    const tenMinutes = 10 * 60 * 1000;
-    if (Date.now() - data.timestamp > tenMinutes) {
-      return null; // Expired
+    if (error || !user) {
+      return {
+        valid: false,
+        error: 'Magic link not found or invalid'
+      };
+    }
+    
+    // Check if token has expired
+    const now = new Date();
+    const tokenExpiresAt = new Date(user.magic_token_expires_at);
+    
+    if (now > tokenExpiresAt) {
+      return {
+        valid: false,
+        error: 'Magic link has expired'
+      };
+    }
+    
+    // Check if user's regions access has expired
+    if (user.regions_expires_at) {
+      const regionsExpiresAt = new Date(user.regions_expires_at);
+      if (now > regionsExpiresAt) {
+        return {
+          valid: false,
+          error: 'Your access has expired. Please purchase again to continue using the map.'
+        };
+      }
+    }
+    
+    // Clear the magic token after use (one-time use)
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ 
+        magic_token: null,
+        magic_token_expires_at: null,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', user.id);
+    
+    if (updateError) {
+      console.error('❌ Error clearing magic token:', updateError);
+      // Continue anyway, as the validation is still valid
     }
     
     return {
-      email: data.email,
-      hasPurchased: data.hasPurchased,
-      regions: data.regions || ['East'],
-      timestamp: data.timestamp
+      valid: true,
+      email: user.email,
+      user: user
     };
+    
   } catch (error) {
-    console.error('Token decode error:', error);
-    return null; // Invalid token
+    console.error('❌ Error validating magic link:', error);
+    return {
+      valid: false,
+      error: 'Database error during validation'
+    };
+  }
+}
+
+// Get user's regions from user object
+function getUserRegions(user) {
+  try {
+    const regions = user.regions || [];
+    
+    return {
+      regions,
+      purchaseCount: regions.length,
+      totalSpent: user.total_spent || 0,
+      lastPurchase: user.last_purchase_at
+    };
+    
+  } catch (error) {
+    console.error('❌ Error getting user regions:', error);
+    return { regions: [] };
   }
 }
