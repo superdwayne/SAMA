@@ -98,6 +98,8 @@ const regions = [
 const Landing = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  
+
   const [showMagicLinkModal, setShowMagicLinkModal] = useState(false);
   const [showAlreadyVerifiedModal, setShowAlreadyVerifiedModal] = useState(false);
   const [alreadyVerifiedEmail, setAlreadyVerifiedEmail] = useState('');
@@ -442,6 +444,8 @@ const Landing = () => {
         AMSTERDAM
         </h1>
       </header>
+
+
 
       {/* Region cards */}
       <div className="region-cards-container">

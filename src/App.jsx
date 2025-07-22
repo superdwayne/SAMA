@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { trackPageView, trackUserJourney, trackMagicLinkEvent } from './utils/analytics';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import Map from './components/Map';
@@ -10,6 +10,7 @@ import EmailTest from './components/EmailTest';
 import DatasetDebug from './components/DatasetDebug';
 import QuickTest from './components/QuickTest';
 import Success from './components/Success';
+import SuccessModal from './components/SuccessModal';
 import ActivatePage from './pages/ActivatePage';
 import RegionDetailPage from './pages/RegionDetailPage';
 import Landing from './components/Landing';
@@ -23,6 +24,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [authMessage, setAuthMessage] = useState(null);
   const [showNoAccess, setShowNoAccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Initialize Google Analytics
   useGoogleAnalytics();
@@ -30,6 +32,16 @@ function App() {
   useEffect(() => {
     // Track app initialization
     trackUserJourney('app_initialized');
+
+    // Check if we're on a success page and show modal instead
+    const urlParams = new URLSearchParams(window.location.search);
+    const isSuccessPage = window.location.pathname === '/thank-you' || window.location.pathname === '/success';
+    
+    if (isSuccessPage) {
+      setShowSuccessModal(true);
+      // Clean up the URL without triggering a page reload
+      window.history.replaceState({}, document.title, '/');
+    }
 
     // Prefetch Mapbox datasets for main regions to speed up image loading
     const prefetchDatasets = async () => {
@@ -166,9 +178,13 @@ function App() {
           <Route path="/email-test" element={<EmailTest />} />
           <Route path="/debug-dataset" element={<DatasetDebug />} />
           <Route path="/quick-test" element={<QuickTest />} />
-          <Route path="/success" element={<Success />} />
-          <Route path="/thank-you" element={<Success />} />
         </Routes>
+
+        {/* Success Modal */}
+        <SuccessModal 
+          isOpen={showSuccessModal} 
+          onClose={() => setShowSuccessModal(false)} 
+        />
       </div>
     </Router>
   );
