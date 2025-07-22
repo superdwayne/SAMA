@@ -120,9 +120,8 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
         <div className="stat-flex-item">
           <div className="stat-row">
             <div className="stat-item">
-              <span className="stat-icon">📊</span>
-              <span className="stat-number">0</span>
-              <span className="stat-label">No data available</span>
+              
+              <span className="stat-label" style={{margin: '0px auto'}}>Coming soon</span>
             </div>
           </div>
         </div>
