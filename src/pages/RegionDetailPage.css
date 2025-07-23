@@ -233,7 +233,7 @@
   font-weight: 700;
   color: #3416D8;
   font-family: 'PPNeueMachina-PlainUltrabold', Arial, sans-serif;
-  min-width: 30px;
+  width: 35px !important;
 }
 
 .stat-label {

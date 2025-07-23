@@ -20,12 +20,16 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
 
   const shouldUseRestaurantIcon = (type) => {
     const typeLower = type?.toLowerCase();
-    const shouldUse = typeLower === 'food & drink' || typeLower === 'restaurant' || typeLower === 'cafe' || typeLower === 'dining';
+    const shouldUse = typeLower === 'food & drink' || typeLower === 'food and drink' || typeLower === 'restaurant' || typeLower === 'cafe' || typeLower === 'dining';
+    console.log('🍽️ shouldUseRestaurantIcon:', { type, typeLower, shouldUse });
     return shouldUse;
   };
 
   // Get icon based on type - using the same logic as Map.jsx
   const getTypeIcon = (type) => {
+    console.log('🔍 getTypeIcon called with type:', type);
+    console.log('🔍 shouldUseRestaurantIcon(type):', shouldUseRestaurantIcon(type));
+    
     // Check for special icon components first
     if (shouldUseBrickWallIcon(type)) {
       return <BrickWallIcon size={24} />;
@@ -36,6 +40,7 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
     }
     
     if (shouldUseRestaurantIcon(type)) {
+      console.log('✅ Using RestaurantIcon for type:', type);
       return <RestaurantIcon size={22} />;
     }
     
@@ -50,7 +55,7 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
       // Mapbox dataset types (capitalized)
       case 'souvenirs': return '🛍️';
       case 'shopping': return '🛍️';
-      case 'food & drink': return '🍽️';
+      // case 'food & drink': return '🍽️'; // Removed - handled by RestaurantIcon component
       case 'culture place': return '🎭';
       case 'institution': return '🏛️';
       case 'instituion': return '🏛️';  // Typo fix

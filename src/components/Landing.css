@@ -202,9 +202,7 @@
     margin: 20px;
   }
   
-  .success-title {
-    font-size: 24px;
-  }
+
   
   .success-message p {
     font-size: 15px;
@@ -723,13 +721,13 @@
 
 /* Coming Soon Region Styling */
 .region-action-btn.coming-soon {
-  background: #0066FF !important;
+  background: #2D2DF6 !important;
   color: #ffffff !important;
   cursor: not-allowed !important;
 }
 
 .region-action-btn.coming-soon:hover {
-  background: #0066FF !important;
+  background: #2D2DF6 !important;
   transform: translate(-50%, -50%);
 }
 
@@ -803,7 +801,7 @@
   }
  
   .region-action-btn.region-action-btn-overlay {
-    font-size: 0.95rem;
+    font-size: 0.95rem !important;
     width: 90% !important;
     min-height: 32px;
     padding: 6px 8px;
