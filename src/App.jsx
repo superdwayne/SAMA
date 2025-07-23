@@ -15,6 +15,7 @@ import ActivatePage from './pages/ActivatePage';
 import RegionDetailPage from './pages/RegionDetailPage';
 import Landing from './components/Landing';
 import NoAccessPrompt from './components/NoAccessPrompt';
+import ThankYouPage from './pages/ThankYouPage';
 
 import { getUnlockedRegions, handleMagicLinkAuth } from './utils/auth';
 import './App.css';
@@ -35,7 +36,7 @@ function App() {
 
     // Check if we're on a success page and show modal instead
     const urlParams = new URLSearchParams(window.location.search);
-    const isSuccessPage = window.location.pathname === '/thank-you' || window.location.pathname === '/success';
+    const isSuccessPage = window.location.pathname === '/success';
     
     if (isSuccessPage) {
       setShowSuccessModal(true);
@@ -175,6 +176,7 @@ function App() {
           <Route path="/map" element={<Map unlockedRegions={unlockedRegions} setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/payment/:region" element={<Payment setUnlockedRegions={setUnlockedRegions} />} />
           <Route path="/activate" element={<ActivatePage />} />
+          <Route path="/thank-you" element={<ThankYouPage />} />
           <Route path="/email-test" element={<EmailTest />} />
           <Route path="/debug-dataset" element={<DatasetDebug />} />
           <Route path="/quick-test" element={<QuickTest />} />
