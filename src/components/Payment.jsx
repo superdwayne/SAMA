@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { trackPaymentEvent, trackRegionInteraction, trackUserJourney } from '../utils/analytics';
 import { fetchPrice as fetchPriceFromAPI } from '../utils/api';
+import { fetchDefaultRegionPrice, getFallbackPrice } from '../utils/pricing';
 import './Payment.css';
 
 const Payment = ({ setUnlockedRegions }) => {
@@ -10,6 +11,8 @@ const Payment = ({ setUnlockedRegions }) => {
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [price, setPrice] = useState(null);
+  const [priceSubtitle, setPriceSubtitle] = useState('One-time payment');
+  const [priceDescription, setPriceDescription] = useState('Lifetime access to all content in this district');
   const [loadingPrice, setLoadingPrice] = useState(true);
   
   // Enable scrolling for payment page
@@ -81,44 +84,22 @@ const Payment = ({ setUnlockedRegions }) => {
       try {
         setLoadingPrice(true);
         
-        // Price IDs for each region
-        const priceIds = {
-          'Centre': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
-          'Center': 'price_1RlrHzJ3urOr8HD7UDo4U0vY',
-          'Noord': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
-          'North': 'price_1RlrKYJ3urOr8HD7HzOpJ8bJ',
-          'East': 'price_1RbeqUJ3urOr8HD7ElBhh5rB',
-          'Nieuw-West': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
-          'New-West': 'price_1Rbf2kJ3urOr8HD7QTcbJLSo',
-          'South': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
-          'Zuid': 'price_1RbeqwJ3urOr8HD7Rf6mUldT',
-          'South-East': 'price_1Rbf8wJ3urOr8HD7gvLlK0aa',
-          'West': 'price_1Rbf23J3urOr8HD7gxyHwFW0'
-        };
+        // Use the new dynamic pricing system
+        const priceData = await fetchDefaultRegionPrice(displayRegion.toLowerCase());
+        setPrice(priceData.formattedPrice);
+        setPriceSubtitle(priceData.recurring ? `Every ${priceData.interval}` : 'One-time payment');
+        setPriceDescription(priceData.recurring 
+          ? 'Access to all content in this district' 
+          : 'Lifetime access to all content in this district'
+        );
         
-        const priceId = priceIds[displayRegion];
-        
-        console.log('🔍 Payment component - Region:', displayRegion);
-        console.log('💰 Payment component - Price ID:', priceId);
-        
-        if (priceId) {
-          try {
-            const priceData = await fetchPriceFromAPI(priceId);
-            console.log('💰 Payment component - Price data received:', priceData);
-            setPrice(priceData);
-          } catch (error) {
-            console.error('❌ Payment component - Failed to fetch price:', error);
-            // Fallback to default price
-            setPrice({ formattedPrice: '€4,99', fallback: true });
-          }
-        } else {
-          // Fallback to default price
-          setPrice({ formattedPrice: '€4,99' });
-        }
       } catch (error) {
-        console.error('Error fetching price:', error);
-        // Fallback to default price
-        setPrice({ formattedPrice: '€4,99' });
+        console.error('❌ Payment component - Failed to fetch price:', error);
+        // Use the new fallback system
+        const fallbackPrice = getFallbackPrice(displayRegion.toLowerCase());
+        setPrice(fallbackPrice);
+        setPriceSubtitle('One-time payment');
+        setPriceDescription('Lifetime access to all content in this district');
       } finally {
         setLoadingPrice(false);
       }
@@ -239,17 +220,10 @@ const Payment = ({ setUnlockedRegions }) => {
               <img src="/images/unlockdis.png" alt="Locked" className="unlock-icon-img" />
             </div>
             <div className="price-large">
-              {loadingPrice ? 'Loading...' : (price?.formattedPrice || '€4,99')}
-              {price?.fallback && (
-                <div className="fallback-indicator">
-                  ⚠️ Using default price
-                </div>
-              )}
+              {loadingPrice ? 'Loading...' : (price || '€4,99')}
             </div>
-            <div className="price-subtitle">One-time payment</div>
-            <div className="price-description">
-              Lifetime access to all<br/>
-              content in this district
+            <div className="price-subtitle">
+              One-time payment
             </div>
           </div>
           

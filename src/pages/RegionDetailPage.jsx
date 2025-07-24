@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { amsterdamRegions, getRegionStats } from '../data/regions';
 import { fetchMapboxDataset } from '../utils/mapboxData';
 import { toOptimizedThumb, registerRegionThumb, getRegionThumb } from '../utils/image';
-import { fetchRegionPrice } from '../utils/pricing';
+import { fetchRegionPrice, fetchDefaultRegionPrice, getFallbackPrice } from '../utils/pricing';
 import EmailMagicLink from '../components/EmailMagicLink';
 import BrickWallIcon from '../components/BrickWallIcon';
 import DynamicTypeStats from '../components/DynamicTypeStats';
@@ -47,6 +47,8 @@ const RegionDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [price, setPrice] = useState(null);
+  const [priceSubtitle, setPriceSubtitle] = useState('One-time payment');
+  const [priceDescription, setPriceDescription] = useState('Lifetime access to all content in this district');
   const [loadingPrice, setLoadingPrice] = useState(true);
   const [regionStats, setRegionStats] = useState({});
   const [statsLoading, setStatsLoading] = useState(true);
@@ -77,9 +79,6 @@ const RegionDetailPage = () => {
   
   // Enable scrolling for this page - Minimal Safe Version
   useEffect(() => {
-    console.log('RegionDetailPage mounted, region ID:', id);
-    console.log('Region found:', region?.title || 'NOT FOUND');
-    
     // Add classes for CSS styling
     document.body.classList.add('region-detail-page');
     const root = document.getElementById('root');
@@ -110,9 +109,6 @@ const RegionDetailPage = () => {
   
   // Better error handling - don't redirect immediately
   if (!region) {
-    console.error('Region not found:', id);
-    console.log('Available regions:', regions.map(r => r.id));
-    
     // Show error state instead of immediate redirect
     return (
       <div className="region-detail-page">
@@ -200,16 +196,22 @@ const RegionDetailPage = () => {
       
       try {
         setLoadingPrice(true);
-        console.log('🔍 Loading price for region:', region.id, '(', region.title, ')');
         
-        const priceData = await fetchRegionPrice(region.id);
-        setPrice(priceData);
-        
-        console.log('✅ Price loaded successfully:', priceData);
+        // Use the new dynamic pricing system
+        const priceData = await fetchDefaultRegionPrice(region.id);
+        setPrice(priceData.formattedPrice);
+        setPriceSubtitle(priceData.recurring ? `Every ${priceData.interval}` : 'One-time payment');
+        setPriceDescription(priceData.recurring 
+          ? 'Access to all content in this district' 
+          : 'Lifetime access to all content in this district'
+        );
       } catch (error) {
         console.error('❌ Failed to load price:', error);
-        // fetchRegionPrice already handles fallbacks, so this shouldn't happen
-        setPrice({ formattedPrice: '€4,99' });
+        // Use the new fallback system
+        const fallbackPrice = getFallbackPrice(region.id);
+        setPrice(fallbackPrice);
+        setPriceSubtitle('One-time payment');
+        setPriceDescription('Lifetime access to all content in this district');
       } finally {
         setLoadingPrice(false);
       }
@@ -237,7 +239,6 @@ const RegionDetailPage = () => {
     const stripeUrl = stripeLinks[region.id];
     
     if (stripeUrl) {
-      console.log('🔗 Redirecting directly to Stripe for', region.title, '→', stripeUrl);
       window.location.href = stripeUrl;
     } else {
       console.error('❌ No Stripe link found for region:', region.id);
@@ -308,12 +309,10 @@ const RegionDetailPage = () => {
               <img src="/images/unlockdis.png" alt="Locked" className="unlock-icon-img" />
             </div>
             <div className="price-large">
-              {loadingPrice ? 'Loading...' : (price?.formattedPrice || '€4,99')}
+              {loadingPrice ? 'Loading...' : (price || '€4,99')}
             </div>
-            <div className="price-subtitle">One-time payment</div>
-            <div className="price-description">
-              Lifetime access to all<br/>
-              content in this district
+            <div className="price-subtitle">
+              One-time payment
             </div>
             <button className="get-it-now-btn" onClick={handleGetItNow}>
         Unlock District

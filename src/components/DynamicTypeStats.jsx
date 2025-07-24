@@ -21,14 +21,14 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
   const shouldUseRestaurantIcon = (type) => {
     const typeLower = type?.toLowerCase();
     const shouldUse = typeLower === 'food & drink' || typeLower === 'food and drink' || typeLower === 'restaurant' || typeLower === 'cafe' || typeLower === 'dining';
-    console.log('🍽️ shouldUseRestaurantIcon:', { type, typeLower, shouldUse });
+    // console.log('🍽️ shouldUseRestaurantIcon:', { type, typeLower, shouldUse });
     return shouldUse;
   };
 
   // Get icon based on type - using the same logic as Map.jsx
   const getTypeIcon = (type) => {
-    console.log('🔍 getTypeIcon called with type:', type);
-    console.log('🔍 shouldUseRestaurantIcon(type):', shouldUseRestaurantIcon(type));
+    // console.log('🔍 getTypeIcon called with type:', type);
+    // console.log('🔍 shouldUseRestaurantIcon(type):', shouldUseRestaurantIcon(type));
     
     // Check for special icon components first
     if (shouldUseBrickWallIcon(type)) {

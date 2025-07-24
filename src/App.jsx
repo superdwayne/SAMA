@@ -9,6 +9,7 @@ import Payment from './components/Payment';
 import EmailTest from './components/EmailTest';
 import DatasetDebug from './components/DatasetDebug';
 import QuickTest from './components/QuickTest';
+import DynamicPricingTest from './components/DynamicPricingTest';
 import Success from './components/Success';
 import SuccessModal from './components/SuccessModal';
 import ActivatePage from './pages/ActivatePage';
@@ -180,6 +181,7 @@ function App() {
           <Route path="/email-test" element={<EmailTest />} />
           <Route path="/debug-dataset" element={<DatasetDebug />} />
           <Route path="/quick-test" element={<QuickTest />} />
+          <Route path="/dynamic-pricing-test" element={<DynamicPricingTest />} />
         </Routes>
 
         {/* Success Modal */}

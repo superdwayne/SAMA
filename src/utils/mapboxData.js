@@ -91,24 +91,24 @@ export const fetchMapboxDataset = async (specificRegion = null) => {
         const props = feature.properties;
         
         // Debug: log the first few features to see available properties
-        if (index < 3) {
-          console.log(`🔍 Feature ${index} properties:`, props);
-          console.log(`🔍 Feature ${index} coordinates:`, coords);
-        }
+        // if (index < 3) {
+        //   console.log(`🔍 Feature ${index} properties:`, props);
+        //   console.log(`🔍 Feature ${index} coordinates:`, coords);
+        // }
         
         const district = props.region || props.district || 'Centrum';
         
         // Debug: Log the first few conversions
-        if (index < 5) {
-          console.log(`🔄 Converting feature ${index}:`, {
-            title: props.title || props.Title || 'Untitled Location',
-            propsRegion: props.region,
-            propsDistrict: props.district,
-            finalDistrict: district,
-            coordinates: [coords[1], coords[0]], // lat, lng
-            originalCoords: coords // lng, lat
-          });
-        }
+        // if (index < 5) {
+        //   console.log(`🔄 Converting feature ${index}:`, {
+        //     title: props.title || props.Title || 'Untitled Location',
+        //     propsRegion: props.region,
+        //     propsDistrict: props.district,
+        //     finalDistrict: district,
+        //     coordinates: [coords[1], coords[0]], // lat, lng
+        //     originalCoords: coords // lng, lat
+        //   });
+        // }
         
         return {
           id: feature.id || `mapbox-${index}`,
@@ -305,7 +305,7 @@ export const calculateRegionStats = async (specificRegion = null) => {
       regionStats[normalizedRegion].totalLocations++;
     });
     
-    console.log('📊 Calculated region statistics with dynamic types:', regionStats);
+    // console.log('📊 Calculated region statistics with dynamic types:', regionStats);
     return regionStats;
     
   } catch (error) {

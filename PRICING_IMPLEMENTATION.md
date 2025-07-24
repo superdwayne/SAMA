@@ -81,7 +81,7 @@ Implemented dynamic pricing system that pulls real-time prices from Stripe per r
 ### Manual Testing:
 ```bash
 # Test pricing API directly
-curl "https://amsterdamstreetart-ow027wxkh-dpms-projects-8cd1083b.vercel.app/api/get-price?priceId=price_1RlrHzJ3urOr8HD7UDo4U0vY"
+curl "https://www.streetartmapamsterdam.nl/api/get-price?priceId=price_1RlrHzJ3urOr8HD7UDo4U0vY"
 
 # Run automated test
 node test-pricing.js
@@ -97,7 +97,7 @@ node test-pricing.js
 
 ### Frontend (.env.local):
 ```bash
-VITE_API_URL=https://amsterdamstreetart-ow027wxkh-dpms-projects-8cd1083b.vercel.app/api
+VITE_API_URL=https://www.streetartmapamsterdam.nl/api
 ```
 
 ### Backend (.env):
