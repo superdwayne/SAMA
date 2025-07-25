@@ -339,6 +339,9 @@ const normalizeRegionName = (regionName) => {
 
 // Helper function to normalize item types
 const normalizeItemType = (type) => {
+  // Replace "AND" with "&" in type names
+  const formattedType = type.replace(/\bAND\b/g, '&');
+  
   // Map similar types to standardized names
   const typeMap = {
     'mural': 'Mural',
@@ -364,23 +367,25 @@ const normalizeItemType = (type) => {
     'bomb': 'Bomb',
     'wildstyle': 'Wildstyle',
     'wild style': 'Wildstyle',
-    'wild-style': 'Wildstyle'
+    'wild-style': 'Wildstyle',
+    'food and drink': 'Food & Drink',
+    'food & drink': 'Food & Drink'
   };
   
   // Check for exact matches first
-  if (typeMap[type]) {
-    return typeMap[type];
+  if (typeMap[formattedType]) {
+    return typeMap[formattedType];
   }
   
   // Check for partial matches
   for (const [key, value] of Object.entries(typeMap)) {
-    if (type.includes(key) || key.includes(type)) {
+    if (formattedType.includes(key) || key.includes(formattedType)) {
       return value;
     }
   }
   
   // If no match found, capitalize the first letter
-  return type.charAt(0).toUpperCase() + type.slice(1);
+  return formattedType.charAt(0).toUpperCase() + formattedType.slice(1);
 };
 
 // Export dataset info for reference

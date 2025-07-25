@@ -25,6 +25,12 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
     return shouldUse;
   };
 
+  // Format type label - replace "AND" with "&"
+  const formatTypeLabel = (type) => {
+    if (!type) return '';
+    return type.replace(/\bAND\b/g, '&');
+  };
+
   // Get icon based on type - using the same logic as Map.jsx
   const getTypeIcon = (type) => {
     // console.log('🔍 getTypeIcon called with type:', type);
@@ -156,7 +162,7 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
                 {getTypeIcon(type)}
               </span>
               <span className="stat-number">{count}</span>
-              <span className="stat-label">{type}</span>
+              <span className="stat-label">{formatTypeLabel(type)}</span>
             </div>
           ))}
         </div>
