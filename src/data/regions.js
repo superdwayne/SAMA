@@ -7,7 +7,7 @@ export const amsterdamRegions = {
       type: 'Feature',
       properties: {
         name: 'Centre',
-        description: 'The historic heart of Amsterdam, featuring iconic canals and vibrant street art in unexpected corners.',
+        description: 'Tourists, tags & tension. The city\'s loudest gallery',
         featuredInfo: 'Home to STRAAT Museum and numerous hidden gems in the Jordaan neighborhood.',
         aliases: ['Center'] // Alternative names
       },
@@ -26,7 +26,7 @@ export const amsterdamRegions = {
       type: 'Feature',
       properties: {
         name: 'Noord',
-        description: 'Amsterdam Noord is the street art capital with massive murals and the famous NDSM wharf.',
+        description: 'From shipyards to street art. North is culture unleashed',
         featuredInfo: 'NDSM wharf is a creative hub with legal walls and stunning large-scale murals.',
         aliases: ['North'] // Alternative names
       },
@@ -45,7 +45,7 @@ export const amsterdamRegions = {
       type: 'Feature',
       properties: {
         name: 'South',
-        description: 'Zuid features upscale street art and the MOCO Museum with works by Banksy.',
+        description: 'Sleek, chic and secretly scribbled. Flavours and colours, artfully mingled',
         featuredInfo: 'Visit MOCO Museum for contemporary street art exhibitions.',
         aliases: ['Zuid']
       },
@@ -64,7 +64,7 @@ export const amsterdamRegions = {
       type: 'Feature',
       properties: {
         name: 'East',
-        description: 'Oost is a multicultural district with diverse street art reflecting its communities.',
+        description: 'Hip, hungry and covered in culture. From raw walls to selfies',
         featuredInfo: 'Javastraat and Dappermarkt area showcase international street art styles.',
         aliases: ['Oost']
       },
@@ -83,7 +83,7 @@ export const amsterdamRegions = {
       type: 'Feature',
       properties: {
         name: 'West',
-        description: 'West Amsterdam combines industrial heritage with contemporary urban art.',
+        description: 'Ladi back but loud. Street art grows between bikes, canals and Foodhallen',
         featuredInfo: 'The Westerpark area hosts regular street art festivals and events.',
         aliases: ['Westerpark']
       },
@@ -102,7 +102,7 @@ export const amsterdamRegions = {
       type: 'Feature',
       properties: {
         name: 'South-East',
-        description: 'Zuidoost showcases vibrant murals celebrating cultural diversity.',
+        description: 'Beats on speakers, art on blocks. Every wall is a manifest',
         featuredInfo: 'Bijlmer area features powerful community-driven street art projects.',
         aliases: ['Zuidoost']
       },
@@ -121,7 +121,7 @@ export const amsterdamRegions = {
       type: 'Feature',
       properties: {
         name: 'Nieuw-West',
-        description: 'Nieuw-West is an emerging street art destination with fresh perspectives and innovative works.',
+        description: 'From grey to great. New-West paints its own future',
         featuredInfo: 'Emerging artists and experimental street art installations.',
         aliases: ['New-West']
       },

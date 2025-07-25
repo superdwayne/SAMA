@@ -73,6 +73,66 @@ const RegionDetailPage = () => {
       );
     }
     
+    if (region.id === 'nieuw-west') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">From grey to great.</span>
+          <br />
+          <span className="region-description-regular">New-West paints its own future</span>
+        </div>
+      );
+    }
+    
+    if (region.id === 'zuid' || region.id === 'south') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">Sleek, chic and secretly scribbled.</span>
+          <br />
+          <span className="region-description-regular">Flavours and colours, artfully mingled</span>
+        </div>
+      );
+    }
+    
+    if (region.id === 'west') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">Ladi back but loud.</span>
+          <br />
+          <span className="region-description-regular">Street art grows between bikes, canals and Foodhallen</span>
+        </div>
+      );
+    }
+    
+    if (region.id === 'east') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">Hip, hungry and covered in culture.</span>
+          <br />
+          <span className="region-description-regular">From raw walls to selfies</span>
+        </div>
+      );
+    }
+    
+    if (region.id === 'noord' || region.id === 'north') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">From shipyards to street art.</span>
+          <br />
+          <span className="region-description-regular">North is culture unleashed</span>
+        </div>
+      );
+    }
+    
+    if (region.id === 'south-east') {
+      return (
+        <div>
+          <span className="region-description-ultrabold">Beats on speakers, art on blocks.</span>
+          <br />
+          <span className="region-description-regular">Every wall is a manifest</span>
+        </div>
+      );
+    }
+    
     // For other regions, render with HTML
     return <span dangerouslySetInnerHTML={{ __html: region.description }} />;
   };

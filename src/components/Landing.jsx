@@ -24,7 +24,7 @@ const regions = [
   {
     id: 'nieuw-west',
     title: 'Nieuw-West',
-    description: 'Emerging street art destination with fresh perspectives',
+    description: 'From grey to great. New-West paints its own future',
     latitude: 52.3700,
     longitude: 4.8100,
     isFree: false,
@@ -36,7 +36,7 @@ const regions = [
   {
     id: 'Zuid',
     title: 'South',
-    description: 'Upscale galleries meet urban edge.<br /> Where sophistication gets street smart',
+    description: 'Sleek, chic and secretly scribbled. Flavours and colours, artfully mingled',
     latitude: 52.3500,
     longitude: 4.8850,
     isFree: false,
@@ -48,7 +48,7 @@ const regions = [
   {
     id: 'west',
     title: 'West',
-    description: 'West Amsterdam combines industrial heritage with contemporary urban art',
+    description: 'Ladi back but loud. Street art grows between bikes, canals and Foodhallen',
     latitude: 52.3720,
     longitude: 4.8500,
     isFree: false,
@@ -60,7 +60,7 @@ const regions = [
   {
     id: 'east',
     title: 'East',
-    description: 'East is hip, hungry and covered in color',
+    description: 'Hip, hungry and covered in culture. From raw walls to selfies',
     latitude: 52.3600,
     longitude: 4.9400,
     isFree: false,
@@ -72,7 +72,7 @@ const regions = [
   {
     id: 'noord',
     title: 'Noord',
-    description: 'From shipyards to street art. Noord is culture unleashed',
+    description: 'From shipyards to street art.  North is culture unleashed',
     latitude: 52.4000,
     longitude: 4.9000,
     isFree: false,
@@ -84,7 +84,7 @@ const regions = [
   {
     id: 'south-east',
     title: 'South-East',
-    description: 'South-East showcases vibrant murals celebrating cultural diversity',
+    description: 'Beats on speakers, art on blocks. Every wall is a manifest',
     latitude: 52.3150,
     longitude: 4.9550,
     isFree: false,
