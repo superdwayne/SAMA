@@ -115,20 +115,8 @@ async function validateMagicLink(token) {
       }
     }
     
-    // Clear the magic token after use (one-time use)
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({ 
-        magic_token: null,
-        magic_token_expires_at: null,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', user.id);
-    
-    if (updateError) {
-      console.error('❌ Error clearing magic token:', updateError);
-      // Continue anyway, as the validation is still valid
-    }
+    // Don't clear the magic token - allow reuse for 30 days
+    // The token will expire naturally after 30 days
     
     return {
       valid: true,

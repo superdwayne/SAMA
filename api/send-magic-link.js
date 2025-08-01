@@ -153,7 +153,7 @@ async function checkPurchaseHistory(email) {
 async function createMagicLink(email) {
   try {
     const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 hours
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
     
     // Update the user with the new magic token
     const { data, error } = await supabase
@@ -303,7 +303,7 @@ discover the stories that shape this vibrant part of Amsterdam.
                         </tr>
                         <tr>
                           <td style="color: #000; font-size: 13px; font-family: Verdana, Arial, sans-serif; padding: 8px 0;" class="dark-mode-text">
-                            This magic can only be used once and is valid for 30 days.
+                            This magic link is valid for 30 days and can be used multiple times.
                           </td>
                         </tr>
                        
