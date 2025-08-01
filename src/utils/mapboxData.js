@@ -369,7 +369,11 @@ const normalizeItemType = (type) => {
     'wild style': 'Wildstyle',
     'wild-style': 'Wildstyle',
     'food and drink': 'Food & Drink',
-    'food & drink': 'Food & Drink'
+    'food & drink': 'Food & Drink',
+    'culture places': 'Culture Places',
+    'culture place': 'Culture Places',
+    'cultural place': 'Culture Places',
+    'cultural places': 'Culture Places'
   };
   
   // Check for exact matches first
@@ -501,6 +505,7 @@ const getTypeIcon = (type) => {
   if (typeLower.includes('wildstyle') || typeLower.includes('wild style')) return '🌀';
   if (typeLower.includes('gallery')) return '🏛️';
   if (typeLower.includes('museum')) return '🏛️';
+  if (typeLower.includes('culture places') || typeLower.includes('cultural place')) return '🎭';
   if (typeLower.includes('legal wall') || typeLower.includes('legalwall')) return '🧱';
   if (typeLower.includes('wall')) return '🧱';
   

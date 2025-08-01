@@ -256,5 +256,17 @@ export const streetArtLocations = [
     latitude: 52.3600,
     longitude: 4.8100,
     address: 'Plein 40-45'
+  },
+  {
+    id: 22,
+    title: 'Cultural Center Amsterdam',
+    artist: 'Various',
+    description: 'Multi-cultural arts and performance center',
+    type: 'culture places',
+    district: 'Centre',
+    latitude: 52.3750,
+    longitude: 4.8900,
+    address: 'Cultural District',
+    openingHours: 'Tue-Sun 10:00-22:00'
   }
 ];

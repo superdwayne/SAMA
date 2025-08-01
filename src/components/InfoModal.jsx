@@ -90,8 +90,8 @@ const InfoModal = ({ isOpen, onClose }) => {
               }}
             />
             <img 
-              src="/images/EU-logo.png" 
-              alt="European Union - Creative Europe Programme" 
+              src="/images/EU-logo.jpg" 
+              alt="Co funded by the European Union" 
               className="footer-logo eu-logo"
               onError={(e) => {
                 e.target.style.display = 'none';
