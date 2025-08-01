@@ -50,7 +50,7 @@ export const getCategoryColor = (category) => {
     description: 'Away from speakers, art speaks from concrete in a megaphone.',
     position: { lng: 4.9500, lat: 52.3300 },
     category: 'community',
-    icon: '🎪'
+    icon: '🎭'
   },
   'Nieuw-West': {
     shortName: 'Nieuw-West',

@@ -79,7 +79,7 @@ export const artRoutes = [
     id: 'legal-walls-tour',
     name: 'Legal Walls Adventure',
     description: 'Explore Amsterdam\'s legal graffiti spots and see art in progress',
-    icon: '🎪',
+    icon: '🎭',
     color: '#DDA0DD',
     difficulty: 'Challenging',
     duration: '3-4 hours',
