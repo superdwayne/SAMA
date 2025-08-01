@@ -141,17 +141,17 @@ const Payment = ({ setUnlockedRegions }) => {
 
       // Direct Stripe links for each region (with embedded metadata)
   const stripeLinks = {
-    'Centre': 'https://buy.stripe.com/cNi14o5rJ8KQf9hgZx1oI08',
-    'Center': 'https://buy.stripe.com/cNi14o5rJ8KQf9hgZx1oI08', // Alternative spelling
-    'Noord': 'https://buy.stripe.com/00w6oI4nFf9egdl9x51oI07',
-    'North': 'https://buy.stripe.com/00w6oI4nFf9egdl9x51oI07', // Alternative spelling
-    'East': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c',
-    'Nieuw-West': 'https://buy.stripe.com/00w00k8DVf9e3qzbFd1oI0a',
-    'New-West': 'https://buy.stripe.com/00w00k8DVf9e3qzbFd1oI0a', // Alternative spelling
-    'South': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c',
-    'Zuid': 'https://buy.stripe.com/bJe00kdYfe5a3qz24D1oI0c', // Alternative Dutch spelling
-    'South-East': 'https://buy.stripe.com/dRmcN6cUb7GM1ir5gP1oI09',
-    'West': 'https://buy.stripe.com/fZu6oI6vNe5af9h7oX1oI0b'
+    'Centre': 'https://buy.stripe.com/aFa6oIf2j9OU1ir4cL1oI0M',
+    'Center': 'https://buy.stripe.com/aFa6oIf2j9OU1ir4cL1oI0M', // Alternative spelling
+    'Noord': 'https://buy.stripe.com/14AbJ23jB4uA7GP5gP1oI0L',
+    'North': 'https://buy.stripe.com/14AbJ23jB4uA7GP5gP1oI0L', // Alternative spelling
+    'East': 'https://buy.stripe.com/dRmfZidYf1ioe5d8t11oI0Q',
+    'Nieuw-West': 'https://buy.stripe.com/bJe28s8DVbX27GP7oX1oI0N',
+    'New-West': 'https://buy.stripe.com/bJe28s8DVbX27GP7oX1oI0N', // Alternative spelling
+    'South': 'https://buy.stripe.com/aFa28s3jBe5ad1910z1oI0P',
+    'Zuid': 'https://buy.stripe.com/aFa28s3jBe5ad1910z1oI0P', // Alternative Dutch spelling
+    'South-East': 'https://buy.stripe.com/14A8wQdYfe5a6CLfVt1oI0K',
+    'West': 'https://buy.stripe.com/14A9AU7zR7GM6CL38H1oI0O'
   };
 
     const stripeUrl = stripeLinks[displayRegion];

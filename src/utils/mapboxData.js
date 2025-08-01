@@ -4,6 +4,18 @@
 
 import { getMapboxToken } from './mapboxAuth';
 
+// Utility function to clean text data from Mapbox and fix encoding issues
+const cleanTextData = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  
+  // Remove or replace problematic characters
+  return text
+    .replace(/[\uFFFD]/g, '') // Remove replacement characters
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Remove control characters
+    .replace(/[^\x20-\x7E\u00A0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF\u2C60-\u2C7F\uA720-\uA7FF]/g, '') // Keep only printable characters and common Unicode ranges
+    .trim();
+};
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 // Region-specific dataset IDs
@@ -112,18 +124,18 @@ export const fetchMapboxDataset = async (specificRegion = null) => {
         
         return {
           id: feature.id || `mapbox-${index}`,
-          title: props.title || props.Title || 'Untitled Location',
-          artist: props.artist || '',
-          description: props.description || props.des || '',
-          des: props.des || props.description || '',
+          title: cleanTextData(props.title || props.Title || 'Untitled Location'),
+          artist: cleanTextData(props.artist || ''),
+          description: cleanTextData(props.description || props.des || ''),
+          des: cleanTextData(props.des || props.description || ''),
           image_url: props.image_url || '',
-          type: props.type || 'mural',
-          district: district,
+          type: cleanTextData(props.type || 'mural'),
+          district: cleanTextData(district),
           latitude: coords[1],
           longitude: coords[0],
-          address: props.address || '',
-          openingHours: props.openingHours || props.hours || '',
-          year: props.year || '',
+          address: cleanTextData(props.address || ''),
+          openingHours: cleanTextData(props.openingHours || props.hours || ''),
+          year: cleanTextData(props.year || ''),
           image: props.image || '',
           source: 'mapbox'
         };
@@ -280,7 +292,7 @@ export const calculateRegionStats = async (specificRegion = null) => {
     
     allLocations.forEach(feature => {
       const props = feature.properties;
-      const region = props.region || props.district || 'Centrum';
+      const region = cleanTextData(props.region || props.district || 'Centrum');
       
       // Normalize region names
       const normalizedRegion = normalizeRegionName(region);
@@ -293,7 +305,7 @@ export const calculateRegionStats = async (specificRegion = null) => {
       }
       
       // Get item type and normalize it
-      const itemType = (props.type || 'mural').toLowerCase().trim();
+      const itemType = cleanTextData(props.type || 'mural').toLowerCase().trim();
       const normalizedType = normalizeItemType(itemType);
       
       // Count by normalized type
@@ -339,8 +351,11 @@ const normalizeRegionName = (regionName) => {
 
 // Helper function to normalize item types
 const normalizeItemType = (type) => {
+  // Clean the type text first
+  const cleanedType = cleanTextData(type);
+  
   // Replace "AND" with "&" in type names
-  const formattedType = type.replace(/\bAND\b/g, '&');
+  const formattedType = cleanedType.replace(/\bAND\b/g, '&');
   
   // Map similar types to standardized names
   const typeMap = {
