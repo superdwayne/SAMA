@@ -25,10 +25,53 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
     return shouldUse;
   };
 
-  // Format type label - replace "AND" with "&"
+  // Format type label - map Mapbox values to standardized names
   const formatTypeLabel = (type) => {
     if (!type) return '';
-    return type.replace(/\bAND\b/g, '&');
+    
+    const typeLower = type.toLowerCase();
+    
+    // Map Mapbox values to standardized category names
+    switch (typeLower) {
+      case 'artwork':
+      case 'mural':
+      case 'sculpture':
+      case 'graffiti':
+        return 'Artworks';
+        
+      case 'souvenirs':
+      case 'shopping':
+      case 'shop':
+        return 'Souvenirs';
+        
+      case 'food & drink':
+      case 'food and drink':
+      case 'restaurant':
+      case 'cafe':
+      case 'dining':
+        return 'Food & Drink Spots';
+        
+      case 'gallery':
+        return 'Galleries';
+        
+      case 'culture place':
+      case 'culture places':
+        return 'Culture Places';
+        
+      case 'institution':
+      case 'instituion': // Typo fix
+      case 'museum':
+        return 'Institutions';
+        
+      case 'legal-wall':
+      case 'brick-wall':
+      case 'wall':
+        return 'Legal Graffiti Wall';
+        
+      default:
+        // For any unmapped types, just replace "AND" with "&" and capitalize
+        return type.replace(/\bAND\b/g, '&').replace(/\b\w/g, l => l.toUpperCase());
+    }
   };
 
   // Get icon based on type - using the same logic as Map.jsx
