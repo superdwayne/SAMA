@@ -105,8 +105,8 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
       case 'souvenirs': return '🛍️';
       case 'shopping': return '🛍️';
       // case 'food & drink': return '🍽️'; // Removed - handled by RestaurantIcon component
-      case 'culture place': return '🎪';
-      case 'culture places': return '🎪';
+      case 'culture place': return '🎭';
+      case 'culture places': return '🎭';
       case 'institution': return '🏛️';
       case 'instituion': return '🏛️';  // Typo fix
       
