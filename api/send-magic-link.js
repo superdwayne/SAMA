@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     
     // Create magic link
     const magicToken = await createMagicLink(normalizedEmail);
-    const magicLinkUrl = `${req.headers.origin || 'https://www.streetartmapamsterdam.nl'}?magic=${magicToken}`;
+    const magicLinkUrl = `https://www.streetartmapamsterdam.nl?magic=${magicToken}`;
     
     // Send email
     const emailSent = await sendMagicLinkEmail(normalizedEmail, magicLinkUrl, purchaseData);

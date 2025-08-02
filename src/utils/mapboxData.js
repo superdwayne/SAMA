@@ -124,7 +124,7 @@ export const fetchMapboxDataset = async (specificRegion = null) => {
         
         return {
           id: feature.id || `mapbox-${index}`,
-          title: cleanTextData(props.title || props.Title || 'Untitled Location'),
+          title: cleanTextData(props.title || props.Title || ''),
           artist: cleanTextData(props.artist || ''),
           description: cleanTextData(props.description || props.des || ''),
           des: cleanTextData(props.des || props.description || ''),

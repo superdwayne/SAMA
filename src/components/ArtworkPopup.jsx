@@ -76,7 +76,7 @@ const ArtworkPopup = ({ artwork, onClose, onNavigate }) => {
         <div className="popup-content-scrollable">
           <div className="popup-content-section">
             <div className="artist-label">{artwork.artist || artwork.Artist || ''}</div>
-            <h1 className="artwork-title">{artwork.title || artwork.Title || 'WORK TITLE'}</h1>
+            <h1 className="artwork-title">{artwork.title || artwork.Title || ''}</h1>
             <p className="artwork-description">
               {artwork.des || artwork.description || 'This is a short text with information about this location.'}
             </p>
