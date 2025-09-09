@@ -16,9 +16,9 @@ const REGION_PRICES = {
   'New-West': 'price_1RgmTNJ3urOr8HD72uzjhCvR',   // Same as Nieuw-West (English spelling)
   'New-west': 'price_1RgmTNJ3urOr8HD72uzjhCvR',   // Same as Nieuw-West (English spelling, lowercase w)
   // Available for future regions:
-  // 'West': 'price_1234567890',
-  // 'South': 'price_1234567891',
-  // 'South-East': 'price_1234567892',
+  'West': 'price_1RrKZBJ3urOr8HD7GELwTMi9',
+  'South': 'price_1RrKa2J3urOr8HD7g5KOMc0Q', // South region
+  'South-East': 'price_1RrKXIJ3urOr8HD78ijOukso',
 };
 
 export default async function handler(req, res) {

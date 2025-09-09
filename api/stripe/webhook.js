@@ -41,6 +41,22 @@ const normalizeRegionName = (region) => {
   return normalized || region; // Return original if no mapping found
 };
 
+// Extract region from product name as fallback
+const extractRegionFromProductName = (productName) => {
+  if (!productName) return null;
+  
+  const name = productName.toLowerCase();
+  
+  if (name.includes('centre') || name.includes('center')) return 'Centre';
+  if (name.includes('noord') || name.includes('north')) return 'Noord';
+  if (name.includes('south')) return 'South';
+  if (name.includes('east') || name.includes('oost')) return 'East';
+  if (name.includes('west') && name.includes('nieuw')) return 'Nieuw-West';
+  if (name.includes('west')) return 'West';
+  
+  return null;
+};
+
 // Store purchase in database
 async function storePurchase(session, region) {
   try {
@@ -462,7 +478,7 @@ export default async (req, res) => {
         // If still no region, check the price metadata from line items
         if (!region || region === 'Center') {
           try {
-            console.log('🏷️ Checking price metadata from line items...');
+            console.log('🏷️ Checking price and product metadata from line items...');
             
             // Expand line_items to get price data
             const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
@@ -474,9 +490,31 @@ export default async (req, res) => {
               console.log('🔍 Price ID:', price.id);
               console.log('🔍 Price metadata:', JSON.stringify(price.metadata, null, 2));
               
+              // First check price metadata
               if (price.metadata?.region) {
                 region = price.metadata.region;
                 console.log('✅ Using region from price metadata:', region);
+              } else {
+                // Then check product metadata
+                try {
+                  const product = await stripe.products.retrieve(price.product);
+                  console.log('🔍 Product name:', product.name);
+                  console.log('🔍 Product metadata:', JSON.stringify(product.metadata, null, 2));
+                  
+                  if (product.metadata?.region) {
+                    region = product.metadata.region;
+                    console.log('✅ Using region from product metadata:', region);
+                  } else if (product.name) {
+                    // Last resort: extract from product name
+                    const regionFromName = extractRegionFromProductName(product.name);
+                    if (regionFromName) {
+                      region = regionFromName;
+                      console.log('✅ Using region from product name:', region);
+                    }
+                  }
+                } catch (productError) {
+                  console.error('❌ Error fetching product details:', productError);
+                }
               }
             }
           } catch (error) {
