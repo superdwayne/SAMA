@@ -292,7 +292,6 @@ const RegionDetailPage = () => {
       'new-west': 'https://buy.stripe.com/bJe28s8DVbX27GP7oX1oI0N',
       'south': 'https://buy.stripe.com/aFa28s3jBe5ad1910z1oI0P',
       'zuid': 'https://buy.stripe.com/aFa28s3jBe5ad1910z1oI0P',
-      'south-east': 'https://buy.stripe.com/14A8wQdYfe5a6CLfVt1oI0K',
       'west': 'https://buy.stripe.com/14A9AU7zR7GM6CL38H1oI0O'
     };
 

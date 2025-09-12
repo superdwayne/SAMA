@@ -150,7 +150,6 @@ const Payment = ({ setUnlockedRegions }) => {
     'New-West': 'https://buy.stripe.com/bJe28s8DVbX27GP7oX1oI0N', // Alternative spelling
     'South': 'https://buy.stripe.com/aFa28s3jBe5ad1910z1oI0P',
     'Zuid': 'https://buy.stripe.com/aFa28s3jBe5ad1910z1oI0P', // Alternative Dutch spelling
-    'South-East': 'https://buy.stripe.com/14A8wQdYfe5a6CLfVt1oI0K',
     'West': 'https://buy.stripe.com/14A9AU7zR7GM6CL38H1oI0O'
   };
 

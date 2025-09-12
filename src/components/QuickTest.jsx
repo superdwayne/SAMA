@@ -217,17 +217,15 @@ const QuickTest = () => {
         
         <p><strong>Centre Dataset ID:</strong> cmcut1t446aqw1lljnelbo105</p>
         <p><strong>North Dataset ID:</strong> cmfgx8b9p4j941oo91237sgz8</p>
-        <p><strong>East Dataset ID:</strong> cmd8p7zbx01hp1ts22egpc8gj</p>
+        <p><strong>East Dataset ID:</strong> cmfhcvur21oi61oqway88hf1a</p>
         <p><strong>West Dataset ID:</strong> cmd8p91sz2zh71opaktguag9b</p>
         <p><strong>South Dataset ID:</strong> cmd8paqs41srl1nqe0oqxmvjg</p>
-        <p><strong>South-East Dataset ID:</strong> cmd8p9ju32k3h1nns36c6ugbv</p>
         <p><strong>Nieuw-West Dataset ID:</strong> cmcxrlelg0rjy1mrxtpa0coq1</p>
         <p><strong>Manage Centre at:</strong> <a href="https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105" target="_blank">Mapbox Studio (Centre)</a></p>
         <p><strong>Manage North at:</strong> <a href="https://studio.mapbox.com/datasets/cmfgx8b9p4j941oo91237sgz8" target="_blank">Mapbox Studio (North)</a></p>
-        <p><strong>Manage East at:</strong> <a href="https://studio.mapbox.com/datasets/cmd8p7zbx01hp1ts22egpc8gj" target="_blank">Mapbox Studio (East)</a></p>
+        <p><strong>Manage East at:</strong> <a href="https://studio.mapbox.com/datasets/cmfhcvur21oi61oqway88hf1a" target="_blank">Mapbox Studio (East)</a></p>
         <p><strong>Manage West at:</strong> <a href="https://studio.mapbox.com/datasets/cmd8p91sz2zh71opaktguag9b" target="_blank">Mapbox Studio (West)</a></p>
         <p><strong>Manage South at:</strong> <a href="https://studio.mapbox.com/datasets/cmd8paqs41srl1nqe0oqxmvjg" target="_blank">Mapbox Studio (South)</a></p>
-        <p><strong>Manage South-East at:</strong> <a href="https://studio.mapbox.com/datasets/cmd8p9ju32k3h1nns36c6ugbv" target="_blank">Mapbox Studio (South-East)</a></p>
         <p><strong>Manage Nieuw-West at:</strong> <a href="https://studio.mapbox.com/datasets/cmcxrlelg0rjy1mrxtpa0coq1" target="_blank">Mapbox Studio (Nieuw-West)</a></p>
       </div>
     </div>

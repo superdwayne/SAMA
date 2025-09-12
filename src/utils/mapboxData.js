@@ -25,12 +25,11 @@ const REGION_DATASETS = {
   'Centrum': 'cmcut1t446aqw1lljnelbo105', // Dutch name for Center
   'Noord': 'cmfgx8b9p4j941oo91237sgz8', // North dataset
   'North': 'cmfgx8b9p4j941oo91237sgz8', // Alternative spelling
-  'East': 'cmd8p7zbx01hp1ts22egpc8gj', // East dataset
+  'East': 'cmfhcvur21oi61oqway88hf1a', // East dataset
   'Nieuw-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // Nieuw-West specific dataset
   'New-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // Alternative spelling
   'West': 'cmd8p91sz2zh71opaktguag9b', // West dataset
   'South': 'cmd8paqs41srl1nqe0oqxmvjg', // South dataset
-  'South-East': 'cmd8p9ju32k3h1nns36c6ugbv' // South-East dataset
 };
 
 // In-memory cache for already-fetched datasets (per region)
@@ -439,9 +438,9 @@ export const DATASET_INFO = {
     editUrl: 'https://studio.mapbox.com/datasets/cmfgx8b9p4j941oo91237sgz8'
   },
   East: {
-    id: 'cmd8p7zbx01hp1ts22egpc8gj',
+    id: 'cmfhcvur21oi61oqway88hf1a',
     name: 'Amsterdam Street Art - East District',
-    editUrl: 'https://studio.mapbox.com/datasets/cmd8p7zbx01hp1ts22egpc8gj'
+    editUrl: 'https://studio.mapbox.com/datasets/cmfhcvur21oi61oqway88hf1a'
   },
   West: {
     id: 'cmd8p91sz2zh71opaktguag9b',
@@ -452,11 +451,6 @@ export const DATASET_INFO = {
     id: 'cmd8paqs41srl1nqe0oqxmvjg',
     name: 'Amsterdam Street Art - South District',
     editUrl: 'https://studio.mapbox.com/datasets/cmd8paqs41srl1nqe0oqxmvjg'
-  },
-  'South-East': {
-    id: 'cmd8p9ju32k3h1nns36c6ugbv',
-    name: 'Amsterdam Street Art - South-East District',
-    editUrl: 'https://studio.mapbox.com/datasets/cmd8p9ju32k3h1nns36c6ugbv'
   },
   'Nieuw-West': {
     id: 'cmcxrlelg0rjy1mrxtpa0coq1',

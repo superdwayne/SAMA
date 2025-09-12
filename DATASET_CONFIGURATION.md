@@ -8,10 +8,9 @@ This document outlines the dataset configuration for the Amsterdam Street Art Ma
 |--------|------------|-------------------|
 | **Centre** | `cmcut1t446aqw1lljnelbo105` | [Manage Centre](https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105) |
 | **North** | `cmfgx8b9p4j941oo91237sgz8` | [Manage North](https://studio.mapbox.com/datasets/cmfgx8b9p4j941oo91237sgz8) |
-| **East** | `cmd8p7zbx01hp1ts22egpc8gj` | [Manage East](https://studio.mapbox.com/datasets/cmd8p7zbx01hp1ts22egpc8gj) |
+| **East** | `cmfhcvur21oi61oqway88hf1a` | [Manage East](https://studio.mapbox.com/datasets/cmfhcvur21oi61oqway88hf1a) |
 | **West** | `cmd8p91sz2zh71opaktguag9b` | [Manage West](https://studio.mapbox.com/datasets/cmd8p91sz2zh71opaktguag9b) |
 | **South** | `cmd8paqs41srl1nqe0oqxmvjg` | [Manage South](https://studio.mapbox.com/datasets/cmd8paqs41srl1nqe0oqxmvjg) |
-| **South-East** | `cmd8p9ju32k3h1nns36c6ugbv` | [Manage South-East](https://studio.mapbox.com/datasets/cmd8p9ju32k3h1nns36c6ugbv) |
 | **Nieuw-West** | `cmcxrlelg0rjy1mrxtpa0coq1` | [Manage Nieuw-West](https://studio.mapbox.com/datasets/cmcxrlelg0rjy1mrxtpa0coq1) |
 
 ## Region Aliases

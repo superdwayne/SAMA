@@ -64,7 +64,7 @@ const regions = [
     latitude: 52.3600,
     longitude: 4.9400,
     isFree: false,
-    comingSoon: true,
+    comingSoon: false,
     image: '/images/EAST.jpeg'
   },
 
@@ -80,17 +80,6 @@ const regions = [
     image: '/images/NORTH.jpg'
   },
 
-  // 7. South-East ("Zuidoost")
-  {
-    id: 'south-east',
-    title: 'South-East',
-    description: 'Beats on speakers, art on blocks. Every wall is a manifest',
-    latitude: 52.3150,
-    longitude: 4.9550,
-    isFree: false,
-    comingSoon: true,
-    image: '/images/SOUTH-EAST.jpg'
-  }
 ];
 
 // Removed getRegionFeature - no longer needed for modal

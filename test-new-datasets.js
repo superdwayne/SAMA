@@ -5,9 +5,8 @@ const MAPBOX_TOKEN = process.env.VITE_MAPBOX_TOKEN || process.env.MAPBOX_TOKEN;
 const USERNAME = 'sama-map';
 
 const NEW_DATASETS = {
-  'East': 'cmd8p7zbx01hp1ts22egpc8gj',
+  'East': 'cmfhcvur21oi61oqway88hf1a',
   'West': 'cmd8p91sz2zh71opaktguag9b', 
-  'South-East': 'cmd8p9ju32k3h1nns36c6ugbv',
   'North': 'cmfgx8b9p4j941oo91237sgz8',
   'South': 'cmd8paqs41srl1nqe0oqxmvjg'
 };
