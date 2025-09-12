@@ -8,7 +8,7 @@ const NEW_DATASETS = {
   'East': 'cmd8p7zbx01hp1ts22egpc8gj',
   'West': 'cmd8p91sz2zh71opaktguag9b', 
   'South-East': 'cmd8p9ju32k3h1nns36c6ugbv',
-  'North': 'cmd8pa31s0z4o1nqopxbxt8ob',
+  'North': 'sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk',
   'South': 'cmd8paqs41srl1nqe0oqxmvjg'
 };
 

@@ -7,7 +7,7 @@ This document outlines the dataset configuration for the Amsterdam Street Art Ma
 | Region | Dataset ID | Mapbox Studio URL |
 |--------|------------|-------------------|
 | **Centre** | `cmcut1t446aqw1lljnelbo105` | [Manage Centre](https://studio.mapbox.com/datasets/cmcut1t446aqw1lljnelbo105) |
-| **North** | `cmd8pa31s0z4o1nqopxbxt8ob` | [Manage North](https://studio.mapbox.com/datasets/cmd8pa31s0z4o1nqopxbxt8ob) |
+| **North** | `sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk` | [Manage North](https://studio.mapbox.com/datasets/sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk) |
 | **East** | `cmd8p7zbx01hp1ts22egpc8gj` | [Manage East](https://studio.mapbox.com/datasets/cmd8p7zbx01hp1ts22egpc8gj) |
 | **West** | `cmd8p91sz2zh71opaktguag9b` | [Manage West](https://studio.mapbox.com/datasets/cmd8p91sz2zh71opaktguag9b) |
 | **South** | `cmd8paqs41srl1nqe0oqxmvjg` | [Manage South](https://studio.mapbox.com/datasets/cmd8paqs41srl1nqe0oqxmvjg) |

@@ -76,7 +76,7 @@ const regions = [
     latitude: 52.4000,
     longitude: 4.9000,
     isFree: false,
-    comingSoon: true,
+    comingSoon: false,
     image: '/images/NORTH.jpg'
   },
 

@@ -344,7 +344,7 @@ const MapView = ({ unlockedRegions, setUnlockedRegions }) => {
   window.testAllDatasets = async () => {
     const datasets = {
       'Centre': 'cmcut1t446aqw1lljnelbo105',
-      'Noord': 'cmd8pa31s0z4o1nqopxbxt8ob',
+      'Noord': 'sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk',
       'East': 'cmd8p7zbx01hp1ts22egpc8gj', 
       'West': 'cmd8p91sz2zh71opaktguag9b',
       'South': 'cmd8paqs41srl1nqe0oqxmvjg',
