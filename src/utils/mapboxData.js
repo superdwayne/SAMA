@@ -422,14 +422,14 @@ export const DATASET_INFO = {
     tileset: 'sama-map.cmcut1t446aqw1lljnelbo105-2vy9x'
   },
   Noord: {
-    id: 'cmd8pa31s0z4o1nqopxbxt8ob',
+    id: 'sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk',
     name: 'Amsterdam Street Art - Noord District',
-    editUrl: 'https://studio.mapbox.com/datasets/cmd8pa31s0z4o1nqopxbxt8ob'
+    editUrl: 'https://studio.mapbox.com/datasets/sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk'
   },
   North: {
-    id: 'cmd8pa31s0z4o1nqopxbxt8ob',
+    id: 'sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk',
     name: 'Amsterdam Street Art - North District (alias for Noord)',
-    editUrl: 'https://studio.mapbox.com/datasets/cmd8pa31s0z4o1nqopxbxt8ob'
+    editUrl: 'https://studio.mapbox.com/datasets/sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk'
   },
   East: {
     id: 'cmd8p7zbx01hp1ts22egpc8gj',
