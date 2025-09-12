@@ -198,10 +198,10 @@ const RegionDetailPage = () => {
         setStatsError(null);
         
         console.log('📊 Loading dynamic stats for region:', regionName);
-        const allStats = await getRegionStats();
-        setRegionStats(allStats);
+        const regionSpecificStats = await getRegionStats(regionName);
+        setRegionStats({ [regionName]: regionSpecificStats });
         
-        console.log('✅ Region stats loaded:', allStats);
+        console.log('✅ Region stats loaded:', regionSpecificStats);
       } catch (error) {
         console.error('❌ Failed to load region stats:', error);
         setStatsError(error.message);
