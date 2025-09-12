@@ -23,8 +23,8 @@ const REGION_DATASETS = {
   'Centre': 'cmcut1t446aqw1lljnelbo105', // Centre dataset
   'Center': 'cmcut1t446aqw1lljnelbo105', // Alternative spelling
   'Centrum': 'cmcut1t446aqw1lljnelbo105', // Dutch name for Center
-  'Noord': 'cmd8pa31s0z4o1nqopxbxt8ob', // North dataset
-  'North': 'cmd8pa31s0z4o1nqopxbxt8ob', // Alternative spelling
+  'Noord': 'cmfgx8b9p4j941oo91237sgz8', // North dataset
+  'North': 'cmfgx8b9p4j941oo91237sgz8', // Alternative spelling
   'East': 'cmd8p7zbx01hp1ts22egpc8gj', // East dataset
   'Nieuw-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // Nieuw-West specific dataset
   'New-West': 'cmcxrlelg0rjy1mrxtpa0coq1', // Alternative spelling
@@ -67,7 +67,7 @@ export const fetchMapboxDataset = async (specificRegion = null) => {
       
       for (const [region, datasetId] of Object.entries(REGION_DATASETS)) {
         // Skip duplicates (alternative spellings that use the same dataset)
-        if (region === 'Center' || region === 'New-West') continue;
+        if (region === 'Center' || region === 'New-West' || region === 'North') continue;
         
         try {
           const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${datasetId}/features?access_token=${MAPBOX_TOKEN}`);
@@ -273,7 +273,7 @@ export const calculateRegionStats = async (specificRegion = null) => {
       
       for (const [region, datasetId] of Object.entries(REGION_DATASETS)) {
         // Skip duplicates (alternative spellings that use the same dataset)
-        if (region === 'Center' || region === 'New-West') continue;
+        if (region === 'Center' || region === 'New-West' || region === 'North') continue;
         
         try {
           const response = await fetch(`https://api.mapbox.com/datasets/v1/${USERNAME}/${datasetId}/features?access_token=${MAPBOX_TOKEN}`);
@@ -296,6 +296,11 @@ export const calculateRegionStats = async (specificRegion = null) => {
       
       // Normalize region names
       const normalizedRegion = normalizeRegionName(region);
+      
+      // If we're calculating stats for a specific region, only process locations from that region
+      if (specificRegion && normalizedRegion !== specificRegion) {
+        return; // Skip locations that don't belong to the requested region
+      }
       
       if (!regionStats[normalizedRegion]) {
         regionStats[normalizedRegion] = {
@@ -371,7 +376,9 @@ const normalizeItemType = (type) => {
     'installation': 'Installation',
     'sculpture': 'Sculpture',
     'gallery': 'Gallery',
-    'museum': 'Museum',
+    'museum': 'Institution',
+    'institution': 'Institution',
+    'instituion': 'Institution', // Typo fix
     'legal wall': 'Legal Wall',
     'legalwall': 'Legal Wall',
     'wall': 'Wall',
@@ -422,14 +429,14 @@ export const DATASET_INFO = {
     tileset: 'sama-map.cmcut1t446aqw1lljnelbo105-2vy9x'
   },
   Noord: {
-    id: 'sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk',
+    id: 'cmfgx8b9p4j941oo91237sgz8',
     name: 'Amsterdam Street Art - Noord District',
-    editUrl: 'https://studio.mapbox.com/datasets/sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk'
+    editUrl: 'https://studio.mapbox.com/datasets/cmfgx8b9p4j941oo91237sgz8'
   },
   North: {
-    id: 'sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk',
+    id: 'cmfgx8b9p4j941oo91237sgz8',
     name: 'Amsterdam Street Art - North District (alias for Noord)',
-    editUrl: 'https://studio.mapbox.com/datasets/sama-map.cmd8pa31s0z4o1nqopxbxt8ob-1jlpk'
+    editUrl: 'https://studio.mapbox.com/datasets/cmfgx8b9p4j941oo91237sgz8'
   },
   East: {
     id: 'cmd8p7zbx01hp1ts22egpc8gj',

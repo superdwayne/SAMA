@@ -191,10 +191,10 @@ const DynamicTypeStats = ({ stats, loading, error }) => {
     );
   }
 
-  // Sort types by count and get top 3
+  // Sort types by count and get top 4 (to include Institutions)
   const sortedTypes = Object.entries(stats.types)
     .sort(([,a], [,b]) => b - a)
-    .slice(0, 3);
+    .slice(0, 4);
 
   return (
     <div className="stats-map-flex">
